@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>my test</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				margin: 0px;
+				background-color: #FFFFFF;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="../build/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="helpers.js"></script>
+		<script src="rpd.js"></script> <!-- test RPD var -->
+		<script src="parseRPD.js"></script> <!-- test RPD var -->
+
+		<script>
+		var convertedRPD = RPDtoJSON(RPD_Raw)
+		console.log(convertedRPD)
+		//console.log(pointV2Sort(convertedRPD['RoomBaseData']['coords']))// helper.arr.multisort(convertedRPD['RoomBaseData']['coords'], ['x', 'y'], ['ASC','ASC'])
+	
+		console.log(orderShapeArray.orderShapeArray(convertedRPD['RoomBaseData']['coords'])) 
+		
+		</script>
+
+	</body>
+</html>

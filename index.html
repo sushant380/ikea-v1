@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>my test</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				margin: 0px;
+				background-color: #FFFFFF;
+				overflow: hidden;
+			}
+			
+			div.floating {
+				color : #ffffff;
+				background : #000000;
+				opacity : 0.8;
+				width : 80%;
+				height : 80%;
+				position : absolute;
+				left : 10%;
+				top : 10%;
+				border : 1px solid #555555;
+				padding : 10px;
+				display : none;
+				overflow : auto;
+				z-index: 100;
+			}
+			
+		</style>
+	</head>
+	<body>
+
+		<!-- THREE related JS -->
+		<script src="js/three.min.js"></script>		
+		<script src="js/csg/ThreeCSG.js"></script> 
+		<script src="js/controls/OrbitControls.js"></script>
+		<script src="itemInteraction.js"></script>
+		<script src="js/Detector.js"></script> <!-- webgl detector -->
+		
+		<!-- cardboard -->
+		<script src="js/effects/StereoEffect.js"></script> 
+		<script src="js/controls/DeviceOrientationControls.js"></script>
+		<!-- cardboard -->
+		
+		<!-- Vive -->
+		<script src="js/controls/VRControls_mod.js"></script>
+		<script src="js/effects/VREffect.js"></script>
+		<script src="js/vr/ViveController.js"></script>
+		<script src="js/vr/WebVR.js"></script>		
+		<script src="js/loaders/OBJLoader.js"></script> 
+		<script src="js/loaders/MTLLoader.js"></script> 
+		<script src="js/vr/vivecontrollerInteraction.js"></script> 
+		<!-- Vive -->
+
+		<!-- Custom OBJ export --><!-- modified -->		
+		<script src="js/THREEObjExporter_mod.js"></script> 
+		<script src="js/jszip/jszip.min.js"></script>
+		
+		<!-- other open source -->
+		<script src="js/graham_scan.min.js"></script> <!-- only needed for RPD data -->
+		<script src="js/detect.min.js"></script>
+		
+		<!-- custom parts -->
+		<script src="rpd.js"></script> <!-- test RPD var -->
+		<script src="commonHelpers.js"></script> 
+		
+		<script src="defaultWHDs.js"></script>
+		<script src="parseRPD.js"></script> 
+		
+		<script src="materialProxy.js"></script>
+		<script src="roomObj.js"></script> 
+		<script src="itemObj.js"></script> 
+		<script src="RoomItem.js"></script> 
+
+		
+		<script src="exporterHelper.js"></script> 
+		<script src="RPDManager.js"></script> 
+		<!-- skyBox -->
+		<script src="skyBox.js"></script> 
+
+		<script src="scene.js"></script> 
+
+		
+		
+		
+<!--		<div style="position: absolute; top: 10px; width: 10%; text-align: left; ">
+			RPD: <br><textarea id="rpd" value=""></textarea><br>
+			<a href="#" onclick="setRPD();"> Update Room</a>
+
+			<!--<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>
+				<br>	 	 
+
+		</div>  -->
+		<script>
+		
+		/** start exporter test **/
+(function() {		
+
+		init(); // start scene
+		
+		var RPDMgmt = new RPDManager()
+
+		RPDMgmt.setRPDBox()
+		
+
+		//set default RPD
+
+
+		
+})();		
+		</script>
+
+	</body>
+</html>
