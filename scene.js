@@ -114,13 +114,18 @@ function init() {
 					
 					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
 					// Orto cam
-					CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
+					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
 					CamConUI += "<a href=\"#\" onclick=\"setOrthographic();return false;\"> Orthographic</a> | "
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"	
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
-					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
+					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+				CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();;return false;\">Man<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					
 					exporterHelpers = new ExporterHelper() // set
 					CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
@@ -138,10 +143,10 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"setPerspective();\" checked=true>Orbit Control<br>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"setDeviceOrientationControl();\">Device Control<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.7;setDeviceOrientationControl();\">Device Control:1.7m<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();\">Device Control: 0.5m<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1;setDeviceOrientationControl();\">Device Control: 1m<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=2;setDeviceOrientationControl();\">Device Control: 2m<br>"
+					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();\">Man<br>"
+					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();\">Toddler<br>"
+					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();\">Kid<br>"
+					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();\">Lady<br>"
 
 									
 					
@@ -151,11 +156,11 @@ function init() {
 				else if(ua.device.type=="Mobile") {
 					g_DeviceType = ua.device.type
 					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"setPerspective();\" checked=true>Orbit Control<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.7;setDeviceOrientationControl();\">Device Control:1.7m<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();\">Device Control: 0.5m<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1;setDeviceOrientationControl();\">Device Control: 1m<br>"
-					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=2;setDeviceOrientationControl();\">Device Control: 2m<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+				CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();;return false;\">Man<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setStereoEffect();return false;\">Toggle Stereo</a>"
 
 
@@ -288,24 +293,40 @@ function init() {
 			
 			function setDeviceOrientationControl() {
 
-
+if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 					g_transparentObjs=false // don't have transparent objects
 
 					//console.log("INTO setDeviceOrientationControl" )
 									
-					camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 300 );
-					camera.position.set(0, personStandingHeight-0.2, 0); // set person in center
-					camera.updateProjectionMatrix()
+					camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.01, 300 );
+					camera.useQuaternion = true;
+					camera.position.set(1.30, 1.84, 0.32); // set person in center
+					camera.updateProjectionMatrix();
+
+					if(controls!=undefined) controls.dispose()
+				controls =new THREE.OrbitControls(camera, renderer.domElement);
+				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt				
+				
+
+				addHandleWallVisabilityEventsListeners()
+				addAllMouseEventsListeners()
+				addAllToucheEventsListeners()
+				addKeyboardEvents();
+//				console.log(controls)
+//				console.log(renderer.domElement)
+				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() 
+				//VIVECTL() // test ctrl
+			
 					
-					if(controls!=undefined) controls.dispose()					
+					/*if(controls!=undefined) controls.dispose()					
 					
 					controls = new THREE.DeviceOrientationControls(camera)//, true);
 					//controls.enableZoom  = false;
 					//controls.enablePan = false;	
 					controls.connect();
 					controls.update();
-
+*/
 
 				window.removeEventListener('deviceorientation', setDeviceOrientationControl, true);	
 				
@@ -335,6 +356,12 @@ function init() {
 				renderer.domElement.addEventListener( 'mousedown', render, false );
 				renderer.domElement.addEventListener( 'mouseup', render, false );
 				
+			}
+			function addKeyboardEvents(){
+				document.addEventListener("keydown", checkRotation, false);
+				document.addEventListener("keyup",   checkRotation,   false);	
+				
+
 			}
 			
 			function removeAllMouseEventsListeners() {

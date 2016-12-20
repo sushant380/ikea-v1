@@ -1,5 +1,21 @@
 
+function checkRotation(){
 
+  var x = camera.position.x,
+    y = camera.position.y,
+    z = camera.position.z;
+
+  if (keyboard.pressed("left")){
+    camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+    camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
+  } else if (keyboard.pressed("right")){
+    camera.position.x = x * Math.cos(rotSpeed) - z * Math.sin(rotSpeed);
+    camera.position.z = z * Math.cos(rotSpeed) + x * Math.sin(rotSpeed);
+  }
+
+  camera.lookAt(scene.position);
+
+}
 function onDocumentMouseMove( event ) {
 				event.preventDefault();
 				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -94,11 +110,13 @@ function onDocumentMouseMove( event ) {
 
 				raycaster.setFromCamera( mouse, camera );
 				var intersects = raycaster.intersectObjects( interactiveObjects );
+
 //				console.log(intersects)			
 					
 				if ( intersects.length > 0 ) {
 					controls.enabled = false;
 					SELECTED = intersects[ 0 ].object;
+					SELECTEDINTERSECT=intersects[ 0 ];
 					//console.log(intersection)
 					if ( raycaster.ray.intersectPlane( plane, intersection ) ) {
 														
@@ -124,15 +142,15 @@ function onDocumentMouseMove( event ) {
 				event.preventDefault();
 				controls.enabled = true;
 
-				var touches = false
+				var touches = false;
 				if(event.touches != undefined ){
-					touches=true
+					touches=true;
 				}
 
 				//if ( INTERSECTED ) {
 					if(SELECTED!=undefined) {
 
-					SELECTED.matrixAutoUpdate=true // IMPORTANT!! allow movement	
+					SELECTED.matrixAutoUpdate=true; // IMPORTANT!! allow movement	
 
 					if(touches) {
 							SELECTED.material.color.setHex( SELECTED.currentHex );
@@ -140,8 +158,15 @@ function onDocumentMouseMove( event ) {
 						
 						if(SELECTED.collisionDetect!=undefined && SELECTED.collisionDetect("collidablePostItems")) SELECTED.position.copy(SELECTED.userData.returnPosIfItemCollision)			
 						else if(SELECTED.userData.lastGoodPosition!=undefined) SELECTED.position.copy(SELECTED.userData.lastGoodPosition) // final ensurance
+
+						
+					  
+
 						SELECTED = undefined;
 					}
+					if(SELECTED){
+					
+				}
 					//SELECTED = null;
 					
 				//}

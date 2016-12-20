@@ -4,8 +4,8 @@ function RoomItem(item,parent){
 	this.h = item.h;
 	this.d = item.d;
 	this.shape = item.shape;
-	this.Pos = item.Pos;
-	this.Ori = item.Ori ;
+	this.Pos = item.Pos|| new THREE.Vector3(0,0,0);
+	this.Ori = item.Ori || new THREE.Vector3(0,0,0);
 	this.name = item.name;
 	this.color = item.color || 0xFFFFFF;
 	this.texture = item.texture;

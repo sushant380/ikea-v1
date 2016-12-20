@@ -70,8 +70,8 @@ this.createItems = function() {
 		this.itemMeshes.push(item.obj)
 		item.obj.onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
 		refItem=item.obj;
-		//this.scene.add(item.obj)
-		this.scene.add(parent);
+		this.scene.add(item.obj)
+		//this.scene.add(parent);
 	}
 },
 
@@ -112,6 +112,7 @@ this.isVisibleFromOutside, //include in VR export
 this.showWireframe,
 
 this.defaultBoxItems = function () {	
+	var x=this.Pos.x;
 	this.defaultChildBoxItems()
 	// temp adding all obj to interactive obj
 	interactiveObjects.push(this.obj)	
