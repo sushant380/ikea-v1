@@ -1,6 +1,10 @@
 "use strict";
 var camera, scene, renderer, dirLight, g_lookAtObj, lastCameraPos = new THREE.Vector3( 0, 0, 0 ), myRoom, controls, effect, g_DeviceType, 
-clock,exporterHelpers,personStandingHeight, controlsUI, debugUI
+clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,
+target = new THREE.Vector3();
+
+			var lon = 90, lat = 0;
+			var phi = 0, theta = 0;
 
 			var interactiveObjects = [];
 			var interactiveRoomObjs = []
@@ -299,9 +303,9 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 					//console.log("INTO setDeviceOrientationControl" )
 									
-					camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.01, 300 );
+					camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.01, 300 );
 					camera.useQuaternion = true;
-					camera.position.set(1.30, 1.84, 0.32); // set person in center
+					camera.position.set(9.317942309662017e-7, 1.9091715037157926, -0.000001666924729953984); // set person in center
 					camera.updateProjectionMatrix();
 
 					if(controls!=undefined) controls.dispose()
@@ -312,7 +316,8 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				addHandleWallVisabilityEventsListeners()
 				addAllMouseEventsListeners()
 				addAllToucheEventsListeners()
-				addKeyboardEvents();
+				animate_OC();
+				//addKeyboardEvents();
 //				console.log(controls)
 //				console.log(renderer.domElement)
 				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() 
@@ -496,6 +501,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 			
 			/** Normal Controls **/
 			function animate_OC() { //Orbit Control
+				checkRotation();
 				requestAnimationFrame( animate_OC );
 				render()
 			}
@@ -540,6 +546,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - DC rendering"+ debugUI.innerHTML 
 					render_DC()
 				}	
+				//checkRotation();
 			}
 			
 			

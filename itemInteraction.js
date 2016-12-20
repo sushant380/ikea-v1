@@ -1,19 +1,23 @@
-
+THREE.Utils = {
+    cameraLookDir: function(camera) {
+        var vector = new THREE.Vector3(0, 0, -1);
+        vector.applyEuler(camera.rotation, camera.eulerOrder);
+        return vector;
+    }
+};
 function checkRotation(){
 
-  var x = camera.position.x,
-    y = camera.position.y,
-    z = camera.position.z;
+  lon +=  0.1;
+				lat = Math.max( - 85, Math.min( 85, lat ) );
+				phi = THREE.Math.degToRad( 90 - lat );
+				theta = THREE.Math.degToRad( lon );
 
-  if (keyboard.pressed("left")){
-    camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
-    camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
-  } else if (keyboard.pressed("right")){
-    camera.position.x = x * Math.cos(rotSpeed) - z * Math.sin(rotSpeed);
-    camera.position.z = z * Math.cos(rotSpeed) + x * Math.sin(rotSpeed);
-  }
+				target.x = Math.sin( phi ) * Math.cos( theta );
+				target.y = Math.cos( phi );
+				target.z = Math.sin( phi ) * Math.sin( theta );
 
-  camera.lookAt(scene.position);
+				camera.lookAt( target );
+
 
 }
 function onDocumentMouseMove( event ) {
@@ -159,7 +163,7 @@ function onDocumentMouseMove( event ) {
 						if(SELECTED.collisionDetect!=undefined && SELECTED.collisionDetect("collidablePostItems")) SELECTED.position.copy(SELECTED.userData.returnPosIfItemCollision)			
 						else if(SELECTED.userData.lastGoodPosition!=undefined) SELECTED.position.copy(SELECTED.userData.lastGoodPosition) // final ensurance
 
-						
+						sceenZoomToObj(SELECTED);
 					  
 
 						SELECTED = undefined;
