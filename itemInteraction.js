@@ -1,24 +1,33 @@
-THREE.Utils = {
-    cameraLookDir: function(camera) {
-        var vector = new THREE.Vector3(0, 0, -1);
-        vector.applyEuler(camera.rotation, camera.eulerOrder);
-        return vector;
-    }
-};
-function checkRotation(){
+var firstIndex=0;
+var secondIndex=1;
+function roomAnimation(){
+	var firstObject=interactiveObjects[firstIndex].position.clone();
+	var secondObject=interactiveObjects[secondIndex].position.clone();
+	var tween = new TWEEN.Tween(firstObject).to({
+		x:secondObject.x,
+		y:secondObject.y,
+		z:secondObject.z
+	}, 8000);
+	tween.onUpdate(function(){
 
-  lon +=  0.1;
-				lat = Math.max( - 85, Math.min( 85, lat ) );
-				phi = THREE.Math.degToRad( 90 - lat );
-				theta = THREE.Math.degToRad( lon );
-
-				target.x = Math.sin( phi ) * Math.cos( theta );
-				target.y = Math.cos( phi );
-				target.z = Math.sin( phi ) * Math.sin( theta );
-
-				camera.lookAt( target );
-
-
+		 firstObject.z =0;
+   		camera.position.set(firstObject.x,firstObject.y,firstObject.z);
+		camera.lookAt(firstObject);
+	});
+	tween.onComplete(function(){
+		firstIndex++;
+		secondIndex++;
+		if(firstIndex>=interactiveObjects.length){
+			firstIndex++;
+		}
+		if(secondIndex>=interactiveObjects.length){
+			secondIndex++;
+		}
+		roomAnimation();
+	});
+	tween.delay(500);
+	tween.easing(TWEEN.Easing.Elastic.InOut);
+	tween.start();
 }
 function onDocumentMouseMove( event ) {
 				event.preventDefault();
@@ -163,7 +172,7 @@ function onDocumentMouseMove( event ) {
 						if(SELECTED.collisionDetect!=undefined && SELECTED.collisionDetect("collidablePostItems")) SELECTED.position.copy(SELECTED.userData.returnPosIfItemCollision)			
 						else if(SELECTED.userData.lastGoodPosition!=undefined) SELECTED.position.copy(SELECTED.userData.lastGoodPosition) // final ensurance
 
-						sceenZoomToObj(SELECTED);
+						controls.target=SELECTED.position;
 					  
 
 						SELECTED = undefined;
