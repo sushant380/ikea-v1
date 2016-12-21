@@ -10,7 +10,7 @@ function roomAnimation(){
 	}, 8000);
 	tween.onUpdate(function(){
 
-		 firstObject.z =0;
+		 firstObject.z =firstObject.z<0?firstObject.z+1.5:firstObject.z-1.5;
    		camera.position.set(firstObject.x,firstObject.y,firstObject.z);
 		camera.lookAt(firstObject);
 	});

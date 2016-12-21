@@ -70,8 +70,8 @@ this.createItems = function() {
 		this.itemMeshes.push(item.obj)
 		item.obj.onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
 		refItem=item.obj;
-		this.scene.add(item.obj)
-		//this.scene.add(parent);
+		//this.scene.add(item.obj)
+		this.scene.add(parent);
 	}
 },
 
