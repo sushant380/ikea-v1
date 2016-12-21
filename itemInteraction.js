@@ -26,7 +26,7 @@ function roomAnimation(){
 		roomAnimation();
 	});
 	tween.delay(500);
-	tween.easing(TWEEN.Easing.Elastic.InOut);
+	tween.easing(TWEEN.Easing.Quadratic.In);
 	tween.start();
 }
 function onDocumentMouseMove( event ) {
