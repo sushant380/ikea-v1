@@ -18,10 +18,10 @@ function roomAnimation(){
 		firstIndex++;
 		secondIndex++;
 		if(firstIndex>=interactiveObjects.length){
-			firstIndex++;
+			firstIndex=0;
 		}
 		if(secondIndex>=interactiveObjects.length){
-			secondIndex++;
+			secondIndex=0;
 		}
 		roomAnimation();
 	});

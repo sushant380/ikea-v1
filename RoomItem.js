@@ -49,10 +49,10 @@ function RoomItem(item,parent){
 		});
 	};
 	this.getItemObject=function(callback){
-		console.log(this.itemType,this.shape);
-		if( this.itemType == "Frame" || this.itemType == "CapSink" || this.itemType == "SinkTap"){
+		//console.log(this.itemType,this.shape);
+		/*if( this.itemType == "Frame" || this.itemType == "CapSink" || this.itemType == "SinkTap"){*/
 			var scope=this;
-			if(scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
+			if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
 			var materialLoader=new THREE.MTLLoader();
 			materialLoader.setPath('models/obj/');
 		
@@ -124,8 +124,9 @@ function RoomItem(item,parent){
 				});
 			});
 		}else{
+			console.log('shape not found '+scope.shape+' '+scope.name);
 			var object=new THREE.BoxGeometry(this.w, this.h, this.d);
-			var mesh_mat = new THREE.MeshLambertMaterial({color : this.color, transparent: true, opacity: 0.9});
+			var mesh_mat = new THREE.MeshLambertMaterial({transparent: true, opacity: 0.1});
 			var mesh=new THREE.Mesh(object, mesh_mat);
 			mesh.castShadow = true
 			mesh.recieveShadow = true
@@ -139,23 +140,7 @@ function RoomItem(item,parent){
 			this.obj = mesh;
 			callback(this);
 		}
-			
-		}else{
-			var object=new THREE.BoxGeometry(this.w, this.h, this.d);
-			var mesh_mat = new THREE.MeshLambertMaterial({color : this.color, transparent: true, opacity: 0.9});
-			var mesh=new THREE.Mesh(object, mesh_mat);
-			mesh.castShadow = true
-			mesh.recieveShadow = true
-			// wireframe
-			if(this.showWireframe ) {
-				var geo = new THREE.EdgesGeometry( mesh.geometry ); // or WireframeGeometry
-				var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
-				var wireframe = new THREE.LineSegments( geo, mat );
-			//		mesh.add(wireframe)
-			}
-			this.obj = mesh;
-			callback(this);
-		}	
+		
 	};
 	 this.itemsOffsetPos=function(a,dir) {
 						/** we need to adjust the POS since VP do not use center pos **/

@@ -350,8 +350,8 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 	this.itemType=type.replace("_","")	
 	this.name=obj["Item"]
 	this.shape=obj[type+id+"_Shape"]
-	this.Ori=obj[type+id+"_OriRel"]
-	this.Pos=obj[type+id+"_PosRel"]
+	this.Ori=obj[type+id+"_OriRel"]||{x:0,y:0,z:0};
+	this.Pos=obj[type+id+"_PosRel"]||{x:0,y:0,z:0}
 	this.color=obj[type+id+"_color"] || 0xFFFFFF
 	
 	this.showWireframe = true
@@ -379,7 +379,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 		this.suffix = obj[type+id+"_Suffix"] // needed for handle positioning
 	}
 	
-	if(this.shape==undefined) return
+	//if(this.shape==undefined) return
 //	console.log(this)
 	
 	this.childItems = new Array()
@@ -394,6 +394,15 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 	var dA,dB,dD
 		
 	switch(type) {
+		case "IKEA.Host.Vindrum_60cm_dark_grey":
+			var lstOccupiedSlot=id
+			dA =new cabItems("FanExtractor",undefined, obj, whdObj,lstOccupiedSlot,this);
+			//dB =new cabItems("FanFilter",0, obj, whdObj,lstOccupiedSlot,this);
+			//dD =new cabItems("FanFlexiblePipe",undefined, obj, whdObj,lstOccupiedSlot,this);
+			this.childItems.push(dA);
+			//this.childItems.push(dB);
+			//this.childItems.push(dD);
+			break;
 		case "Frame_":
 			//
 // TODO, create default hwd for objects
@@ -639,18 +648,18 @@ function postAdjustHandleBasedOnSuffix(obj) {
 		var cO =obj.childItems[i]
 		if(cO.suffix!=undefined) {
 		
-		if(cO.itemType=="DrawerHandle" && !cO.isHorizontal) cO.Pos.y=cO.Pos.y + (obj.h/2) - handleDefaultSuffix  //3cm från toppen.
-		else if(cO.itemType=="DrawerHandle" && cO.isHorizontal) cO.Pos.y=cO.Pos.y - (obj.h/2) + handleDefaultSuffix  //3cm från toppen.
+		//if(cO.itemType=="DrawerHandle" && !cO.isHorizontal) cO.Pos.y=cO.Pos.y + (obj.h/2) - handleDefaultSuffix  //3cm från toppen.
+		//else if(cO.itemType=="DrawerHandle" && cO.isHorizontal) cO.Pos.y=cO.Pos.y - (obj.h/2) + handleDefaultSuffix  //3cm från toppen.
 
 		switch(cO.suffix) {
 			case "_LeftJustified":
 //			console.log("_LeftJustified, parent ") 
 			
-			cO.Pos.x = cO.Pos.x - (obj.w/2) + handleDefaultSuffix //+ cO.w
+			//cO.Pos.x = cO.Pos.x - (obj.w/2) + handleDefaultSuffix //+ cO.w
 			//	obj.Pos.x = obj.Pos.x + (parentObj.w/2) - handleDefaultSuffix - obj.w
 			break
 			case "_RightJustified":
-			cO.Pos.x = cO.Pos.x + (obj.w/2) - handleDefaultSuffix //- cO.w
+			//cO.Pos.x = cO.Pos.x + (obj.w/2) - handleDefaultSuffix //- cO.w
 			//	obj.Pos.x = obj.Pos.x - (parentObj.w/2) + handleDefaultSuffix + obj.w
 			break
 		
