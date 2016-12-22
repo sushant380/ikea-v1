@@ -379,7 +379,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 		this.suffix = obj[type+id+"_Suffix"] // needed for handle positioning
 	}
 	
-	//if(this.shape==undefined) return
+	if(this.shape==undefined) return
 //	console.log(this)
 	
 	this.childItems = new Array()
@@ -411,7 +411,10 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			var lstOccupiedSlot=id
 
 			for(var i=0;i<=this.maxSlot;i++) { // loop through all slots
-					
+			var airvent=new cabItems('AirVent',undefined,obj, whdObj,lstOccupiedSlot,this);
+			if(airvent.shape){
+				this.childItems.push(airvent);
+			}		
 			dA =new cabItems("DoorFrontA",i, obj, whdObj,lstOccupiedSlot,this)
 			dB =new cabItems("DoorFrontB",i, obj, whdObj,lstOccupiedSlot,this)
 			

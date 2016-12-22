@@ -52,11 +52,12 @@ function RoomItem(item,parent){
 		//console.log(this.itemType,this.shape);
 		/*if( this.itemType == "Frame" || this.itemType == "CapSink" || this.itemType == "SinkTap"){*/
 			var scope=this;
-			if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
+			//if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
 			var materialLoader=new THREE.MTLLoader();
 			materialLoader.setPath('models/obj/');
 		
 			materialLoader.load(scope.shape+'.mtl',function(material){
+					console.log(scope.shape);
 					var loader = new THREE.OBJLoader();
 					loader.setPath( 'models/obj/' );
 					loader.setMaterials(material);
@@ -74,6 +75,7 @@ function RoomItem(item,parent){
 					scope.obj = object.children[0];
 					callback(scope);
 				},function(){},function(){
+					console.log('failed= ',scope);
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
 					var mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
 					var mesh=new THREE.Mesh(object, mesh_mat);
@@ -90,6 +92,7 @@ function RoomItem(item,parent){
 					callback(scope);
 				});
 			},function(){},function(){
+				console.log('failed= ',scope);
 				var loader = new THREE.OBJLoader();
 					loader.setPath( 'models/obj/' );
 					
@@ -107,6 +110,7 @@ function RoomItem(item,parent){
 					scope.obj = object.children[0];
 					callback(scope);
 				},function(){},function(){
+					console.log('failed= ',scope);
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
 					var mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
 					var mesh=new THREE.Mesh(object, mesh_mat);
@@ -123,7 +127,7 @@ function RoomItem(item,parent){
 					callback(scope);
 				});
 			});
-		}else{
+		/*}else{
 			console.log('shape not found '+scope.shape+' '+scope.name);
 			var object=new THREE.BoxGeometry(this.w, this.h, this.d);
 			var mesh_mat = new THREE.MeshLambertMaterial({transparent: true, opacity: 0.1});
@@ -139,7 +143,7 @@ function RoomItem(item,parent){
 			}
 			this.obj = mesh;
 			callback(this);
-		}
+		}*/
 		
 	};
 	 this.itemsOffsetPos=function(a,dir) {
