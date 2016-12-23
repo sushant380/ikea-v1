@@ -122,11 +122,12 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
 					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
-				CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();;return false;\">Man<br>"
-					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective	();;return false;\">Stop<br>"
+					/*CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
-					
+					*/
 					exporterHelpers = new ExporterHelper() // set
 					CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
 
@@ -308,7 +309,8 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 					if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
 				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt				
-				
+				controls.target.set(2.699999625,1.08,-0.6749995000000002);
+
 
 				addHandleWallVisabilityEventsListeners()
 				addAllMouseEventsListeners()

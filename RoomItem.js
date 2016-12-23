@@ -15,6 +15,9 @@ function RoomItem(item,parent){
 	this.childItems = []
 	this.isVisibleFromOutside = true;
 	this.isHost=item.isHost ||false;
+	if(parent instanceof THREE.Object3D){
+		interactiveRoomObjs.push(this);
+	}
 	this.add=function(itm){
 		if(this.obj.type=='Group'){
 			this.obj.children[0].add(itm);	
@@ -34,6 +37,7 @@ function RoomItem(item,parent){
 			if(scope.rawChildItems && scope.rawChildItems.length){
 				scope.rawChildItems.forEach(function(child){
 					var childItem=new RoomItem(child,scope);
+					scope.childItems.push(childItem)
 				});
 			}
 			if(scope.lockXTranslation!=undefined) scope.obj.userData.lockXTranslation = scope.lockXTranslation
@@ -48,7 +52,7 @@ function RoomItem(item,parent){
 				parent.add(scope.obj);
 		});
 	};
-	this.getItemObject=function(callback){
+;	this.getItemObject=function(callback){
 		//console.log(this.itemType,this.shape);
 		/*if( this.itemType == "Frame" || this.itemType == "CapSink" || this.itemType == "SinkTap"){*/
 			var scope=this;
@@ -192,6 +196,117 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 							sub.subVectors(sub, t)
 						}
 						return sub
-}
+	};
+	this.doorsAnimation=function(doorItems){
+		if(doorItems.lenght>1){
+			var leftOpeningDoor=undefined;
+			var rightOpeningDoor=undefined;
+			doorItems.forEach(function(door){
+				if(door.itemType.indexOf('DoorFrontA')>-1){
+					leftOpeningDoor=door;
+				}else if(door.itemType.indexOf('DoorFrontB')>-1){
+					rightOpeningDoor=door;
+				}
+			});
+			
+			var leftDoorAngel={angle:1};
+			var leftOpeningDoorTween = new TWEEN.Tween(leftDoorAngel).to({
+				angle:90
+			}, 10);
+			leftOpeningDoorTween.onUpdate(function(){
+				var newRotation = new THREE.Euler( 0, (-leftDoorAngel.angle) * 0.017453292519943295, 0);
+                leftOpeningDoor.obj.rotation.copy( newRotation );
+                leftOpeningDoor.obj.updateMatrixWorld( true );
+			});
+			leftOpeningDoorTween.easing(TWEEN.Easing.Quadratic.In);
+			leftOpeningDoorTween.start();
+			var rightDoorAngel={angle:179};
+			var rightOpeningDoorTween = new TWEEN.Tween(rightDoorAngel).to({
+				angle:90
+			}, 10);
+			rightOpeningDoorTween.onUpdate(function(){
+				var newRotation = new THREE.Euler( 0, (-rightDoorAngel.angle) * 0.017453292519943295, 0);
+                rightOpeningDoor.obj.rotation.copy( newRotation );
+                rightOpeningDoor.obj.updateMatrixWorld( true );
+			});
+			
+			rightOpeningDoorTween.easing(TWEEN.Easing.Quadratic.In);
+			rightOpeningDoorTween.start();
+
+		}else if(doorItems.length==1){
+			var leftDoorAngel={angle:1,x:0,z:0};
+			var updateCount=0;
+			var leftOpeningDoorTween = new TWEEN.Tween(leftDoorAngel).to({
+				angle:90,
+				x:-0.30,
+				z:doorItems[0].w
+			}, 3000);
+			leftOpeningDoorTween.onUpdate(function(){
+				if(updateCount==0){
+					updateCount++;
+					return;
+				}
+				var newRotation = new THREE.Euler( 0, (-leftDoorAngel.angle) * 0.017453292519943295, 0);
+                doorItems[0].obj.rotation.copy( newRotation );
+                var v=new THREE.Vector3(leftDoorAngel.x,0,leftDoorAngel.z);
+                doorItems[0].obj.position.copy(v);	
+                doorItems[0].obj.updateMatrixWorld( true );
+
+			});
+			leftOpeningDoorTween.easing(TWEEN.Easing.Quadratic.In);
+			leftOpeningDoorTween.start();
+		}
+	};
+	this.drawersAnimation=function(drawers){
+		if(drawers.length>1){
+			var allposition={};
+			var initialPosition={};
+			var portion=drawers[0].d/drawers.length;
+			drawers.forEach(function(d,index){
+				allposition['position'+index]=index*portion;
+				initialPosition['position'+index]=0;
+			});
+			console.log(allposition,initialPosition);
+			var drawerTween = new TWEEN.Tween(initialPosition).to(
+				allposition
+			, 3000);
+			drawerTween.onUpdate(function(){
+				drawers.forEach(function(d,index){
+					var v=new THREE.Vector3(d.obj.position.x,d.obj.position.y,initialPosition['position'+(drawers.length-1-index)]);
+                	d.obj.position.copy(v);	
+                	d.obj.updateMatrixWorld( true );
+            	});
+			});
+			drawerTween.easing(TWEEN.Easing.Quadratic.In);
+			drawerTween.start();
+		}
+	}
+	this.stopAnimation=function(){
+		
+	};
+	this.playAnimation=function(){
+		var allAnimationItems=[];
+		var doorItems=[];
+		var drawerItems=[];
+		var shelfItems=[];
+		this.childItems.forEach(function(child){
+			if(child.itemType.indexOf('DoorFront')>-1){
+				allAnimationItems.push(child);
+				doorItems.push(child);
+			}else if( child.itemType==='Drawer'){
+				drawerItems.push(child);
+			}else if(child.itemType.indexOf('Shelf')>-1){
+				shelfItems.push(child);
+			}
+		});
+		//all doors first
+		if(doorItems.length>0)	{	
+			this.doorsAnimation(doorItems);
+		}
+		//all drawers 
+		if(drawerItems.length>0){
+			this.drawersAnimation(drawerItems);
+		}
+	};
 	init(this);
 }

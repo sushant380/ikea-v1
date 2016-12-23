@@ -1,33 +1,55 @@
-var firstIndex=0;
-var secondIndex=1;
+var firstIndex=1;
+var secondIndex=2;
+var stopAnimation=false;
 function roomAnimation(){
-	var firstObject=interactiveObjects[firstIndex].position.clone();
-	var secondObject=interactiveObjects[secondIndex].position.clone();
+	if(stopAnimation==false){
+	if(interactiveRoomObjs.length>2){
+	var firstObject=interactiveRoomObjs[firstIndex].obj.position.clone();
+	var secondObject=interactiveRoomObjs[secondIndex].obj.position.clone();
+	firstObject.rotation=0;
 	var tween = new TWEEN.Tween(firstObject).to({
 		x:secondObject.x,
 		y:secondObject.y,
-		z:secondObject.z
+		z:secondObject.z,
+		rotation:interactiveRoomObjs[secondIndex].Ori.y
 	}, 8000);
 	tween.onUpdate(function(){
 
 		 firstObject.z =firstObject.z<0?firstObject.z+1.5:firstObject.z-1.5;
    		camera.position.set(firstObject.x,firstObject.y,firstObject.z);
+   		var newRotation = new THREE.Euler( 0, firstObject.rotation, 0);
+   		camera.rotation.copy(newRotation);
 		camera.lookAt(firstObject);
 	});
 	tween.onComplete(function(){
+		interactiveRoomObjs[secondIndex].playAnimation();
 		firstIndex++;
 		secondIndex++;
-		if(firstIndex>=interactiveObjects.length){
-			firstIndex=0;
+		if(firstIndex>=interactiveRoomObjs.length){
+			firstIndex=1;
 		}
-		if(secondIndex>=interactiveObjects.length){
-			secondIndex=0;
+		if(secondIndex>=interactiveRoomObjs.length){
+			secondIndex=1;
 		}
+
+
 		roomAnimation();
 	});
+
 	tween.delay(500);
 	tween.easing(TWEEN.Easing.Quadratic.In);
 	tween.start();
+	}else{
+		var firstObject=interactiveRoomObjs[firstIndex].obj.position.clone();
+		firstObject.z =firstObject.z<0?firstObject.z+1.5:firstObject.z-1.5;
+		var newRotation = new THREE.Euler( 0, interactiveRoomObjs[firstIndex].Ori.y, 0);
+   		camera.rotation.set(newRotation);
+   		camera.position.set(firstObject.x,firstObject.y,firstObject.z);
+		camera.lookAt(firstObject);
+		camera.updateMatrixWorld( true );
+		interactiveRoomObjs[1].playAnimation();
+	}
+}
 }
 function onDocumentMouseMove( event ) {
 				event.preventDefault();
