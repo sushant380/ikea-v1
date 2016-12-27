@@ -1,6 +1,22 @@
 var firstIndex=1;
 var secondIndex=2;
 var stopAnimation=false;
+var selectionBox = new THREE.BoxHelper();
+selectionBox.material.depthTest = false;
+selectionBox.material.transparent = true;
+selectionBox.visible = false;
+var box = new THREE.Box3();
+
+function updateBox(object){
+	box.setFromObject( SELECTED );
+					if ( box.isEmpty() === false ) {	
+						selectionBox.update( box );
+						selectionBox.visible = true;
+					}
+					if(scene && box){
+						scene.add(selectionBox);
+					}
+}
 function roomAnimation(){
 	if(stopAnimation==false){
 	if(interactiveRoomObjs.length>2){
@@ -52,82 +68,70 @@ function roomAnimation(){
 }
 }
 function onDocumentMouseMove( event ) {
-				event.preventDefault();
-				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-				var touches = false
-				if(event.touches != undefined && event.touches[ 0 ].pageX!=undefined &&  event.touches[ 0 ].pageY!=undefined ){
-					mouse.x=(event.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
-					mouse.y= -( event.touches[ 0 ].pageY / window.innerHeight ) * 2 + 1;
-					touches=true
+		event.preventDefault();
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		var touches = false
+		if(event.touches != undefined && event.touches[ 0 ].pageX!=undefined &&  event.touches[ 0 ].pageY!=undefined ){
+			mouse.x=(event.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
+			mouse.y= -( event.touches[ 0 ].pageY / window.innerHeight ) * 2 + 1;
+			touches=true
+		}		
+		raycaster.setFromCamera( mouse, camera );
+		if ( SELECTED ) {
+			SELECTED.matrixAutoUpdate=true // IMPORTANT!! allow movement				
+			if ( raycaster.ray.intersectPlane( plane, intersection ) ) {
+				/** to do, 
+					- check intersection and stop moving
+					- control which directions are valid
+				**/
+			if(SELECTED.collisionDetect==undefined) {
+				var newPos = intersection.sub( offset )
+				SELECTED.position.copy( newPos );
+			}
+			else if(!SELECTED.collisionDetect("collidableWalls") || SELECTED.userData.initalMoveAction) {
+				//setTimeout(function(){if(SELECTED!=null) SELECTED.userData.initalMoveAction = false},40) // to fix
+				SELECTED.userData.initalMoveAction = false
+			if(!SELECTED.userData.initalMoveAction) SELECTED.userData.lastGoodPosition = SELECTED.position.clone() //allow some time in case something has got stuck
+				var newPos = intersection.sub( offset )
+					// handle axis locking
+			//	if(SELECTED.userData.lockXTranslation || SELECTED.userData.lockXTranslation!=undefined) newPos.x=SELECTED.userData.lastGoodPosition.x
+			//	if(SELECTED.userData.lockYTranslation || SELECTED.userData.lockYTranslation!=undefined) newPos.y=SELECTED.userData.lastGoodPosition.y
+			//		if(SELECTED.userData.lockZTranslation || SELECTED.userData.lockZTranslation!=undefined) newPos.z=SELECTED.userData.lastGoodPosition.z							
+					//console.log(SELECTED.userData.lockXTranslation)
+					//console.log(SELECTED.userData.lockYTranslation)
+					//console.log(SELECTED.userData.lockZTranslation)
+					console.log(newPos);
+					SELECTED.position.copy( newPos );
+				}else { //collision occured
+					SELECTED.position.copy(SELECTED.userData.lastGoodPosition)
+					offset.copy( intersection ).sub( SELECTED.position )
 				}
-				
-				raycaster.setFromCamera( mouse, camera );
-				if ( SELECTED ) {
-							
-					SELECTED.matrixAutoUpdate=true // IMPORTANT!! allow movement
-							
-					if ( raycaster.ray.intersectPlane( plane, intersection ) ) {
-						/** to do, 
-							- check intersection and stop moving
-							- control which directions are valid
-							**/
+			}
+			return;
+		}
+		var intersects = raycaster.intersectObjects(interactiveObjects );
+			if ( intersects.length > 0 ) {
+				if ( INTERSECTED != intersects[ 0 ].object ) {
+					if ( INTERSECTED) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+					INTERSECTED = intersects[ 0 ].object;
+					if(INTERSECTED.currentHex==undefined )INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+					plane.setFromNormalAndCoplanarPoint(
+						camera.getWorldDirection( plane.normal ),
+						INTERSECTED.position );
 						
-						if(SELECTED.collisionDetect==undefined) {
-							var newPos = intersection.sub( offset )
-							SELECTED.position.copy( newPos );
-						}
-						
-						else if(!SELECTED.collisionDetect("collidableWalls") || SELECTED.userData.initalMoveAction) {
-							//setTimeout(function(){if(SELECTED!=null) SELECTED.userData.initalMoveAction = false},40) // to fix
-							SELECTED.userData.initalMoveAction = false
-							if(!SELECTED.userData.initalMoveAction) SELECTED.userData.lastGoodPosition = SELECTED.position.clone() //allow some time in case something has got stuck
-							
-							var newPos = intersection.sub( offset )
-							// handle axis locking
-							if(SELECTED.userData.lockXTranslation || SELECTED.userData.lockXTranslation!=undefined) newPos.x=SELECTED.userData.lastGoodPosition.x
-							if(SELECTED.userData.lockYTranslation || SELECTED.userData.lockYTranslation!=undefined) newPos.y=SELECTED.userData.lastGoodPosition.y
-							if(SELECTED.userData.lockZTranslation || SELECTED.userData.lockZTranslation!=undefined) newPos.z=SELECTED.userData.lastGoodPosition.z							
-							//console.log(SELECTED.userData.lockXTranslation)
-							//console.log(SELECTED.userData.lockYTranslation)
-							//console.log(SELECTED.userData.lockZTranslation)
-							
-							SELECTED.position.copy( newPos );
-							
-							}
-						
-						else { //collision occured
-							
-							SELECTED.position.copy(SELECTED.userData.lastGoodPosition)
-							offset.copy( intersection ).sub( SELECTED.position )
-						}
-					}
-					return;
+						// ignore if touche
+						if(!touches) INTERSECTED.material.color.setHex( 0xffcc00 );	
 				}
-				var intersects = raycaster.intersectObjects(interactiveObjects );
-
-					if ( intersects.length > 0 ) {
-						if ( INTERSECTED != intersects[ 0 ].object ) {
-							if ( INTERSECTED) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-							INTERSECTED = intersects[ 0 ].object;
-							if(INTERSECTED.currentHex==undefined )INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-							plane.setFromNormalAndCoplanarPoint(
-								camera.getWorldDirection( plane.normal ),
-								INTERSECTED.position );
-								
-								// ignore if touche
-								if(!touches) INTERSECTED.material.color.setHex( 0xffcc00 );	
+				container.style.cursor = 'pointer';
+				} else {
+					if ( INTERSECTED && INTERSECTED.currentHex!=undefined) {
+							INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+							INTERSECTED.currentHex=undefined
 						}
-						container.style.cursor = 'pointer';
-					} else {
-						if ( INTERSECTED && INTERSECTED.currentHex!=undefined) {
-								INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
-								INTERSECTED.currentHex=undefined
-						}
-						INTERSECTED = null;
-						container.style.cursor = 'auto';
-					}
-				
+					INTERSECTED = null;
+					container.style.cursor = 'auto';
+				}
 			}
 			function onDocumentMouseDown( event ) {
 				event.preventDefault();
@@ -157,6 +161,8 @@ function onDocumentMouseMove( event ) {
 														
 						offset.copy( intersection ).sub( SELECTED.position );
 					}
+					
+					updateBox(SELECTED);
 					//console.log(intersection)
 					//console.log(intersects)
 					
@@ -171,6 +177,7 @@ function onDocumentMouseMove( event ) {
 
 						}
 					container.style.cursor = 'move';
+					render();
 				}
 			}
 			function onDocumentMouseUp( event ) {

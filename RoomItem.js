@@ -71,10 +71,12 @@ function RoomItem(item,parent){
 					
 					// wireframe
 					if(scope.showWireframe ) {
-						var geo = new THREE.EdgesGeometry( object.children[0].geometry ); // or WireframeGeometry
+						
+						/*var geo = new THREE.EdgesGeometry( object.children[0].geometry ); // or WireframeGeometry
 						var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
 						var wireframe = new THREE.LineSegments( geo, mat );
-						//object.add(wireframe)
+						var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ee00, wireframe: true, transparent: true } ); 
+						object.add(wireframeMaterial);*/
 					}
 					scope.obj = object.children[0];
 					callback(scope);
@@ -282,7 +284,19 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 		}
 	}
 	this.stopAnimation=function(){
-		
+		var doorItems=[];
+		var drawerItems=[];
+		var shelfItems=[];
+		this.childItems.forEach(function(child){
+			if(child.itemType.indexOf('DoorFront')>-1){
+				allAnimationItems.push(child);
+				doorItems.push(child);
+			}else if( child.itemType==='Drawer'){
+				drawerItems.push(child);
+			}else if(child.itemType.indexOf('Shelf')>-1){
+				shelfItems.push(child);
+			}
+		});
 	};
 	this.playAnimation=function(){
 		var allAnimationItems=[];
