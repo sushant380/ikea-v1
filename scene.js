@@ -123,7 +123,9 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
 					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
-					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective	();;return false;\">Stop<br>"
+					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
+					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
+					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
 					/*CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
@@ -189,7 +191,18 @@ function init() {
 				}
 	
 			/** HTC Vive **/
-			
+			function setOpen(){
+				if(SELECTEDINTERSECT){
+					for(var n=0;n<interactiveRoomObjs.length;n++){
+						if(interactiveRoomObjs[n].obj){
+							console.log(interactiveRoomObjs[n].obj.uuid+"  "+SELECTEDINTERSECT.uuid);
+							if(interactiveRoomObjs[n].obj.uuid===SELECTEDINTERSECT.children[0].uuid){
+								interactiveRoomObjs[n].playAnimation();
+							}
+						}
+					}
+				}
+			}
 			function setVive(userHeight) {
 
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 300 );

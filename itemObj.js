@@ -43,6 +43,7 @@ this.createItems = function() {
 		
 		item.defaultBoxItems()
 		var parent=new THREE.Object3D();
+		parent.isHost=true;
 		item.isHost=true;
 		rItem=new RoomItem(item,parent);
 		if(this.items[i].lockXTranslation!=undefined) item.obj.userData.lockXTranslation = this.items[i].lockXTranslation
@@ -115,7 +116,7 @@ this.defaultBoxItems = function () {
 	var x=this.Pos.x;
 	this.defaultChildBoxItems()
 	// temp adding all obj to interactive obj
-	interactiveObjects.push(this.obj)	
+	//interactiveObjects.push(this.obj)	
 	// adding collisionDetect
 	
 	this.obj.userData.itemType=this.itemType

@@ -48,6 +48,7 @@ function RoomItem(item,parent){
 				var v3=scope.itemsOffsetPos(scope,scope.obj.getWorldDirection());
 				scope.obj.position.set(v3.x,v3.y,v3.z);
 			}
+			interactiveObjects.push(scope.obj);	
 			if(parent)
 				parent.add(scope.obj);
 		});
@@ -200,6 +201,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 						return sub
 	};
 	this.doorsAnimation=function(doorItems){
+		var scope=this;
 		if(doorItems.lenght>1){
 			var leftOpeningDoor=undefined;
 			var rightOpeningDoor=undefined;
@@ -211,39 +213,74 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 				}
 			});
 			
-			var leftDoorAngel={angle:1};
+			var leftDoorAngel={angle:1,x:0,z:leftOpeningDoor.obj.position.z};
+			var updateCount=0;
 			var leftOpeningDoorTween = new TWEEN.Tween(leftDoorAngel).to({
-				angle:90
-			}, 10);
-			leftOpeningDoorTween.onUpdate(function(){
+				angle:90,
+				x:-leftOpeningDoor.w/2,
+				z:leftOpeningDoor.w/2+leftOpeningDoor.obj.position.z
+			}, 3000).onUpdate(function(){
+				if(updateCount==0){
+					updateCount++;
+					return;
+				}
 				var newRotation = new THREE.Euler( 0, (-leftDoorAngel.angle) * 0.017453292519943295, 0);
                 leftOpeningDoor.obj.rotation.copy( newRotation );
+                var v=new THREE.Vector3(leftDoorAngel.x,0,leftDoorAngel.z);
+                leftOpeningDoor.obj.position.copy(v);	
                 leftOpeningDoor.obj.updateMatrixWorld( true );
-			});
-			leftOpeningDoorTween.easing(TWEEN.Easing.Quadratic.In);
-			leftOpeningDoorTween.start();
+                updateBox(scope.obj);
+
+			}).onComplete(function(){
+				console.log('completed');
+			}).easing(TWEEN.Easing.Quadratic.In).start();
+
+			var rightDoorAngel={angle:179,x:0,z:rightOpeningDoor.obj.position.z};
+			var updateCount=0;
+			var rightOpeningDoorTween = new TWEEN.Tween(rightDoorAngel).to({
+				angle:90,
+				x:rightOpeningDoor.w/2,
+				z:rightOpeningDoor.w/2+rightOpeningDoor.obj.position.z
+			}, 3000).onUpdate(function(){
+				if(updateCount==0){
+					updateCount++;
+					return;
+				}
+				var newRotation = new THREE.Euler( 0, (-rightDoorAngel.angle) * 0.017453292519943295, 0);
+                rightOpeningDoor.obj.rotation.copy( newRotation );
+                var v=new THREE.Vector3(rightDoorAngel.x,0,rightDoorAngel.z);
+                rightOpeningDoor.obj.position.copy(v);	
+                rightOpeningDoor.obj.updateMatrixWorld( true );
+                updateBox(scope.obj);
+
+			}).onComplete(function(){
+				console.log('completed');
+			}).easing(TWEEN.Easing.Quadratic.In).start();
+
 			var rightDoorAngel={angle:179};
 			var rightOpeningDoorTween = new TWEEN.Tween(rightDoorAngel).to({
 				angle:90
-			}, 10);
+			}, 3000);
 			rightOpeningDoorTween.onUpdate(function(){
 				var newRotation = new THREE.Euler( 0, (-rightDoorAngel.angle) * 0.017453292519943295, 0);
                 rightOpeningDoor.obj.rotation.copy( newRotation );
                 rightOpeningDoor.obj.updateMatrixWorld( true );
+                updateBox(scope.obj);
 			});
-			
+			rightOpeningDoorTween.onComplete(function(){
+				console.log('completed');
+			});
 			rightOpeningDoorTween.easing(TWEEN.Easing.Quadratic.In);
 			rightOpeningDoorTween.start();
-
+			animate_OC();
 		}else if(doorItems.length==1){
-			var leftDoorAngel={angle:1,x:0,z:0};
+			var leftDoorAngel={angle:1,x:0,z:doorItems[0].obj.position.z};
 			var updateCount=0;
 			var leftOpeningDoorTween = new TWEEN.Tween(leftDoorAngel).to({
 				angle:90,
-				x:-0.30,
-				z:doorItems[0].w
-			}, 3000);
-			leftOpeningDoorTween.onUpdate(function(){
+				x:-doorItems[0].w/2,
+				z:doorItems[0].w/2+doorItems[0].obj.position.z
+			}, 3000).onUpdate(function(){
 				if(updateCount==0){
 					updateCount++;
 					return;
@@ -253,13 +290,16 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
                 var v=new THREE.Vector3(leftDoorAngel.x,0,leftDoorAngel.z);
                 doorItems[0].obj.position.copy(v);	
                 doorItems[0].obj.updateMatrixWorld( true );
+                updateBox(scope.obj);
 
-			});
-			leftOpeningDoorTween.easing(TWEEN.Easing.Quadratic.In);
-			leftOpeningDoorTween.start();
+			}).onComplete(function(){
+				console.log('completed');
+			}).easing(TWEEN.Easing.Quadratic.In).start();
+			animate_OC();
 		}
 	};
 	this.drawersAnimation=function(drawers){
+		var scope=this;
 		if(drawers.length>1){
 			var allposition={};
 			var initialPosition={};
@@ -278,9 +318,14 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
                 	d.obj.position.copy(v);	
                 	d.obj.updateMatrixWorld( true );
             	});
+            	updateBox(scope.obj);
+			});
+			drawerTween.onComplete(function(){
+				console.log('completed');
 			});
 			drawerTween.easing(TWEEN.Easing.Quadratic.In);
 			drawerTween.start();
+			animate_OC();
 		}
 	}
 	this.stopAnimation=function(){
@@ -317,10 +362,12 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 		if(doorItems.length>0)	{	
 			this.doorsAnimation(doorItems);
 		}
+		
 		//all drawers 
 		if(drawerItems.length>0){
 			this.drawersAnimation(drawerItems);
 		}
+
 	};
 	init(this);
 }

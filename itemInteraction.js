@@ -7,8 +7,59 @@ selectionBox.material.transparent = true;
 selectionBox.visible = false;
 var box = new THREE.Box3();
 
+function toScreenXY( position, camera, div ) {
+            var pos = position.clone();
+            projScreenMat = new THREE.Matrix4();
+            projScreenMat.multiply( camera.projectionMatrix, camera.matrixWorldInverse );
+            projScreenMat.multiplyVector3( pos );
+
+            var offset = findOffset(div);
+
+            return { x: ( pos.x + 1 ) * div.width / 2 + offset.left,
+                 y: ( - pos.y + 1) * div.height / 2 + offset.top };
+
+        }
+function findOffset(element) { 
+          var pos = new Object();
+          pos.left = pos.top = 0;        
+          if (element.offsetParent)  
+          { 
+            do  
+            { 
+              pos.left += element.offsetLeft; 
+              pos.top += element.offsetTop; 
+            } while (element = element.offsetParent); 
+          } 
+          return pos;
+        } 
+function findObject(object,uuid){
+	var found=undefined;
+	
+	if(object.uuid===uuid){
+		found= object;
+	}else{
+		if(object.children && object.children.length){
+			for(var k=0;k<object.children.length;k++){
+				found =findObject(object.children[k],uuid);
+			}	
+		}	
+	}
+	return found;
+}
+function findParent(object){
+	var parent;
+	if(object.isHost){
+		parent=object;
+	}else 
+	if(object.parent){
+		parent = findParent(object.parent);
+	}else{
+		parent= object;
+	}
+	return parent;
+}
 function updateBox(object){
-	box.setFromObject( SELECTED );
+	box.setFromObject( object );
 					if ( box.isEmpty() === false ) {	
 						selectionBox.update( box );
 						selectionBox.visible = true;
@@ -16,6 +67,7 @@ function updateBox(object){
 					if(scene && box){
 						scene.add(selectionBox);
 					}
+
 }
 function roomAnimation(){
 	if(stopAnimation==false){
@@ -113,15 +165,15 @@ function onDocumentMouseMove( event ) {
 		var intersects = raycaster.intersectObjects(interactiveObjects );
 			if ( intersects.length > 0 ) {
 				if ( INTERSECTED != intersects[ 0 ].object ) {
-					if ( INTERSECTED) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
+					//if ( INTERSECTED) INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
 					INTERSECTED = intersects[ 0 ].object;
-					if(INTERSECTED.currentHex==undefined )INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+					if(INTERSECTED.currentHex==undefined && INTERSECTED.material && INTERSECTED.material.color)INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
 					plane.setFromNormalAndCoplanarPoint(
 						camera.getWorldDirection( plane.normal ),
 						INTERSECTED.position );
 						
 						// ignore if touche
-						if(!touches) INTERSECTED.material.color.setHex( 0xffcc00 );	
+					//	if(!touches) INTERSECTED.material.color.setHex( 0xffcc00 );	
 				}
 				container.style.cursor = 'pointer';
 				} else {
@@ -154,8 +206,17 @@ function onDocumentMouseMove( event ) {
 					
 				if ( intersects.length > 0 ) {
 					controls.enabled = false;
-					SELECTED = intersects[ 0 ].object;
-					SELECTEDINTERSECT=intersects[ 0 ];
+					SELECTED=findParent(intersects[ 0 ].object)
+					SELECTEDINTERSECT=SELECTED;
+					/*for(var m=0;m<interactiveRoomObjs.length;m++){
+						if(interactiveRoomObjs[m].obj){
+						var found=findObject(interactiveRoomObjs[m].obj,SELECTED.uuid);
+						if(found){
+							console.log(found);
+							break;
+						}
+					}
+					}*/
 					//console.log(intersection)
 					if ( raycaster.ray.intersectPlane( plane, intersection ) ) {
 														
