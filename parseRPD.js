@@ -870,9 +870,12 @@ function mappAttributes(itemArr) {
 	
 					//add Plint
 					var plinthPos=new THREE.Vector3(0,-cabBase.h/2-0.05,cabBase.d/2-0.1);
+
 					itemArr[i]["Plinth_0_PosRel"]=plinthPos;
 					var plinth=new cabItems("Plinth_",0, itemArr[i], whd);
-					cabBase.childItems.push(plinth);
+					if(plinth.shape!==undefined && plinth.shape!=='null'){
+						cabBase.childItems.push(plinth);
+					}
 					
 					var positionType = itemArr[i]["Type"]
 					if(positionType.indexOf("OnFloor:")==0) cabBase.lockYTranslation=true 
