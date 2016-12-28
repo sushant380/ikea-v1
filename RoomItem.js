@@ -15,6 +15,7 @@ function RoomItem(item,parent){
 	this.childItems = []
 	this.isVisibleFromOutside = true;
 	this.isHost=item.isHost ||false;
+	this.parent=parent;
 	if(parent instanceof THREE.Object3D){
 		interactiveRoomObjs.push(this);
 	}
@@ -49,8 +50,9 @@ function RoomItem(item,parent){
 				scope.obj.position.set(v3.x,v3.y,v3.z);
 			}
 			interactiveObjects.push(scope.obj);	
-			if(parent)
-				parent.add(scope.obj);
+			console.log('parent',scope.parent,scope.obj);
+			if(scope.parent)
+				scope.parent.add(scope.obj);
 		});
 	};
 ;	this.getItemObject=function(callback){
@@ -66,10 +68,11 @@ function RoomItem(item,parent){
 					var loader = new THREE.OBJLoader();
 					loader.setPath( 'models/obj/' );
 					loader.setMaterials(material);
+					console.log('material found for '+scope.shape);
 					loader.load( scope.shape+'.obj', function ( object ) {
 					object.castShadow = true
 					object.recieveShadow = true
-					
+					console.log('object found for '+scope.shape);
 					// wireframe
 					if(scope.showWireframe ) {
 						
@@ -80,6 +83,7 @@ function RoomItem(item,parent){
 						object.add(wireframeMaterial);*/
 					}
 					scope.obj = object.children[0];
+					console.log(scope.obj.type);
 					callback(scope);
 				},function(){},function(){
 					console.log('failed= ',scope);
@@ -304,8 +308,9 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 			var allposition={};
 			var initialPosition={};
 			var portion=drawers[0].d/drawers.length;
+			portion=portion-0.02;
 			drawers.forEach(function(d,index){
-				allposition['position'+index]=index*portion;
+				allposition['position'+index]=(index+1)*portion;
 				initialPosition['position'+index]=0;
 			});
 			console.log(allposition,initialPosition);

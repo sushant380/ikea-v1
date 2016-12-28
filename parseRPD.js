@@ -407,7 +407,18 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			//
 // TODO, create default hwd for objects
 // should ideally be from models...
-							
+			/*var totalShapeItems=[];
+			for(var shape in obj){
+				if(shape.indexOf('_Shape')>-1){
+					if(obj[shape]!==null && obj[shape]!=='null' && obj[shape]!==undefined){
+						totalShapeItems.push(shape);
+					}
+				}
+			}
+			for(var j=0;j<totalShapeItems.length;j++){
+				if(totalShapeItems[j].indexOf('DrawerFront')==-1 && totalShapeItems[j].indexOf('DrawerHandle')==-1 &&
+					totalShapeItems[j].indexOf('CabHob')==-1 && totalShapeItems[j].indexOf('CabSink')==-1 && )
+			}*/
 			var lstOccupiedSlot=id
 
 			for(var i=0;i<=this.maxSlot;i++) { // loop through all slots
@@ -472,7 +483,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 
 				dD = new cabItems("Drawer",i, obj, whdObj,lstOccupiedSlot,this)
 				
-				if(dD.shape!=undefined) {
+				if(dD.shape!=undefined && dD.shape != 'null') {
 					lstOccupiedSlot = i
 
 					dD.Pos.y = (i * 100/1000) - whdObj.h/2		// based on the frame height
@@ -498,7 +509,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 					// special for horizontal wall cabinets which are not attached to a drawer but can share slots with shelfs...
 					//else  {
 //						console.log("INTO ELSE")
-						dD = new cabItems("DrawerFront",i, obj, whdObj,lstOccupiedSlot,this)
+						/*dD = new cabItems("DrawerFront",i, obj, whdObj,lstOccupiedSlot,this)
 						//console.log(dD.shape!=undefined)
 						if(dD.shape!=undefined) {
 						lstOccupiedSlot = i
@@ -511,7 +522,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 						dD.isFront = true
 						dD.isVisibleFromOutside = true// for VR filtering
 						this.childItems.push(dD)
-						}
+						}*/
 					//}
 				}
 			//	console.log(i)
@@ -521,7 +532,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			var dA =new cabItems("DrawerFront",id, obj, whdObj,lstSlot,this)		
 			if(dA.shape!==undefined){
 
-			dA.Pos.z=whdObj.d/2
+			dA.Pos.z=whdObj.d/2-0.02;
 
 			dA.isFront = true
 			dA.isVisibleFromOutside = true// for VR filtering
@@ -566,14 +577,20 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			// test
 			this.texture = "20161_personlig02a_01_14_light_oak_effect_PE513618.jpg"
 						
-			var dA =new cabItems("CabHob",undefined, obj, whdObj,lstOccupiedSlot,this)		
-			if(dA.shape!==undefined){
+			var cabHob =new cabItems("CabHob",undefined, obj, whdObj,lstOccupiedSlot,this)		
+			if(cabHob.shape!==undefined){
 			//dA.w=dA.d=dA.d*0.8
 			//dA.h=this.h + 0.02 // show with 2 cm over?
-			dA.isVisibleFromOutside = true// for VR filtering			
-			this.childItems.push(dA)
+			cabHob.isVisibleFromOutside = true// for VR filtering			
+			this.childItems.push(cabHob)
 			}
-
+			var cabHobSeparator=new cabItems('CabHobSeparator',0,obj, whdObj,lstOccupiedSlot,this);
+			if(cabHobSeparator.shape!==undefined){
+			//dA.w=dA.d=dA.d*0.8
+			//dA.h=this.h + 0.02 // show with 2 cm over?
+			cabHobSeparator.isVisibleFromOutside = true// for VR filtering			
+			this.childItems.push(cabHobSeparator);
+			}
 			var dA =new cabItems("CabSink",undefined, obj, whdObj,lstOccupiedSlot,this)		
 			if(dA.shape!==undefined){
 			dA.w=dA.d=dA.d*0.8
@@ -633,7 +650,36 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			dA.isVisibleFromOutside = true// for VR filtering
 			this.childItems.push(dA)
 		}
-			break
+			break;
+
+		case "Plinth_":
+			
+			var leg0= new cabItems("Leg_",0, obj, whdObj,lstOccupiedSlot,this);
+			//leg0.Pos.y=this.Pos.y;
+
+			leg0.Pos.x=-whdObj.w/2+0.08;
+			leg0.Pos.z=-0.05;
+			leg0.Ori.y=180*(Math.PI/180);
+			
+			//leg0.Pos.y=-0.42;
+			
+			this.childItems.push(leg0);
+			var leg1= new cabItems("Leg_",1, obj, whdObj,lstOccupiedSlot,this);
+			leg1.Pos.x=whdObj.w/2-0.08;
+			leg1.Pos.z=-0.05;
+			leg1.Ori.y=0;
+			this.childItems.push(leg1);
+			var leg2= new cabItems("Leg_",2, obj, whdObj,lstOccupiedSlot,this);
+			leg2.Pos.x=whdObj.w/2-0.08;
+			leg2.Pos.z=-whdObj.d/2-0.1;
+			leg2.Ori.y=0;
+			this.childItems.push(leg2);
+			var leg3= new cabItems("Leg_",3, obj, whdObj,lstOccupiedSlot,this);
+			leg3.Pos.x=-whdObj.w/2+0.08;
+			leg3.Pos.z=-whdObj.d/2-0.1;
+			leg3.Ori.y=180*(Math.PI/180);
+			this.childItems.push(leg3);
+
 
 			
 			}	
@@ -823,7 +869,10 @@ function mappAttributes(itemArr) {
 					cabBase.childItems.push(new cabItems("CabWorktop_",0, itemArr[i], whd))
 	
 					//add Plint
-					//cabBase.childItems.push(new cabItems("Plint_",0, itemArr[i], whd))
+					var plinthPos=new THREE.Vector3(0,-cabBase.h/2-0.05,cabBase.d/2-0.1);
+					itemArr[i]["Plinth_0_PosRel"]=plinthPos;
+					var plinth=new cabItems("Plinth_",0, itemArr[i], whd);
+					cabBase.childItems.push(plinth);
 					
 					var positionType = itemArr[i]["Type"]
 					if(positionType.indexOf("OnFloor:")==0) cabBase.lockYTranslation=true 
