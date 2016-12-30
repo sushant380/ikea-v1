@@ -379,11 +379,11 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 		this.suffix = obj[type+id+"_Suffix"] // needed for handle positioning
 	}
 	
-	if(this.shape==undefined) return
+	
 //	console.log(this)
 	
 	this.childItems = new Array()
-	
+	if(this.shape==undefined) return
 	/**
 	delete obj[type+id+"_Shape"]
 	delete obj[type+id+"_OriRel"]
@@ -394,7 +394,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 	var dA,dB,dD
 		
 	switch(type) {
-		case "IKEA.Host.Vindrum_60cm_dark_grey":
+		case "IKEA.Host.Vindrum60cm_dark_grey":
 			var lstOccupiedSlot=id
 			dA =new cabItems("FanExtractor",undefined, obj, whdObj,lstOccupiedSlot,this);
 			//dB =new cabItems("FanFilter",0, obj, whdObj,lstOccupiedSlot,this);
@@ -928,6 +928,39 @@ function mappAttributes(itemArr) {
 					if(itemArr[i]["Type"].indexOf("OnFloor:")>=0 || itemArr[i]["Type"].indexOf("OnWall:")>=0 || itemArr[i]["Type"].indexOf("OnWall+OnFloor:")) sceneItems.push(cabBase)
 
 					
+					
+				}else if (itemArr[i][item].indexOf("IKEA.Host.Vindrum_60cm_dark_grey")>-1){
+					var whd = getDefaultWHD(itemArr[i]) // estimate whd
+				
+					
+					
+					
+					var cabBase=new cabItems("FanExtractor",undefined, itemArr[i], whd);
+					cabBase.Pos=itemArr[i].Pos // move the Pos And Ori info
+					cabBase.Ori=itemArr[i].Ori // move the Pos And Ori info
+					cabBase.name = itemArr[i][item]
+					
+					/*var cabTop1=new cabItems("FanFilter_",0, itemArr[i], whd);
+					if(cabTop1.shape){
+						cabBase.childItems.push(cabTop1);
+					}
+					var cabTop2=new cabItems("FanFlexiblePipe",undefined, itemArr[i], whd);
+					if(cabTop2.shape){
+						cabBase.childItems.push(cabTop2);
+					}*/
+
+					//cabBase.texture= "roughness_map.jpg"
+					
+					// correct the heights of all doors and drawer fronts
+					correctFrontHeights(cabBase)
+					
+					
+					
+					var positionType = itemArr[i]["Type"]
+					if(positionType.indexOf("OnWall:")>-1){ 
+						cabBase.lockZTranslation=true ;
+						sceneItems.push(cabBase);
+					}
 					
 				}
 				else {		// unknown none mapped item
