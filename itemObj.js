@@ -42,10 +42,10 @@ this.createItems = function() {
 		item.isVisibleFromOutside = true // assuming that all parent objects in the scene is VR visible
 		
 		item.defaultBoxItems()
-		var parent=new THREE.Object3D();
-		parent.isHost=true;
+		/*var parent=new THREE.Object3D();
+		parent.isHost=true;*/
 		item.isHost=true;
-		rItem=new RoomItem(item,parent);
+		rItem=new RoomItem(item,undefined,this);
 		if(this.items[i].lockXTranslation!=undefined) item.obj.userData.lockXTranslation = this.items[i].lockXTranslation
 		if(this.items[i].lockYTranslation!=undefined) item.obj.userData.lockYTranslation = this.items[i].lockYTranslation
 		if(this.items[i].lockZTranslation!=undefined) item.obj.userData.lockZTranslation = this.items[i].lockZTranslation
@@ -72,7 +72,7 @@ this.createItems = function() {
 		item.obj.onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
 		refItem=item.obj;
 		//this.scene.add(item.obj)
-		this.scene.add(parent);
+		//this.scene.add(parent);
 	}
 },
 

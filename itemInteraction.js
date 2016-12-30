@@ -50,8 +50,7 @@ function findParent(object){
 	var parent;
 	if(object.isHost){
 		parent=object;
-	}else 
-	if(object.parent){
+	}else if(object.parent){
 		parent = findParent(object.parent);
 	}else{
 		parent= object;
@@ -121,6 +120,9 @@ function roomAnimation(){
 }
 function onDocumentMouseMove( event ) {
 		event.preventDefault();
+		if(event.button===2){
+			return;
+		}
 		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 		var touches = false
@@ -147,13 +149,13 @@ function onDocumentMouseMove( event ) {
 			if(!SELECTED.userData.initalMoveAction) SELECTED.userData.lastGoodPosition = SELECTED.position.clone() //allow some time in case something has got stuck
 				var newPos = intersection.sub( offset )
 					// handle axis locking
-			//	if(SELECTED.userData.lockXTranslation || SELECTED.userData.lockXTranslation!=undefined) newPos.x=SELECTED.userData.lastGoodPosition.x
-			//	if(SELECTED.userData.lockYTranslation || SELECTED.userData.lockYTranslation!=undefined) newPos.y=SELECTED.userData.lastGoodPosition.y
-			//		if(SELECTED.userData.lockZTranslation || SELECTED.userData.lockZTranslation!=undefined) newPos.z=SELECTED.userData.lastGoodPosition.z							
+				if(SELECTED.userData.lockXTranslation || SELECTED.userData.lockXTranslation!=undefined) newPos.x=SELECTED.userData.lastGoodPosition.x
+				if(SELECTED.userData.lockYTranslation || SELECTED.userData.lockYTranslation!=undefined) newPos.y=SELECTED.userData.lastGoodPosition.y
+				if(SELECTED.userData.lockZTranslation || SELECTED.userData.lockZTranslation!=undefined) newPos.z=SELECTED.userData.lastGoodPosition.z							
 					//console.log(SELECTED.userData.lockXTranslation)
 					//console.log(SELECTED.userData.lockYTranslation)
 					//console.log(SELECTED.userData.lockZTranslation)
-					console.log(newPos);
+					//console.log(newPos);
 					SELECTED.position.copy( newPos );
 				}else { //collision occured
 					SELECTED.position.copy(SELECTED.userData.lastGoodPosition)
@@ -188,6 +190,9 @@ function onDocumentMouseMove( event ) {
 			function onDocumentMouseDown( event ) {
 				event.preventDefault();
 				
+				if(event.button===2){
+					return;
+				}
 				//** test 
 				
 				raycaster.setFromCamera( mouse, camera );
@@ -243,6 +248,9 @@ function onDocumentMouseMove( event ) {
 			}
 			function onDocumentMouseUp( event ) {
 				event.preventDefault();
+				if(event.button===2){
+					return;
+				}
 				controls.enabled = true;
 
 				var touches = false;
@@ -253,23 +261,23 @@ function onDocumentMouseMove( event ) {
 				//if ( INTERSECTED ) {
 					if(SELECTED!=undefined) {
 
-					SELECTED.matrixAutoUpdate=true; // IMPORTANT!! allow movement	
+					//SELECTED.matrixAutoUpdate=true; // IMPORTANT!! allow movement	
 
 					if(touches) {
 							SELECTED.material.color.setHex( SELECTED.currentHex );
 						}
 						
 						if(SELECTED.collisionDetect!=undefined && SELECTED.collisionDetect("collidablePostItems")) SELECTED.position.copy(SELECTED.userData.returnPosIfItemCollision)			
-						else if(SELECTED.userData.lastGoodPosition!=undefined) SELECTED.position.copy(SELECTED.userData.lastGoodPosition) // final ensurance
+						else if(SELECTED.userData.lastGoodPosition!=undefined){ 
+							SELECTED.position.copy(SELECTED.userData.lastGoodPosition) 
+						}// final ensurance
 
-						controls.target=SELECTED.position;
+						//controls.target=SELECTED.position;
 					  
 
 						SELECTED = undefined;
 					}
-					if(SELECTED){
 					
-				}
 					//SELECTED = null;
 					
 				//}

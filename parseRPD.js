@@ -420,12 +420,10 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 					totalShapeItems[j].indexOf('CabHob')==-1 && totalShapeItems[j].indexOf('CabSink')==-1 && )
 			}*/
 			var lstOccupiedSlot=id
+				
 
 			for(var i=0;i<=this.maxSlot;i++) { // loop through all slots
-			var airvent=new cabItems('AirVent',undefined,obj, whdObj,lstOccupiedSlot,this);
-			if(airvent.shape){
-				this.childItems.push(airvent);
-			}		
+			
 			dA =new cabItems("DoorFrontA",i, obj, whdObj,lstOccupiedSlot,this)
 			dB =new cabItems("DoorFrontB",i, obj, whdObj,lstOccupiedSlot,this)
 			
@@ -527,6 +525,26 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 				}
 			//	console.log(i)
 			}
+			var frontShape=new cabItems('Front800Up',0,obj, whdObj,lstOccupiedSlot,this);
+			if(frontShape.shape){
+				frontShape.Pos.z=whdObj.d/2		//in front		
+					frontShape.Pos.y = (1 * 100/1000) - whdObj.h/2
+	//				console.log("SINGLE DOORS aw: " +dA.w)
+
+					frontShape.isFront = true
+					frontShape.isDoor = true
+					
+					frontShape.isVisibleFromOutside = true // for VR filtering
+					
+					this.childItems.push(frontShape)
+					lstOccupiedSlot=id
+					for(var b=0;b<this.childItems.length;b++){
+						if(this.childItems[b].name==='DoorFrontA'){
+							this.childItems[b].Pos.y=-0.6;
+						}
+					}
+				
+			}
 			break;
 		case "Drawer":
 			var dA =new cabItems("DrawerFront",id, obj, whdObj,lstSlot,this)		
@@ -541,6 +559,13 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 				
 			this.childItems.push(dA)		
 		}
+		var innerdA=new cabItems("InnerDrawerFront",id, obj, whdObj,lstSlot,this);		
+			if(innerdA.shape!==undefined){
+				innerdA.Pos.z=whdObj.d/2-0.02;
+				//innerdA.isFront = true;
+				//innerdA.isVisibleFromOutside = true;// for VR filtering
+				this.childItems.push(innerdA)		
+			}
 			break;
 		case "DrawerFront":
 			var dA = new cabItems("DrawerHandle",id, obj, whdObj,lstOccupiedSlot,this)
@@ -577,14 +602,14 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			// test
 			this.texture = "20161_personlig02a_01_14_light_oak_effect_PE513618.jpg"
 						
-			var cabHob =new cabItems("CabHob",undefined, obj, whdObj,lstOccupiedSlot,this)		
+			var cabHob =new cabItems("CabHob_",0, obj, whdObj,lstOccupiedSlot,this)		
 			if(cabHob.shape!==undefined){
 			//dA.w=dA.d=dA.d*0.8
 			//dA.h=this.h + 0.02 // show with 2 cm over?
 			cabHob.isVisibleFromOutside = true// for VR filtering			
 			this.childItems.push(cabHob)
 			}
-			var cabHobSeparator=new cabItems('CabHobSeparator',0,obj, whdObj,lstOccupiedSlot,this);
+			var cabHobSeparator=new cabItems('CabHobSeparator_',0,obj, whdObj,lstOccupiedSlot,this);
 			if(cabHobSeparator.shape!==undefined){
 			//dA.w=dA.d=dA.d*0.8
 			//dA.h=this.h + 0.02 // show with 2 cm over?
@@ -626,7 +651,12 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 
 //			dA.texture = "metal.jpg"
 //			this.color=0x342103
-			
+			if(dA.suffix==='_LeftJustified'){
+				this.opening="Right";
+			}
+			if(dA.suffix==='_RightJustified'){
+				this.opening="Left";
+			}
 			dA.isVisibleFromOutside = true// for VR filtering
 			this.childItems.push(dA)
 			}			
@@ -646,7 +676,12 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			//
 						
 			dA.Pos.z=this.Pos.z + dA.Pos.z
-
+			if(dA.suffix==='_LeftJustified'){
+				this.opening="Right";
+			}
+			if(dA.suffix==='_RightJustified'){
+				this.opening="Left";
+			}
 			dA.isVisibleFromOutside = true// for VR filtering
 			this.childItems.push(dA)
 		}
@@ -680,6 +715,10 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			leg3.Ori.y=180*(Math.PI/180);
 			this.childItems.push(leg3);
 
+			var airvent=new cabItems('AirVent',undefined,obj, whdObj,lstOccupiedSlot,this);
+			if(airvent.shape){
+				this.childItems.push(airvent);
+			}	
 
 			
 			}	
@@ -704,11 +743,11 @@ function postAdjustHandleBasedOnSuffix(obj) {
 			case "_LeftJustified":
 //			console.log("_LeftJustified, parent ") 
 			
-			//cO.Pos.x = cO.Pos.x - (obj.w/2) + handleDefaultSuffix //+ cO.w
-			//	obj.Pos.x = obj.Pos.x + (parentObj.w/2) - handleDefaultSuffix - obj.w
+			cO.Pos.x = cO.Pos.x - (obj.w/2) + handleDefaultSuffix //+ cO.w
+			//obj.Pos.x = obj.Pos.x + (parentObj.w/2) - handleDefaultSuffix - obj.w
 			break
 			case "_RightJustified":
-			//cO.Pos.x = cO.Pos.x + (obj.w/2) - handleDefaultSuffix //- cO.w
+			cO.Pos.x = cO.Pos.x + (obj.w/2) - handleDefaultSuffix //- cO.w
 			//	obj.Pos.x = obj.Pos.x - (parentObj.w/2) + handleDefaultSuffix + obj.w
 			break
 		
@@ -866,7 +905,10 @@ function mappAttributes(itemArr) {
 					
 					// add WT
 					if(cabBase.childItems==undefined) cabBase.childItems = new Array()
-					cabBase.childItems.push(new cabItems("CabWorktop_",0, itemArr[i], whd))
+					var cabTop=new cabItems("CabWorktop_",0, itemArr[i], whd);
+					if(cabTop.shape){
+						cabBase.childItems.push(cabTop);
+					}
 	
 					//add Plint
 					var plinthPos=new THREE.Vector3(0,-cabBase.h/2-0.05,cabBase.d/2-0.1);
