@@ -143,7 +143,7 @@ function init() {
 					g_DeviceType = ua.device.type
 					
 					//CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a><br>"
-					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
+					/*CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"setPerspective();\" checked=true>Orbit Control<br>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"setDeviceOrientationControl();\">Device Control<br>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();\">Man<br>"
@@ -151,14 +151,28 @@ function init() {
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();\">Kid<br>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();\">Lady<br>"
 
-									
+						*/			
+					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
+					// Orto cam
+					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
+					//
+					CamConUI += "<a href=\"#\" onclick=\"setOrthographic();return false;\"> Orthographic</a> | "
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"	
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
+					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
+					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
+					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
 					
 					setPerspective() // default
 				
 				}
 				else if(ua.device.type=="Mobile") {
 					g_DeviceType = ua.device.type
-					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
+					/*CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
 				CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();;return false;\">Man<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
@@ -166,7 +180,21 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setStereoEffect();return false;\">Toggle Stereo</a>"
 
-
+*/					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
+					// Orto cam
+					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
+					//
+					CamConUI += "<a href=\"#\" onclick=\"setOrthographic();return false;\"> Orthographic</a> | "
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"	
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
+					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
+					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
+					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
+					
 					//setDeviceOrientationControl()
 					setPerspective() // default
 
