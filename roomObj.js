@@ -144,7 +144,10 @@ this.roomWallShapesInner = function() {
 		//
 	    var geometryWall = new THREE.ExtrudeGeometry( squareShape, extrudeSettingsWalls );
 
-		var wallInner = new THREE.Mesh( geometryWall);		
+	    var wallgeo =new THREE.Geometry();
+		wallgeo.vertices=geometryWall.vertices;
+		wallgeo.faces=geometryWall.faces;
+		var wallInner = new THREE.Mesh( wallgeo);		
 		//wallInner.receiveShadow = true;
 		wallInner.castShadow = true;	
 		wallInner.userData = {"wallBaseShape": wallsArr[i]}
@@ -315,7 +318,10 @@ this.setOpening2 = function(openingObj) {
 			//				 
 			var geometryOpening = new THREE.ExtrudeGeometry( openingShape, extrudeSettingsOpening );
 
-			var openingMesh = new THREE.Mesh( geometryOpening);
+			var wallgeo=new THREE.Geometry();
+			wallgeo.vertices=geometryOpening.vertices;
+			wallgeo.faces=geometryOpening.faces;
+			var openingMesh = new THREE.Mesh( wallgeo);
 			
 			openingMesh.name = "Opening"
 			var c =  openingObj.PosBottom// this.ceilingHeight//- openingObj.PosTop - (d/2)

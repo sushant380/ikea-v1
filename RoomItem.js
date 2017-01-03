@@ -49,9 +49,9 @@ function RoomItem(item,parent,itemsHolder){
 			if(scope.lockZTranslation!=undefined) scope.obj.userData.lockZTranslation = scope.lockZTranslation;
 			
 			if(scope.isHost){
-				scope.obj.userData.collidableWalls=scope.itemsHolder.collidableWalls;
-				scope.obj.userData.collidableWalls.push(scope.itemsHolder.collidableFloor);
-				scope.obj.userData.collidablePostItems = scope.itemsHolder.itemMeshes;
+				//scope.obj.userData.collidableWalls=scope.itemsHolder.collidableWalls;
+				//scope.obj.userData.collidableWalls.push(scope.itemsHolder.collidableFloor);
+				//scope.obj.userData.collidablePostItems = scope.itemsHolder.itemMeshes;
 
 				var v3=scope.itemsHolder.itemsOffsetPos(scope,scope.obj.getWorldDirection());
 				scope.obj.position.set(v3.x,v3.y,v3.z);
@@ -60,6 +60,34 @@ function RoomItem(item,parent,itemsHolder){
 			}
 			interactiveObjects.push(scope.obj);	
 			
+			/*if(scope.itemType==='Plinth'){
+
+				var box=new THREE.Box3().setFromObject(scope.parent.obj);
+				var cube=new THREE.CubeGeometry(box.getSize().x,box.getSize().x,box.getSize().x);
+				var box=new THREE.Box3().setFromObject(scope.obj);
+				var leftSide=scope.obj.clone();
+				var backSide=scope.obj.clone();
+				var rightSide=scope.obj.clone();
+				leftSide.position.z=-box.max.z;
+				leftSide.position.x=-box.max.z;
+				leftSide.position.y=0;
+				var newRotation = new THREE.Euler( 0, (-90) * 0.017453292519943295, 0);
+				leftSide.rotation.copy(newRotation);
+				leftSide.name="Left Plinth";
+				rightSide.position.x=box.max.z;
+				rightSide.position.z=-box.max.z;
+				rightSide.position.y=0;
+				var newRotation = new THREE.Euler( 0, (90) * 0.017453292519943295, 0);
+				rightSide.rotation.copy(newRotation);
+				rightSide.name="Right Plinth";
+				backSide.position.z=-box.max.x;
+				backSide.name="Back Plinth";
+				backSide.position.y=0;
+			//	scope.obj.add(leftSide);
+				scope.obj.add(backSide);
+			//	scope.obj.add(rightSide);
+			scope.obj.geometry=new THREE.Mesh(cube,scope.obj.material).geometry;
+			}*/
 			if(scope.isHost){
 				scope.obj.isHost=true;
 				
@@ -82,7 +110,7 @@ function RoomItem(item,parent,itemsHolder){
 			if(this.itemType && this.itemType.indexOf('CabWorktop')>-1){
 				var cwtgeometry = new THREE.Geometry().fromBufferGeometry( this.obj.geometry );
 				for(var d=0;d<this.childItems.length;d++){
-					if(this.childItems[d].itemType==='CabSink'){
+					if(this.childItems[d].itemType==='CabSink' || this.childItems[d].itemType==='CabHob'){
 						var box=new THREE.Box3().setFromObject(this.childItems[d].obj);
 						cube = new THREE.Mesh( new THREE.CubeGeometry( box.getSize().x-0.01, box.getSize().y, box.getSize().z-0.01 ), new THREE.MeshNormalMaterial() );
 						var cabworkTop=new ThreeBSP(cwtgeometry);	
@@ -93,6 +121,7 @@ function RoomItem(item,parent,itemsHolder){
 					cwtgeometry=result.geometry;
 
 					}else{
+						if(this.childItems[d].obj.geometry instanceof BufferGeometry){
 					var cabworkTop=new ThreeBSP(cwtgeometry);
 					var childgeometry = new THREE.Geometry().fromBufferGeometry( this.childItems[d].obj.geometry );
 					var childShape=new ThreeBSP(childgeometry);
@@ -100,6 +129,7 @@ function RoomItem(item,parent,itemsHolder){
 					var result = subtractTop.toMesh( cabworkTop.material);
 					result.geometry.computeVertexNormals();
 					cwtgeometry=result.geometry;
+				}
 					}
 				}
 				this.obj.geometry=cwtgeometry;
@@ -529,5 +559,30 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 		}
 
 	};
+	this.collisionDetect = function(collArr) {
+
+		var obj = this
+		if(obj.geometry.boundingBox == undefined) obj.geometry.computeBoundingBox()
+		var fBB =  new THREE.Box3().setFromObject(obj) 
+	
+		var firstObj
+		for(var j = 0; j<obj.userData[collArr].length;j++) {
+			
+			if(obj==obj.userData[collArr][j]) continue
+			
+			if(obj.userData[collArr][j].geometry.boundingBox == undefined) obj.userData[collArr][j].geometry.computeBoundingBox()
+			var sBB =  new THREE.Box3().setFromObject(obj.userData[collArr][j])
+			
+			if(fBB.intersectsBox(sBB)) {
+				this.matrixAutoUpdate=false
+
+				return true
+				
+			}
+		}
+		this.matrixAutoUpdate=false	
+		
+	return false
+};
 	init(this);
 }

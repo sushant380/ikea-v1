@@ -6,8 +6,8 @@ this.scene,
 this.items = [],
 this.itemMeshes = [],
 this.itemsOffsetPos,	// rpd data does not have pos based on object center	
-this.collidableWalls = [],
-this.collidableFloor,
+//this.collidableWalls = [],
+//this.collidableFloor,
 this.createItems = function() {
 	
 	//console.log(this.items)
@@ -51,8 +51,8 @@ this.createItems = function() {
 		if(this.items[i].lockZTranslation!=undefined) item.obj.userData.lockZTranslation = this.items[i].lockZTranslation
 		
 		//
-		item.obj.userData.collidableWalls=this.collidableWalls
-		item.obj.userData.collidableWalls.push(this.collidableFloor)
+		//item.obj.userData.collidableWalls=this.collidableWalls
+		//item.obj.userData.collidableWalls.push(this.collidableFloor)
 		//
 		item.obj.userData.collidablePostItems = this.itemMeshes // we should avoid placing objects on top of each other
 		//
@@ -108,7 +108,7 @@ this.Ori = new THREE.Vector3(0,0,0),
 this.color = 0xFFFFFF,
 this.texture,
 this.material,
-this.collidableWalls = [],
+//this.collidableWalls = [],
 this.isVisibleFromOutside, //include in VR export
 this.showWireframe,
 
