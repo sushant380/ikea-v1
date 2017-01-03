@@ -121,7 +121,7 @@ function RoomItem(item,parent,itemsHolder){
 					cwtgeometry=result.geometry;
 
 					}else{
-						if(this.childItems[d].obj.geometry instanceof BufferGeometry){
+						if(this.childItems[d].obj.geometry instanceof THREE.BufferGeometry){
 					var cabworkTop=new ThreeBSP(cwtgeometry);
 					var childgeometry = new THREE.Geometry().fromBufferGeometry( this.childItems[d].obj.geometry );
 					var childShape=new ThreeBSP(childgeometry);
