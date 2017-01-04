@@ -95,7 +95,9 @@ function RoomItem(item,parent,itemsHolder){
 			if(scope.parent){
 				console.log(scope.itemType);
 				scope.parent.add(scope.obj);
+				if(scope.parent.updateParent){
 				scope.parent.updateParent();
+				}
 			}else if(scope.parent===undefined){
 				scope.itemsHolder.scene.add(scope.obj);
 			}
