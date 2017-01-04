@@ -95,9 +95,7 @@ function RoomItem(item,parent,itemsHolder){
 			if(scope.parent){
 				console.log(scope.itemType);
 				scope.parent.add(scope.obj);
-				if(scope.parent.updateParent){
 				scope.parent.updateParent();
-				}
 			}else if(scope.parent===undefined){
 				scope.itemsHolder.scene.add(scope.obj);
 			}
@@ -146,11 +144,11 @@ function RoomItem(item,parent,itemsHolder){
 			var scope=this;
 			//if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
 			var materialLoader=new THREE.MTLLoader();
-			materialLoader.setPath('models/mobile/');
+			materialLoader.setPath('models/obj/');
 			console.log(scope.shape);
 			materialLoader.load(scope.shape+'.mtl',function(material){
 					var loader = new THREE.OBJLoader();
-					loader.setPath( 'models/mobile/' );
+					loader.setPath( 'models/obj/' );
 					loader.setMaterials(material);
 					
 					loader.load( scope.shape+'.obj', function ( object ) {
