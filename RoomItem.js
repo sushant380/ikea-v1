@@ -146,11 +146,11 @@ function RoomItem(item,parent,itemsHolder){
 			var scope=this;
 			//if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
 			var materialLoader=new THREE.MTLLoader();
-			materialLoader.setPath('models/obj/');
+			materialLoader.setPath('models/mobile/');
 			console.log(scope.shape);
 			materialLoader.load(scope.shape+'.mtl',function(material){
 					var loader = new THREE.OBJLoader();
-					loader.setPath( 'models/obj/' );
+					loader.setPath( 'models/mobile/' );
 					loader.setMaterials(material);
 					
 					loader.load( scope.shape+'.obj', function ( object ) {
