@@ -131,9 +131,9 @@ THREEx.JsArucoMarker = function(){
 		object3d.scale.y = this.modelSize;
 		object3d.scale.z = this.modelSize;
 
-		//object3d.rotation.x = -Math.asin(-rotation[1][2]);
-		//object3d.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
-		//object3d.rotation.z =  Math.atan2(rotation[1][0], rotation[1][1]);
+		object3d.rotation.x = -Math.asin(-rotation[1][2]);
+		object3d.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+		object3d.rotation.z =  Math.atan2(rotation[1][0], rotation[1][1]);
 
 		object3d.position.x =  translation[0];
 		object3d.position.y =  translation[1];

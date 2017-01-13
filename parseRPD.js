@@ -426,7 +426,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			
 			dA =new cabItems("DoorFrontA",i, obj, whdObj,lstOccupiedSlot,this)
 			dB =new cabItems("DoorFrontB",i, obj, whdObj,lstOccupiedSlot,this)
-			
+			dA.name='DoorFrontA';	
 				if(dB.shape==undefined && dA.shape!=undefined) {
 					dA.Pos.z=whdObj.d/2		//in front		
 					dA.Pos.y = (i * 100/1000) - whdObj.h/2
@@ -439,6 +439,9 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 					
 					this.childItems.push(dA)
 					lstOccupiedSlot=id
+					if(dA.name==='DoorFrontA'){
+							dA.Pos.y=-0.6;
+					}
 					
 				}
 				else if(dB.shape!=undefined && dA.shape!=undefined) {
@@ -542,6 +545,8 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 						if(this.childItems[b].name==='DoorFrontA'){
 							this.childItems[b].Pos.y=-0.6;
 						}
+
+
 					}
 				
 			}
@@ -649,6 +654,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 			dA.Pos.z=this.Pos.z + dA.Pos.z 
 
 
+			
 //			dA.texture = "metal.jpg"
 //			this.color=0x342103
 			if(dA.suffix==='_LeftJustified'){
