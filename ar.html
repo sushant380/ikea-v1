@@ -21,8 +21,32 @@
 </head>
 <body>
 <div id="container"></div>
+<script src="js/three.js"></script>		
 <script type="text/javascript" src="js/awe-v8.js"></script>
 <script type="text/javascript" src="js/awe-loader.js"></script>
+<script src="js/csg/ThreeCSG.js"></script> 
+<script src="js/loaders/OBJLoader.js"></script> 
+<script src="js/loaders/MTLLoader.js"></script> 
+<script src="rpd.js"></script> <!-- test RPD var -->
+<script src="commonHelpers.js"></script> 
+
+<script src="defaultWHDs.js"></script>
+<script src="parseRPD.js"></script> 
+
+<script src="materialProxy.js"></script>
+<script src="roomObj.js"></script> 
+<script src="itemObj.js"></script> 
+<script src="RoomItem.js"></script> 
+
+
+<script src="exporterHelper.js"></script> 
+<script src="RPDManager.js"></script> 
+<!-- skyBox -->
+<script src="skyBox.js"></script> 
+
+<script src="scene.js"></script> 
+<script src="js/Tween.js"></script> 
+
 <script type="text/javascript">
   window.addEventListener('load', function() {
     // initialize awe after page loads
@@ -104,9 +128,36 @@
 			        awe.pois.add({ id:'south_west', position: { x:-200, y:0, z:-200 } });
 			        awe.pois.add({ id:'west', position: { x:-200, y:0, z:0 } });
 			        awe.pois.add({ id:'north_west', position: { x:-200, y:0, z:200 } });
-			
+
+
+			        var markerObject3D = new THREE.Object3D();
+					var geometry = new THREE.PlaneGeometry(1,1,10,10)
+					var material = new THREE.MeshBasicMaterial({
+						
+					});
+
+					awe.projections.add({ 
+			          	id:'n', 
+			           geometry: {
+			           		path: 'models/obj/IKEA.ART.00300918.obj' 
+			           	}, // path to your model
+                        position: { x: 0, y: 0, z: 0 },
+                        rotation:{ x:30, y:30, z:0 },
+                        material:{ path: 'models/obj/IKEA.ART.00300918.mtl',
+			            scale:{ x:10,y:10,z:10}, { poi_id: 'north' }});
+
+					/*var mesh = new THREE.Mesh(geometry, material);
+					markerObject3D.add( mesh );
+					var convertedRPD = RPDtoJSON(RPD_Raw)
+					var allItems = mappAttributes(convertedRPD['AllItemData']);
+					for(var k=0;k<allItems.length;k++){
+						var roomItem=new RoomItem(allItems[k],markerObject3D);
+					}*/
+
+				//	awe.projections.add(markerObject3D, { poi_id: 'north' });
+
 			        // add projections to each of the pois
-			        awe.projections.add({ 
+			      /*  awe.projections.add({ 
 			          id:'n', 
 			          geometry:{ shape:'cube', x:50, y:50, z:50 }, 
                 rotation:{ x:30, y:30, z:0 },
@@ -180,7 +231,7 @@
 			            type: 'phong',
 			            color:0xCCCCCC, 
 			          },
-			        }, { poi_id: 'north_west' });
+			        }, { poi_id: 'north_west' });*/
 			
             },
           },
