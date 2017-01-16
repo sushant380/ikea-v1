@@ -440,7 +440,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 					this.childItems.push(dA)
 					lstOccupiedSlot=id
 					if(dA.name==='DoorFrontA'){
-							dA.Pos.y=-0.6;
+							//dA.Pos.y=-0.6;
 					}
 					
 				}
