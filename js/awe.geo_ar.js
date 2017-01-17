@@ -4,7 +4,7 @@
 	
 	function resize_video() {
 		if (background_video) {
-			var video = awe.video_stream().video_element;
+			var video = awe.video_stream().get_data().video_element;
 			var w = video.videoWidth,
 				h = video.videoHeight;
 			var cnt_h = container.clientHeight,

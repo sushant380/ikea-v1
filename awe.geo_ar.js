@@ -4,7 +4,7 @@
 	
 	function resize_video() {
 		if (background_video) {
-			var video = awe.video_stream().video_element;
+			var video = awe.video_stream().get_data().video_element;
 			var w = video.videoWidth,
 				h = video.videoHeight;
 			var cnt_h = container.clientHeight,
@@ -26,8 +26,8 @@
 		}
 		aspectRatio = window.innerWidth / window.innerHeight;
 		awe.pov().aspect = aspectRatio;
-		awe.pov().updateProjectionMatrix();
-		awe.renderer().setSize(window.innerWidth, window.innerHeight);
+		awe.pov().update_projection_matrix();
+		awe.renderer().set_size(window.innerWidth, window.innerHeight);
 		awe.scene_needs_rendering = 1;
 	}
 
