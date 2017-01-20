@@ -62,7 +62,7 @@ function RoomItem(item,parent,itemsHolder){
 			
 			/*if(scope.itemType==='Plinth'){
 
-				var box=new THREE.Box3().setFromObject(scope.parent.obj);
+				
 				var cube=new THREE.CubeGeometry(box.getSize().x,box.getSize().x,box.getSize().x);
 				var box=new THREE.Box3().setFromObject(scope.obj);
 				var leftSide=scope.obj.clone();
@@ -116,20 +116,20 @@ function RoomItem(item,parent,itemsHolder){
 						var cabworkTop=new ThreeBSP(cwtgeometry);	
 						var childShape=new ThreeBSP(cube);
 						var subtractTop=cabworkTop.subtract(childShape);
-					var result = subtractTop.toMesh( cabworkTop.material);
-					result.geometry.computeVertexNormals();
-					cwtgeometry=result.geometry;
+						var result = subtractTop.toMesh( cabworkTop.material);
+						result.geometry.computeVertexNormals();
+						cwtgeometry=result.geometry;
 
 					}else{
 						if(this.childItems[d].obj.geometry instanceof THREE.BufferGeometry){
-					var cabworkTop=new ThreeBSP(cwtgeometry);
-					var childgeometry = new THREE.Geometry().fromBufferGeometry( this.childItems[d].obj.geometry );
-					var childShape=new ThreeBSP(childgeometry);
-					var subtractTop=cabworkTop.subtract(childShape);
-					var result = subtractTop.toMesh( cabworkTop.material);
-					result.geometry.computeVertexNormals();
-					cwtgeometry=result.geometry;
-				}
+							var cabworkTop=new ThreeBSP(cwtgeometry);
+							var childgeometry = new THREE.Geometry().fromBufferGeometry( this.childItems[d].obj.geometry );
+							var childShape=new ThreeBSP(childgeometry);
+							var subtractTop=cabworkTop.subtract(childShape);
+							var result = subtractTop.toMesh( cabworkTop.material);
+							result.geometry.computeVertexNormals();
+							cwtgeometry=result.geometry;
+					}
 					}
 				}
 				this.obj.geometry=cwtgeometry;

@@ -71,10 +71,10 @@ this.initRPD = function() {
 				myRoomItems.collidableWalls = collWalls
 				myRoomItems.collidableFloor = myRoom.floorShape.clone() // dont know why but had to clone it...
 				//
-				myRoomItems.scene = scene
-				myRoomItems.init()
+				myRoomItems.scene = scene;
+				myRoomItems.init();
 				
-
+				
 				render()
 
 				

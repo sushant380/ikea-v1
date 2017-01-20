@@ -1,6 +1,6 @@
 "use strict";
 var camera, scene, renderer, dirLight, g_lookAtObj, lastCameraPos = new THREE.Vector3( 0, 0, 0 ), myRoom, controls, effect, g_DeviceType, 
-clock,exporterHelpers,personStandingHeight, controlsUI, debugUI
+clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShapemesh, platform;
 
 			var interactiveObjects = [];
 			var interactiveRoomObjs = []
@@ -132,7 +132,7 @@ function init() {
 					*/
 					//exporterHelpers = new ExporterHelper() // set
 					CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
-
+					CamConUI += "<br><a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal\"> Customize Worktop</a>"
 
 		
 					/**<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>**/ //TODO			
@@ -215,7 +215,7 @@ function init() {
 		
 				// RPD box
 				controlsUI.innerHTML=CamConUI
-				
+				 
 				}
 	
 			/** HTC Vive **/
@@ -241,6 +241,23 @@ function init() {
 							}
 						}
 					}
+				}
+			}
+			function customizeWorkTop(){
+
+			}
+			function drawShape(shape,color){
+
+				switch(shape){
+					case 'L':
+						myRoom.drawLshapePlatform(color);
+						break;
+					case 'U':
+						myRoom.drawUshapePlatform(color);
+						break;
+					case 'I':
+						myRoom.drawIshapePlatform(color);
+						break;
 				}
 			}
 			function setVive(userHeight) {

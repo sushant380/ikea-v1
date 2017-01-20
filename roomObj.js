@@ -13,6 +13,7 @@ this.isMetric,
 this.roomShape,
 this.floorShape,
 this.wallsShape,
+this.platform,
 this.allWallMeshes = [],
 this.textureLoader = new THREE.TextureLoader(),
 this.textureOnLoaded = function(texture) {
@@ -375,8 +376,97 @@ this.setAllWallsToScene = function() {
 		
 		} 
 },
+this.drawUshapePlatform=function(color){
+	var eastWall=this.allWallMeshes[0];
+	 var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;
+	 var shapeWidth=wallWidth-0.1;
+	 var iShape=new THREE.BoxGeometry(shapeWidth,0.6,0.03);
+	 var material1 = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.5 } );
+	 var cube1 = new THREE.Mesh( iShape, material1 );
+	 cube1.rotation.set(1.56558,0,0);
+	 cube1.position.set(0,0.884,-1.95);
 
+	var northWall=this.allWallMeshes[3];
+	var nwallWidth=new THREE.Box3().setFromObject(northWall).getSize().z;
+	var nshapeWidth=nwallWidth-0.1;
+	var nShape=new THREE.BoxGeometry(nshapeWidth,0.6,0.03);
+	var material2 = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.5 } );
+	var cube2 = new THREE.Mesh( nShape, material2 );
+	cube2.rotation.set(1.56558,0,1.56558);
+	cube2.position.set(-2.7,0.884,0);
+	var southWall=this.allWallMeshes[3];
+	var swallWidth=new THREE.Box3().setFromObject(southWall).getSize().z;
+	var sshapeWidth=swallWidth-0.1;
+	var sShape=new THREE.BoxGeometry(sshapeWidth,0.6,0.03);
+	var material3 = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.5 } );
+	var cube3 = new THREE.Mesh( sShape, material3 );
+	cube3.rotation.set(1.56558,0,1.56558);
+	cube3.position.set(2.7,0.884,0);
+	 var center=new ThreeBSP(cube1);
+	 var left= new ThreeBSP(cube2);
+	 var right= new ThreeBSP(cube3);
+	 var unionTop=center.union(left).union(right);
+	var result = unionTop.toMesh( cube1.material);
+	 result.geometry.computeVertexNormals();
+	if(!this.platform){
+		this.platform=result;
+		scene.add(this.platform);
+	}else{
+		this.platform.geometry=result.geometry;
+	}
+	
+};
+this.drawLshapePlatform=function(color){
+	 var eastWall=this.allWallMeshes[0];
+	 var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;
+	 var shapeWidth=wallWidth-0.1;
+	 var iShape=new THREE.BoxGeometry(shapeWidth,0.6,0.03);
+	 var material1 = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.5 } );
+	 var cube1 = new THREE.Mesh( iShape, material1 );
+	 cube1.rotation.set(1.56558,0,0);
+	 cube1.position.set(0,0.884,-1.95);
 
+	var northWall=this.allWallMeshes[3];
+	var nwallWidth=new THREE.Box3().setFromObject(northWall).getSize().z;
+	var nshapeWidth=nwallWidth-0.1;
+	var nShape=new THREE.BoxGeometry(nshapeWidth,0.6,0.03);
+	var material2 = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.5 } );
+	var cube2 = new THREE.Mesh( nShape, material2 );
+	cube2.rotation.set(1.56558,0,1.56558);
+	cube2.position.set(-2.7,0.884,0);
+	 var center=new ThreeBSP(cube1);
+	 var left= new ThreeBSP(cube2);
+	 var unionTop=center.union(left);
+	 var result = unionTop.toMesh( cube1.material);
+	 result.geometry.computeVertexNormals();
+	
+	if(!this.platform){
+		this.platform=result;
+		scene.add(this.platform);
+	}else{
+		this.platform.geometry=result.geometry;
+	}
+	
+
+}
+this.drawIshapePlatform=function(color){
+	var eastWall=this.allWallMeshes[0];
+	
+	var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;
+	var shapeWidth=wallWidth-0.1;
+	var iShape=new THREE.BoxGeometry(shapeWidth,0.6,0.03);
+	var material = new THREE.MeshBasicMaterial( { color: color, overdraw: 0.5 } );
+	var cube = new THREE.Mesh( iShape, material );
+	cube.rotation.set(1.56558,0,0);
+	cube.position.set(0,0.884,-1.95);
+	if(!this.platform){
+		this.platform=cube;
+		scene.add(this.platform);
+	}else{
+		this.platform.geometry=result.geometry;
+	}
+	
+}
 this.hideWalls = function() {
 					// first make all the walls visible again
 					for(var i = 0; i<this.allWallMeshes.length;i++) {

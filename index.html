@@ -30,8 +30,13 @@
 		</style>
 	</head>
 	<body>
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-		
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+ <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="js/eazyWizard.css">
+			<script src="js/eazyWizard.js"></script>	
 	<link rel="stylesheet" type="text/css" href="js/contextMenu.css">
 		<!-- THREE related JS -->
 		<script src="js/three.js"></script>		
@@ -63,6 +68,7 @@
 		<script src="js/graham_scan.min.js"></script> <!-- only needed for RPD data -->
 		<script src="js/detect.min.js"></script>
 		<script src="js/GeometryUtils.js"></script>
+		<script src="js/jquery.steps.js"></script>
 		
 		<!-- custom parts -->
 		<script src="rpd.js"></script> <!-- test RPD var -->
@@ -85,6 +91,8 @@
 		<script src="scene.js"></script> 
 		<script src="js/Tween.js"></script> 
 		<script src="js/contextMenu.js"></script> 
+		<link rel="stylesheet" type="text/css" href="js/bootstrap-colorpicker.min.css">
+		<script src="js/bootstrap-colorpicker.min.js"></script> 
 		
 		
 		
@@ -115,5 +123,58 @@
 })();		
 		</script>
 	<div class="context-menu-one box menu-1"></div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Customize WorkTop</h4>
+                </div>
+                <div class="modal-body wizard-content">
+                    <div class="wizard-step">
+                        Select Worktop Shape <br>
+                        <div class="btn-group" data-toggle="buttons">
+						  <label class="btn btn-primary active">
+						    <input type="radio" value="U" name="options" id="option1" autocomplete="off" checked> U Shape
+						  </label>
+						  <label class="btn btn-primary">
+						    <input type="radio" value="L" name="options" id="option2" autocomplete="off"> L Shape
+						  </label>
+						  <label class="btn btn-primary">
+						    <input type="radio" value="I" name="options" id="option3" autocomplete="off"> I Shape
+						  </label>
+						</div>
+                    </div>
+                    <div class="wizard-step">
+                        Select Worktop Color<br>
+                       <div id="cp2" class="input-group colorpicker-component">
+						    <input type="text" value="#00AABB" class="form-control" />
+						    <span class="input-group-addon"><i></i></span>
+						</div>
+                    </div>
+                </div>
+                <div class="modal-footer wizard-buttons">
+                    <!-- The wizard button will be inserted here. -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).on("ready", function(){
+            $("#myModal").wizard({
+            	exit:'Exit',
+            	back:'Back',
+            	next:'Next',
+            	finish:'Finish',
+                onfinish:function(){
+                  	var color=$('.colorpicker-component .form-control').val();
+                  	var shape=$('.btn-group input:radio:checked').val()
+                    drawShape(shape,color);
+                }
+            });
+            $('#cp2').colorpicker();
+        });
+    </script>
 	</body>
 </html>
