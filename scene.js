@@ -132,7 +132,7 @@ function init() {
 					*/
 					//exporterHelpers = new ExporterHelper() // set
 					CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
-					CamConUI += "<br><a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal\"> Customize Worktop</a>"
+				//	CamConUI += "<br><a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal\"> Customize Worktop</a>"
 
 		
 					/**<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>**/ //TODO			
