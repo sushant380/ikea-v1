@@ -26,14 +26,25 @@
 				overflow : auto;
 				z-index: 100;
 			}
-			
+			.radio-thumbnail > input {
+  display: none;
+}
+
+.radio-thumbnail > :checked + .thumbnail {
+  border-color: #66afe9;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+.radio-thumbnail > :disabled + .thumbnail {
+  opacity: .5;
+}
 		</style>
 	</head>
 	<body>
-	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+ <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+     <script src="js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="js/eazyWizard.css">
 			<script src="js/eazyWizard.js"></script>	
@@ -122,6 +133,7 @@
 		
 })();		
 		</script>
+		
 	<div class="context-menu-one box menu-1"></div>
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -146,10 +158,55 @@
 						</div>
                     </div>
                     <div class="wizard-step">
-                        Select Worktop Color<br>
-                       <div id="cp2" class="input-group colorpicker-component">
-						    <input type="text" value="#00AABB" class="form-control" />
-						    <span class="input-group-addon"><i></i></span>
+                        Select Worktop Texture<br>
+                       <div class="container-fluid">
+						  <div class="row texture-group">
+						    <div class="col-xs-3">
+						      <label class="text-center radio-thumbnail">
+						          <input type="radio" name="textures" checked value="1">
+						          <span class="thumbnail">
+						            <img src="img/1.jpg" class="img-responsive"/>
+						            
+						          </span>
+						      </label>
+						    </div>
+						    <div class="col-xs-3">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="2">
+						        <span class="thumbnail">
+						          <img src="img/2.jpg" class="img-responsive"/>
+						          
+						        </span>
+						      </label>
+						    </div>
+						    <div class="col-xs-3">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="3">
+						        <div class="thumbnail">
+						          <img src="img/3.jpg" class="img-responsive"/>
+						          
+						        </div>
+						      </label>
+						    </div>
+						    <div class="col-xs-3">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="4">
+						        <div class="thumbnail">
+						          <img src="img/4.jpg" class="img-responsive"/>
+						          
+						        </div>
+						      </label>
+						    </div>
+						    <div class="col-xs-3">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="7">
+						        <div class="thumbnail">
+						          <img src="img/7.jpg" class="img-responsive"/>
+						          
+						        </div>
+						      </label>
+						    </div>
+						  </div>
 						</div>
                     </div>
                 </div>
@@ -168,7 +225,7 @@
             	next:'Next',
             	finish:'Finish',
                 onfinish:function(){
-                  	var color=$('.colorpicker-component .form-control').val();
+                  	var color=$('.texture-group input:radio:checked').val();
                   	var shape=$('.btn-group input:radio:checked').val()
                     drawShape(shape,color);
                 }

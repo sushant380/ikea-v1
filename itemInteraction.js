@@ -6,7 +6,12 @@ selectionBox.material.depthTest = false;
 selectionBox.material.transparent = true;
 selectionBox.visible = false;
 var box = new THREE.Box3();
-
+var mouseDown=false;
+var SELECTEDPLATFORM=undefined;
+var INTERSECTEDPLATFORM=undefined;
+var lastPoint=undefined;
+var fromVector=new THREE.Vector3(0,0,0);
+var toVector=new THREE.Vector3(0,0,0);
 function toScreenXY( position, camera, div ) {
             var pos = position.clone();
             projScreenMat = new THREE.Matrix4();
@@ -118,11 +123,202 @@ function roomAnimation(){
 	}
 }
 }
+ function createText(text, x, y, z) {
+            var textGeo = new THREE.TextGeometry(text, {
+                size: size,
+                height: height,
+                font: font
+            });
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            textMesh1 = new THREE.Mesh(textGeo, material);
+            textMesh1.position.x = x;
+            textMesh1.position.y = y;
+            textMesh1.position.z = z;
+            return textMesh1;
+        }
+
+function makeTextSprite( message, parameters )
+{
+	if ( parameters === undefined ) parameters = {};
+        var fontface = parameters.hasOwnProperty("fontface") ? parameters["fontface"] : "Arial";
+        var fontsize = parameters.hasOwnProperty("fontsize") ? parameters["fontsize"] : 18;
+        var borderThickness = parameters.hasOwnProperty("borderThickness") ? parameters["borderThickness"] : 1;
+        var borderColor = parameters.hasOwnProperty("borderColor") ?parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+        var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+        var textColor = parameters.hasOwnProperty("textColor") ?parameters["textColor"] : { r:0, g:0, b:0, a:1.0 };
+
+        var canvas = document.createElement('canvas');
+        var context = canvas.getContext('2d');
+        context.font = fontsize + "px " + fontface;
+        var metrics = context.measureText( message );
+        var textWidth = metrics.width;
+
+        context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + "," + backgroundColor.b + "," + backgroundColor.a + ")";
+        context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + "," + borderColor.b + "," + borderColor.a + ")";
+
+        context.lineWidth = borderThickness;
+        roundRect(context, borderThickness/2, borderThickness/2, (textWidth + borderThickness) * 1.1, fontsize * 1.4 + borderThickness, 8);
+
+        context.fillStyle = "rgba("+textColor.r+", "+textColor.g+", "+textColor.b+", 1.0)";
+        context.fillText( message, borderThickness, fontsize + borderThickness);
+
+        var texture = new THREE.Texture(canvas) 
+        texture.needsUpdate = true;
+
+        var spriteMaterial = new THREE.SpriteMaterial( { map: texture, useScreenCoordinates: false } );
+        var sprite = new THREE.Sprite( spriteMaterial );
+        sprite.scale.set(0.5 * fontsize, 0.25 * fontsize, 0.75 * fontsize);
+        return sprite; 
+}
+
+// function for drawing rounded rectangles
+function roundRect(ctx, x, y, w, h, r) 
+{
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.fill();
+	ctx.stroke();   
+}
+
+
+function getPointInBetweenByLen(pointA, pointB, length) {
+
+    var dir = pointB.clone().sub(pointA).normalize().multiplyScalar(length);
+    return pointA.clone().add(dir);
+
+}
+ function get3dPointZAxis(event)
+            {
+                var vector = new THREE.Vector3(
+                    ( event.clientX / window.innerWidth ) * 2 - 1,
+                    - ( event.clientY / window.innerHeight ) * 2 + 1,
+                    0.5 );
+                projector.unprojectVector( vector, camera );
+                var dir = vector.sub( camera.position ).normalize();
+                var distance = - camera.position.z / dir.z;
+                var pos = camera.position.clone().add( dir.multiplyScalar( distance ) );    
+                return pos;
+            }
+            
+            function startDraw(event)
+            {
+                lastPoint = get3dPointZAxis(event);    
+            }
+
+            function stopDraw(event)
+            {
+                lastPoint = null;
+            }
+            function getMeasurment(cm,unit){
+            	switch (unit) {
+                    case 'IN':
+                        var realFeet = ((cm * 0.393700) / 12);
+                        var feet = Math.floor(realFeet);
+                        var inches = Math.round((realFeet - feet) * 12);
+                        return feet + "'" + inches + '"';
+                    case 'ML':
+                        return "" + Math.round(10 * cm) + " mm";
+                    case 'CM':
+                        return "" + Math.round(10 * cm) / 10 + " cm";
+                    case 'M':
+                    default:
+                        return "" + Math.round(10 * cm) / 1000 + " m";
+                }
+            }
+            function doDraw(event)
+            {    
+                if( lastPoint )
+                {
+                    var pos = get3dPointZAxis(event);
+                    // var material = new THREE.LineBasicMaterial({
+                    //     color: 0x0000ff
+                    // });
+                   // var geometry = new THREE.Geometry();
+                    if( Math.abs(lastPoint.x - pos.x) < 500 && Math.abs(lastPoint.y - pos.y) < 500 && Math.abs(lastPoint.z - pos.z) < 500 )
+                    {
+                        /*geometry.vertices.push(lastPoint);
+                        geometry.vertices.push(pos);
+                                        
+                        var line = new THREE.Line(geometry, material);
+                        scene.add(line);*/
+
+                        var found=false;
+                        var direction = pos.clone().sub(lastPoint);
+						var length = direction.length();
+						var point=getPointInBetweenByLen(lastPoint,pos,length);	
+                        for(var k=0;k<scene.children.length;k++){
+							if(scene.children[k] instanceof THREE.ArrowHelper){
+								found=true;
+								scene.children[k]  = new THREE.ArrowHelper(direction.normalize(), lastPoint, length, 0x505050 , 0.1,0.1);
+							}
+							if(scene.children[k] instanceof THREE.Sprite){
+								scene.children[k]= makeTextSprite(getMeasurment(length*100,'ML'), 
+							{ fontsize: 8, borderColor: {r:255, g:0, b:0, a:1}, backgroundColor: {r:255, g:100, b:100, a:1} } );
+							scene.children[k].position.set(point.x,point.y/2,point.z);
+							}					
+						}
+						if(found===false){
+							var arrowHelper= new THREE.ArrowHelper(direction.normalize(), lastPoint, length, 0x505050 ,0.1,0.1 );
+							scene.add( arrowHelper );
+								
+							var spritey = makeTextSprite( getMeasurment(length*100,'ML'), 
+							{ fontsize: 24, borderColor: {r:255, g:0, b:0, a:1}, backgroundColor: {r:255, g:100, b:100, a:1} } );
+							spritey.position.set(point.x,point.y/2,point.z);
+							scene.add( spritey );
+						}
+						
+render();
+                      //  lastPoint = pos;        
+                    }
+                    else
+                    {
+                        console.debug(lastPoint.x.toString() + ':' + lastPoint.y.toString() + ':' + lastPoint.z.toString()  + ':' + 
+                                    pos.x.toString() + ':' + pos.y.toString()  + ':' + pos.z.toString());
+                    }
+                }
+            }
 function onDocumentMouseMove( event ) {
 		event.preventDefault();
 		if(event.button===2){
 			return;
 		}
+		if(useRuler){
+			controls.noRotate = true;
+			doDraw(event);
+			return;
+		}
+		if(SELECTEDPLATFORM){
+            // myRoom.planeView.position.copy(SELECTEDPLATFORM.position);
+            // myRoom.planeView.lookAt(camera.position);
+            var intersects=raycaster.intersectObject(myRoom.intersectObjects);
+           
+                var increaseRatio=intersects[0].point.sub(myRoom.platform.position).length() / SELECTEDPLATFORM.position.sub(myRoom.platform.position).length();
+                myRoom.platform.scale.set(
+                    myRoom.platform.scale.x*increaseRatio,
+                    myRoom.platform.scale.y*increaseRatio,
+                    myRoom.platform.scale.z*increaseRatio
+                );
+                //also update other vertexHelpers'position
+                for(var i=0;i<myRoom.vertexHelpers.length;i++){
+                    var vector=new THREE.Vector3().copy(myRoom.vertexHelpers[i].position.sub(myRoom.platform.position));
+                    vector.multiplyScalar(increaseRatio);
+                    myRoom.vertexHelpers[i].position.copy(vector);
+                }
+            
+            return;
+            //'return' because we don't want the 'picking objects' part 
+            //if we were yet dragging something
+        }
 		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 		var touches = false
@@ -164,6 +360,45 @@ function onDocumentMouseMove( event ) {
 			}
 			return;
 		}
+		 
+        if(myRoom.platform){
+		var platforms=[];
+		var metObject=false,metVertex=false;
+	
+		var platformintersects = raycaster.intersectObjects( myRoom.intersectObjects);
+		if(platformintersects.length>0){
+			for(var i=0;i<platformintersects.length;i++){
+			            var result=platformintersects[i].object;
+			            if(result==myRoom.platform){metObject=true;}
+			            if(result.geometry instanceof THREE.SphereGeometry && !metVertex){
+			            	metVertex=result;
+			            }
+			        }
+			         if(metVertex){
+			            if(INTERSECTEDPLATFORM!=metVertex)INTERSECTEDPLATFORM=metVertex;
+			            document.body.style.cursor='move';
+			        }else{
+			           
+			            document.body.style.cursor='auto';
+			        }
+			         if((metVertex||metObject)&&!mouseDown){
+			         	if(myRoom.platform){
+				            myRoom.platform.material.opacity=.5;
+				            for(var i=0;i<myRoom.vertexHelpers.length;i++){
+				                myRoom.vertexHelpers[i].visible=true;
+				            }
+			        	}
+			        }else{
+			        	if(myRoom.platform){
+				            myRoom.platform.material.opacity=1;
+				            for(var i=0;i<myRoom.vertexHelpers.length;i++){
+				                myRoom.vertexHelpers[i].visible=false;
+				            }
+			       		}
+			        }
+			        return;
+		}
+	}
 		var intersects = raycaster.intersectObjects(interactiveObjects );
 			if ( intersects.length > 0 ) {
 				if ( INTERSECTED != intersects[ 0 ].object ) {
@@ -188,10 +423,20 @@ function onDocumentMouseMove( event ) {
 				}
 			}
 			function onDocumentMouseDown( event ) {
+				mouseDown=true;
 				event.preventDefault();
 				
 				if(event.button===2){
 					return;
+				}
+				if(useRuler){
+					controls.noRotate = true;
+					startDraw(event);
+					return;
+				}
+
+				if(INTERSECTEDPLATFORM){
+					SELECTEDPLATFORM=INTERSECTEDPLATFORM;
 				}
 				//** test 
 				
@@ -204,7 +449,7 @@ function onDocumentMouseMove( event ) {
 					touches = true
 				}
 
-				raycaster.setFromCamera( mouse, camera );
+				
 				var intersects = raycaster.intersectObjects( interactiveObjects );
 
 //				console.log(intersects)			
@@ -247,10 +492,18 @@ function onDocumentMouseMove( event ) {
 				}
 			}
 			function onDocumentMouseUp( event ) {
+				mouseDown=false;
+				if(useRuler){
+					stopDraw(event);
+					controls.noRotate = false;
+					useRuler=false;
+					return;
+				}
 				event.preventDefault();
 				if(event.button===2){
 					return;
 				}
+				SELECTEDPLATFORM=undefined;
 				controls.enabled = true;
 
 				var touches = false;

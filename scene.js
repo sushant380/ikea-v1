@@ -1,6 +1,6 @@
 "use strict";
 var camera, scene, renderer, dirLight, g_lookAtObj, lastCameraPos = new THREE.Vector3( 0, 0, 0 ), myRoom, controls, effect, g_DeviceType, 
-clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShapemesh, platform;
+clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShapemesh, platform,useRuler,projector;
 
 			var interactiveObjects = [];
 			var interactiveRoomObjs = []
@@ -94,25 +94,24 @@ function init() {
 //setHelpers();
 				
 				debugUI = document.createElement( 'div' );
-				debugUI.style="position: absolute; top: 10px; left:20px; width: 10%; text-align: right; "
+				debugUI.style="position: absolute; top: 10px; left:20px; width: 40%; text-align: right; "
 				document.body.appendChild( debugUI );
 				
 				/** control UI **/
 				controlsUI = document.createElement( 'div' );
-				controlsUI.style="position: absolute; top: 10px;  width: 10%; text-align: left; "
+				controlsUI.style="position: absolute; top: 10px;  width: 40%; text-align: left; "
 				document.body.appendChild( controlsUI );
 				var CamConUI="" 
 	
 				// init persp cam
 				
-				CamConUI += "<b>"+ua.device.type + " </b> "
 
 				// device dependent settings
 				if(ua.device.type=="Desktop") {
 					setPerspective() // start with perspective camera
 					g_DeviceType = ua.device.type
 					
-					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
+					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><button type=\"button\" class=\"btn btn-primary\" onclick=\"fullscreen();return false;\">Fullscreen</button>"
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
@@ -121,18 +120,19 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
-					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+					CamConUI += "<button type=\"button\" class=\"btn btn-primary\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br></button>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
-					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
-					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
+					CamConUI+= "<button type=\"button\" class=\"btn btn-primary\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open</button>";
+					CamConUI+= "<button type=\"button\" class=\"btn btn-primary\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close</button>";
 					/*CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					*/
 					//exporterHelpers = new ExporterHelper() // set
-					CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
-				//	CamConUI += "<br><a href=\"#\" data-toggle=\"modal\" data-target=\"#myModal\"> Customize Worktop</a>"
+					//CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
+					CamConUI += "<button type=\"button\" class=\"btn btn-primary\"  onclick=\"startRuler();\"> Ruler</button>"
+					CamConUI += "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#myModal\"> Customize Worktop</button></div></div>"
 
 		
 					/**<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>**/ //TODO			
@@ -180,7 +180,7 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setStereoEffect();return false;\">Toggle Stereo</a>"
 
-*/					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
+*/					CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
@@ -217,7 +217,9 @@ function init() {
 				controlsUI.innerHTML=CamConUI
 				 
 				}
-	
+			function startRuler(){
+				useRuler=true;
+			}
 			/** HTC Vive **/
 			function setOpen(){
 				if(SELECTEDINTERSECT){
@@ -640,7 +642,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				if(controller2!=undefined) scene.remove(controller2)
 							
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 );	
-
+				projector = new THREE.Projector();
 				if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
 				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt				

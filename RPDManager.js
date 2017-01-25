@@ -4,7 +4,7 @@ function RPDManager() {
 this.setRPDBox = function() {
 				
 				var	RPDBoxConUI = "RPD: <br><textarea id=\"rpd\" value=\"\"></textarea>"
-				RPDBoxConUI += "<a id=\"reload\" href=\"#\" >Update Room</a>"
+				RPDBoxConUI += "<br><button type=\"button\" class=\"btn btn-primary\" id=\"reload\" href=\"#\" >Update Room</button>"
 				controlsUI.innerHTML+=RPDBoxConUI
 
 				var aa =this
