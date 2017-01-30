@@ -425,6 +425,11 @@ function onDocumentMouseMove( event ) {
 			function onDocumentMouseDown( event ) {
 				mouseDown=true;
 				event.preventDefault();
+				if(!$(event.target).closest('#colorPanel').length) {
+			        if($('#colorPanel').is(":visible")) {
+			            $('#colorPanel').hide();
+			        }
+			    }   
 				
 				if(event.button===2){
 					return;
