@@ -147,11 +147,11 @@ this.roomWallShapesInner = function() {
 		var extrudeSettingsWalls = {amount: parseFloat(this.ceilingHeight), bevelEnabled: false};	
 		//
 	    var geometryWall = new THREE.ExtrudeGeometry( squareShape, extrudeSettingsWalls );
-
+	    var wallMaterial=new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
 	    var wallgeo =new THREE.Geometry();
 		wallgeo.vertices=geometryWall.vertices;
 		wallgeo.faces=geometryWall.faces;
-		var wallInner = new THREE.Mesh( wallgeo);		
+		var wallInner = new THREE.Mesh( wallgeo,wallMaterial);		
 		//wallInner.receiveShadow = true;
 		wallInner.castShadow = true;	
 		wallInner.userData = {"wallBaseShape": wallsArr[i]}
@@ -159,7 +159,7 @@ this.roomWallShapesInner = function() {
 
 		//var t = "materials/texture/White.jpg"
 		var t = "White.jpg"
-		this.setTexture(wallInner, t)
+		//this.setTexture(wallInner, t)
 		this.addWireFrameLines(wallInner,wallInner)
 		
 		//wallInner.rotation.set(-Math.PI/2,0,0)
@@ -589,6 +589,10 @@ this.drawPlatform=function(){
 	
 }
 this.drawIshapePlatform=function(color){
+	if(this.platform){
+		scene.remove(this.platform);
+		this.platform=undefined;
+	}
 	var baseCabinets=[];
 var baseTop=new THREE.Object3D();
 	var baseMesh=null;
@@ -674,8 +678,7 @@ var baseTop=new THREE.Object3D();
 	}else{
 		this.platform.geometry=cube.geometry;
 	}
-	var area=calcPolygonArea(baseMesh);
-	console.log(area);
+	
 	/*var eastWall=this.allWallMeshes[0];
 	
 	var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;

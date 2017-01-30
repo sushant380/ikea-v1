@@ -139,7 +139,7 @@
 		
 })();		
 		</script>
-
+	<div id="colorPanel" style="display:hidden;"></div>
 	<div class="context-menu-one box menu-1"></div>
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -151,10 +151,12 @@
                 <div class="modal-body wizard-content">
                     
                     <div class="wizard-step">
-                        Select Worktop Texture<br>
+                     
                        <div class="container-fluid">
+                       	 <fieldset>
+                       	 <legend>Acrylic</legend>
 						  <div class="row texture-group">
-						    <div class="col-xs-3">
+						    <div class="col-xs-2">
 						      <label class="text-center radio-thumbnail">
 						          <input type="radio" name="textures" checked value="1">
 						          <span class="thumbnail">
@@ -163,7 +165,7 @@
 						          </span>
 						      </label>
 						    </div>
-						    <div class="col-xs-3">
+						    <div class="col-xs-2">
 						      <label class="text-center radio-thumbnail">
 						        <input type="radio" name="textures" value="2">
 						        <span class="thumbnail">
@@ -172,7 +174,7 @@
 						        </span>
 						      </label>
 						    </div>
-						    <div class="col-xs-3">
+						    <div class="col-xs-2">
 						      <label class="text-center radio-thumbnail">
 						        <input type="radio" name="textures" value="3">
 						        <div class="thumbnail">
@@ -181,7 +183,7 @@
 						        </div>
 						      </label>
 						    </div>
-						    <div class="col-xs-3">
+						    <div class="col-xs-2">
 						      <label class="text-center radio-thumbnail">
 						        <input type="radio" name="textures" value="4">
 						        <div class="thumbnail">
@@ -190,17 +192,76 @@
 						        </div>
 						      </label>
 						    </div>
-						    <div class="col-xs-3">
+						    
+						  </div>
+						  </fieldset>
+						   <fieldset>
+                       			<legend>Ceramic</legend>
+						  		<div class="row texture-group">
+						  			<div class="col-xs-2">
 						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="7">
+						          <input type="radio" name="textures" checked value="8">
+						          <span class="thumbnail">
+						            <img src="img/8.jpg" class="img-responsive"/>
+						            
+						          </span>
+						      </label>
+						    </div>
+						    <div class="col-xs-2">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="9">
+						        <span class="thumbnail">
+						          <img src="img/9.jpg" class="img-responsive"/>
+						          
+						        </span>
+						      </label>
+						    </div>
+						    <div class="col-xs-2">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="10">
 						        <div class="thumbnail">
-						          <img src="img/7.jpg" class="img-responsive"/>
+						          <img src="img/10.jpg" class="img-responsive"/>
 						          
 						        </div>
 						      </label>
 						    </div>
-						  </div>
+						    <div class="col-xs-2">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="11">
+						        <div class="thumbnail">
+						          <img src="img/11.jpg" class="img-responsive"/>
+						          
+						        </div>
+						      </label>
+						    </div>
+						  		</div>
+						  	</fieldset>
+						  	 <fieldset>
+                       			<legend>Wooden</legend>
+						  		<div class="row texture-group">
+						  			<div class="col-xs-2">
+						      <label class="text-center radio-thumbnail">
+						          <input type="radio" name="textures" checked value="12">
+						          <span class="thumbnail">
+						            <img src="img/12.jpg" class="img-responsive"/>
+						            
+						          </span>
+						      </label>
+						    </div>
+						    <div class="col-xs-2">
+						      <label class="text-center radio-thumbnail">
+						        <input type="radio" name="textures" value="13">
+						        <span class="thumbnail">
+						          <img src="img/13.jpg" class="img-responsive"/>
+						          
+						        </span>
+						      </label>
+						    </div>
+						   
+						  		</div>
+						  	</fieldset>
 						</div>
+
                     </div>
                      <div class="wizard-step">
                      	 Finish<br>
@@ -226,7 +287,20 @@
                     drawShape("I",color);
                 }
             });
-            
+             /*$('#colorPanel').colorpicker({
+	            color: '#ffaa00',
+	            container: true,
+	            inline: true,
+
+	        }).on('changeColor',function(a,b,c){
+	        	var color=a.color.toRGB();
+	        	
+	        	myRoom.allWallMeshes.forEach(function(cl){
+	        		
+	        			cl.material.color.setRGB(color.r,color.g,color.b);
+	        		
+	        	});
+	        });*/
         });
     </script>
 	</body>

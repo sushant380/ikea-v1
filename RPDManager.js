@@ -83,6 +83,13 @@ this.initRPD = function() {
 
 			//	camera.lookAt(scene.position);
 			$('[data-toggle="tooltip"]').tooltip();   
+			/*$('#colorPalette').click(function(){
+				$('#colorPanel').css({
+						'position': 'absolute',
+			            'left': $(this).offset().left-150,
+			            'top': $(this).offset().top 
+					}).show();
+			});*/
 			
 				
 		},
