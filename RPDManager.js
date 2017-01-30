@@ -95,15 +95,15 @@ this.initRPD = function() {
                 }
             });
 			 $('.selectpicker').selectpicker({
-			 	
+
 			 });
-			/*$('#colorPalette').click(function(){
+			$('#colorPalette').click(function(){
 				$('#colorPanel').css({
 						'position': 'absolute',
 			            'left': $(this).offset().left-150,
 			            'top': $(this).offset().top 
 					}).show();
-			});*/
+			});
 			
 				
 		},

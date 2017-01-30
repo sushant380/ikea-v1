@@ -287,20 +287,24 @@
                     drawShape("I",color);
                 }
             });*/
-             /*$('#colorPanel').colorpicker({
+             $('#colorPanel').colorpicker({
 	            color: '#ffaa00',
 	            container: true,
 	            inline: true,
 
 	        }).on('changeColor',function(a,b,c){
-	        	var color=a.color.toRGB();
+	        	var color=a.color;
 	        	
-	        	myRoom.allWallMeshes.forEach(function(cl){
-	        		
-	        			cl.material.color.setRGB(color.r,color.g,color.b);
-	        		
-	        	});
-	        });*/
+	        	for(var n=0;n<myRoom.allWallMeshes.length;n++){
+	        		myRoom.allWallMeshes[n].material.color.set(color.toHex());
+	        	}
+	        	for(var q=0;q<scene.children.length;q++){
+	        		if(scene.children[q].name.indexOf('Obstacle')>-1){
+	        			scene.children[q].material.color.set(color.toHex());
+	        		}
+	        	}
+	        	render();
+	        });
         });
     </script>
 	</body>

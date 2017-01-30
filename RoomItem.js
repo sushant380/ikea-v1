@@ -111,7 +111,7 @@ function RoomItem(item,parent,itemsHolder){
 			}else if(scope.parent===undefined){
 				scope.itemsHolder.scene.add(scope.obj);
 			}
-			render();
+			
 			
 		});
 	};
