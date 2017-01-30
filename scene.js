@@ -152,6 +152,19 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				else if(ua.device.type=="Tablet") {
 					g_DeviceType = ua.device.type
 					
+					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-11\">";
+					CamConUI+="Select Room : <select id=\"rpdChanger\" class=\"selectpicker\" onchange=\"changeRpd()\">";
+					for(var i=0;i<rpd_array.length;i++){
+						CamConUI+='<option value=\"'+rpd_array[i].id+'\">'+rpd_array[i].label+'</option>';
+					}
+					CamConUI += "</select><br>";
+					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
+					CamConUI += "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"left\" class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
+					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
+					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
+				
+					
+					 CamConUI+="</div></div>";
 					//CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a><br>"
 					/*CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"setPerspective();\" checked=true>Orbit Control<br>"
@@ -162,7 +175,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();\">Lady<br>"
 
 						*/			
-					CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
@@ -171,17 +184,30 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
-					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
-					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
-					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
+					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
+					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
 					
 					setPerspective() // default
 				
 				}
 				else if(ua.device.type=="Mobile") {
 					g_DeviceType = ua.device.type
+					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-11\">";
+					CamConUI+="Select Room : <select id=\"rpdChanger\" class=\"selectpicker\" onchange=\"changeRpd()\">";
+					for(var i=0;i<rpd_array.length;i++){
+						CamConUI+='<option value=\"'+rpd_array[i].id+'\">'+rpd_array[i].label+'</option>';
+					}
+					CamConUI += "</select><br>";
+					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
+					CamConUI += "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"left\" class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
+					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
+					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
+				
+					
+					 CamConUI+="</div></div>";
 					/*CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
 				CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;setDeviceOrientationControl();;return false;\">Man<br>"
@@ -190,7 +216,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setStereoEffect();return false;\">Toggle Stereo</a>"
 
-*/					CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
+*/					//CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
@@ -199,11 +225,11 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
-					CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
+					//CamConUI += "<br><a href=\"#\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
-					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
-					CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
+					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
+					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
 					
 					//setDeviceOrientationControl()
 					setPerspective() // default
