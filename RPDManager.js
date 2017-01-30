@@ -83,6 +83,7 @@ this.initRPD = function() {
 
 			//	camera.lookAt(scene.position);
 			$('[data-toggle="tooltip"]').tooltip();   
+			
 				
 		},
 		

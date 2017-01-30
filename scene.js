@@ -119,7 +119,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "</select><br>";
 					
 					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
-					CamConUI += "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"left\" class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
+					CamConUI += "<button type=\"button\"  class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img data-toggle=\"tooltip\" data-placement=\"left\" style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
