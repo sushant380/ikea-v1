@@ -522,6 +522,7 @@ this.removeWorkTop=function(cube,item){
 			//scene.add(result);
 						
 		}
+
 		/*else{
 			if(item.geometry instanceof THREE.BufferGeometry){
 				childShape = new ThreeBSP(new THREE.Geometry().fromBufferGeometry( item.geometry));
@@ -588,7 +589,94 @@ this.drawPlatform=function(){
 	
 }
 this.drawIshapePlatform=function(color){
-	var eastWall=this.allWallMeshes[0];
+	var baseCabinets=[];
+var baseTop=new THREE.Object3D();
+	var baseMesh=null;
+	var cabIndex=0;
+	var worktopVector=new THREE.Vector3(0,0,0);
+	var texture=THREE.ImageUtils.loadTexture("img/"+color+".jpg");
+	var image=new THREE.MeshLambertMaterial({ map: texture });
+	texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
+	texture.repeat.set(2,2);
+	myRoomItems.itemMeshes.forEach(function(itm,index){
+		if(itm.name.indexOf('Base')>-1){
+			itm.children.forEach(function(chld){
+				if(chld.name.indexOf('CabWorktop')>-1){
+					var worktop=chld.clone();
+					worktop.children=[];
+					itm.geometry.computeBoundingBox();
+					worktop.geometry.computeBoundingBox();
+					
+					var iShape=new THREE.BoxGeometry(itm.geometry.boundingBox.getSize().x+0.06,worktop.geometry.boundingBox.getSize().y,0.675000011920929);
+					
+					var cube = new THREE.Mesh( iShape, image );
+					itm.updateMatrixWorld();
+					var actualPosition=new THREE.Vector3();
+					actualPosition.setFromMatrixPosition(worktop.matrixWorld);
+					cube.position.copy(actualPosition);
+					if(itm.name==='IKEA.Host.Basecabinet_corner_127'){
+						
+						if(itm.rotation.y>0){
+							cube.position.z=cube.position.z-0.33;
+						}
+						if(itm.rotation.y<0){
+							cube.position.z=cube.position.z+0.33;
+						}
+						//cube.position.x=0
+					}
+					cube.rotation.copy(itm.rotation);
+					if(cabIndex==0){
+						baseMesh=cube;
+						cabIndex++;
+					}else{
+						var base=new ThreeBSP(baseMesh);
+						var cubeMesh=new ThreeBSP(cube);
+						var result=base.union(cubeMesh);
+						baseMesh=result.toMesh(base.material);
+						//cube.updateMatrix();
+						//baseMesh.geometry.merge(cube.geometry,cube.matrix);
+					}
+					//baseTop.add(cube);
+				}
+			});
+		}
+	});
+	baseMesh.geometry.computeBoundingBox();
+	scene.children.forEach(function(obts){
+		if(obts.name.indexOf('Obstacle')>-1){
+			obts.geometry.computeBoundingBox();
+			var iShape=new THREE.BoxGeometry(obts.geometry.boundingBox.getSize().x+0.06,baseMesh.geometry.boundingBox.getSize().y,0.675000011920929);
+			var cube = new THREE.Mesh( iShape, image );
+			//obts.updateMatrixWorld();
+			var actualPosition=new THREE.Vector3();
+			actualPosition.setFromMatrixPosition(obts.matrixWorld);
+			cube.position.copy(obts.position);
+			cube.position.y=baseMesh.position.y;
+			cube.position.z=baseMesh.position.z-obts.geometry.boundingBox.getSize().z-0.034;
+
+			var base=new ThreeBSP(baseMesh);
+			var cubeMesh=new ThreeBSP(cube);
+			var result=base.union(cubeMesh);
+			baseMesh=result.toMesh(base.material);
+		}
+	});
+
+	baseMesh.material=image;
+	for(var k=0;k<myRoomItems.itemMeshes.length;k++){
+		this.removeWorkTop(baseMesh,myRoomItems.itemMeshes[k]);
+	}
+	baseMesh.geometry.mergeVertices();
+	if(!this.platform){
+		this.platform=baseMesh;
+
+		scene.add(this.platform);
+		this.intersectObjects.push(this.platform);
+	}else{
+		this.platform.geometry=cube.geometry;
+	}
+	var area=calcPolygonArea(baseMesh);
+	console.log(area);
+	/*var eastWall=this.allWallMeshes[0];
 	
 	var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;
 	var shapeWidth=wallWidth-0.1;
@@ -612,13 +700,35 @@ this.drawIshapePlatform=function(color){
 		this.intersectObjects.push(this.platform);
 	}else{
 		this.platform.geometry=cube.geometry;
-	}
+	}*/
 	//this.drawPlatform();
 	//interactiveObjects.push(this.platform);
  //	this.createVertexHelper();
     
 	
 }
+function calcPolygonArea(object) {
+   var _len = object.geometry.faces.length,
+        _area = 0.0;
+
+    if (!_len) return 0.0;
+
+    for (var i = 0; i < _len; i++) {
+        var va = object.geometry.vertices[object.geometry.faces[i].a];
+        var vb = object.geometry.vertices[object.geometry.faces[i].b];
+        var vc = object.geometry.vertices[object.geometry.faces[i].c];
+
+        var ab = vb.clone().sub(va);
+        var ac = vc.clone().sub(va);
+
+        var cross = new THREE.Vector3();
+        cross.crossVectors( ab, ac );
+
+        _area += cross.lengthSq() / 2;
+    }
+    return _area;
+}
+
 this.hideWalls = function() {
 					// first make all the walls visible again
 					for(var i = 0; i<this.allWallMeshes.length;i++) {

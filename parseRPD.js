@@ -977,7 +977,7 @@ function mappAttributes(itemArr) {
 					console.warn("UNKNOWN ITEM: " + whd.w +" "+ whd.h +" "+ whd.d +" ")
 			**/		var whd = getDefaultWHD(itemArr[i]) // estimate whd
 					var cabBase = new cabItems(itemArr[i]["Item"],0, itemArr[i], whd)
-					cabBase["color"] = 0xFF0000
+					cabBase["color"] = 0xFFFFFF
 					cabBase["type"] = itemArr[i]["Type"]
 					cabBase["Ori"] = itemArr[i]["Ori"]
 					cabBase["Pos"] = itemArr[i]["Pos"]

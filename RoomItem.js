@@ -52,11 +52,23 @@ function RoomItem(item,parent,itemsHolder){
 				//scope.obj.userData.collidableWalls=scope.itemsHolder.collidableWalls;
 				//scope.obj.userData.collidableWalls.push(scope.itemsHolder.collidableFloor);
 				//scope.obj.userData.collidablePostItems = scope.itemsHolder.itemMeshes;
-
+				/*var cubeMesh=[];
+				var material0 = new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture( 'img/open.png' ) } );
+				var material1 = new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture( 'img/close.png' ) } );
+				cubeMesh[0] = new THREE.Mesh(new THREE.CircleGeometry(0.9, 0.25), material0);
+    			cubeMesh[1] = new THREE.Mesh(new THREE.CircleGeometry(0.9, 0.25), material1);
+    			cubeMesh[0].isButton=true;
+    			cubeMesh[1].isButton=true;
+    			cubeMesh[0].visible=false;
+    			cubeMesh[1].visible=false;*/
 				var v3=scope.itemsHolder.itemsOffsetPos(scope,scope.obj.getWorldDirection());
 				scope.obj.position.set(v3.x,v3.y,v3.z);
+				scope.obj.name=scope.name;
+				/*scope.obj.add(cubeMesh[0]);
+				scope.obj.add(cubeMesh[1]);*/
 				scope.itemsHolder.itemMeshes.push(scope.obj);
-				scope.obj.onAfterRender = function(){scope.itemsHolder.matrixAutoUpdate=false}; 
+				scope.obj.onAfterRender = function(){scope.itemsHolder.matrixAutoUpdate=false
+				}; 
 			}
 			interactiveObjects.push(scope.obj);	
 			
@@ -99,7 +111,7 @@ function RoomItem(item,parent,itemsHolder){
 			}else if(scope.parent===undefined){
 				scope.itemsHolder.scene.add(scope.obj);
 			}
-			
+			render();
 			
 		});
 	};
@@ -170,7 +182,12 @@ function RoomItem(item,parent,itemsHolder){
 				},function(){},function(){
 					console.log('failed= ',scope);
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
-					var mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
+					var mesh_mat=undefined;
+					if(scope.name.indexOf("Obstacle")>-1){
+						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
+					}else{
+						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
+					}
 					var mesh=new THREE.Mesh(object, mesh_mat);
 					mesh.castShadow = true
 					mesh.recieveShadow = true
@@ -205,7 +222,13 @@ function RoomItem(item,parent,itemsHolder){
 				},function(){},function(){
 					console.log('failed= ',scope);
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
-					var mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
+					var mesh_mat=undefined;
+					if(scope.name.indexOf("Obstacle")>-1){
+						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
+					}else{
+						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
+					}
+					
 					var mesh=new THREE.Mesh(object, mesh_mat);
 					mesh.castShadow = true
 					mesh.recieveShadow = true

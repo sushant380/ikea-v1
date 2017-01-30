@@ -24,7 +24,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 			
 			var g_transparentObjs = true // revert since it don't dynamic change... should loop over material and change this instead
 
-function init() {
+		function init() {
 				/** when reload **/
 				camera = undefined
 				scene = undefined
@@ -94,12 +94,12 @@ function init() {
 //setHelpers();
 				
 				debugUI = document.createElement( 'div' );
-				debugUI.style="position: absolute; top: 10px; left:20px; width: 40%; text-align: right; "
+				debugUI.style="position: absolute; top: 10px; left:20px; width: 100%; text-align: right; "
 				document.body.appendChild( debugUI );
 				
 				/** control UI **/
 				controlsUI = document.createElement( 'div' );
-				controlsUI.style="position: absolute; top: 10px;  width: 40%; text-align: left; "
+				controlsUI.style="position: absolute; top: 10px;  width: 100%; text-align: left; "
 				document.body.appendChild( controlsUI );
 				var CamConUI="" 
 	
@@ -110,8 +110,16 @@ function init() {
 				if(ua.device.type=="Desktop") {
 					setPerspective() // start with perspective camera
 					g_DeviceType = ua.device.type
+
+					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-11\">";
+					CamConUI+="Select Room : <select id=\"rpdChanger\" class=\"selectpicker\" onchange=\"changeRpd()\">";
+					for(var i=0;i<rpd_array.length;i++){
+						CamConUI+='<option value=\"'+rpd_array[i].id+'\">'+rpd_array[i].label+'</option>';
+					}
+					CamConUI += "</select><br>";
 					
-					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><button type=\"button\" class=\"btn btn-primary\" onclick=\"fullscreen();return false;\">Fullscreen</button>"
+					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
+					CamConUI += "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"left\" class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
@@ -120,19 +128,21 @@ function init() {
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
-					CamConUI += "<button type=\"button\" class=\"btn btn-primary\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br></button>"
+					//CamConUI += "<button type=\"button\" class=\"btn btn-primary\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br></button>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
-					CamConUI+= "<button type=\"button\" class=\"btn btn-primary\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open</button>";
-					CamConUI+= "<button type=\"button\" class=\"btn btn-primary\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close</button>";
+					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
+					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
 					/*CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					*/
 					//exporterHelpers = new ExporterHelper() // set
 					//CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
-					CamConUI += "<button type=\"button\" class=\"btn btn-primary\"  onclick=\"startRuler();\"> Ruler</button>"
-					CamConUI += "<button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#myModal\"> Customize Worktop</button></div></div>"
+				//	CamConUI += "<button type=\"button\" class=\"btn btn-primary\"  onclick=\"startRuler();\"> Ruler</button>"
+					
+					
+					 CamConUI+="</div></div>";
 
 		
 					/**<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>**/ //TODO			
@@ -214,9 +224,25 @@ function init() {
 				// Show Controls
 		
 				// RPD box
-				controlsUI.innerHTML=CamConUI
+				controlsUI.innerHTML=CamConUI;
 				 
 				}
+			function changeRpd(){
+				var rpd=$('#rpdChanger').val();
+				for(var m=0;m<rpd_array.length;m++){
+					if(rpd_array[m].id===rpd){
+						RPD_Raw=rpd_array[m].rpd;
+						break;
+					}
+				}
+				var element = document.getElementById("context");
+				if(element!=undefined) 	element.parentNode.removeChild(element);
+				if(RPD_Raw.length>1) {
+				init();
+				RPDMgmt.initRPD();
+			}
+
+			}
 			function startRuler(){
 				useRuler=true;
 			}
@@ -444,7 +470,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				// interact
 				renderer.domElement.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 				renderer.domElement.removeEventListener( 'mousedown', onDocumentMouseDown, false );
-				renderer.domElement.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+				renderer.domElement.removeEventListener( 'mouseup', onDocumentMouseUp	, false );
 				
 				// only render on input fo performance...
 				renderer.domElement.removeEventListener( 'mousemove', render, false );
@@ -647,7 +673,6 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
 				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt				
 				sceenZoomToObj(g_lookAtObj)	
-
 				addHandleWallVisabilityEventsListeners()
 				addAllMouseEventsListeners()
 				addAllToucheEventsListeners()

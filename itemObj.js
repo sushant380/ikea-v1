@@ -68,7 +68,7 @@ this.createItems = function() {
 			
 		}
 		
-		this.itemMeshes.push(item.obj)
+		//this.itemMeshes.push(item.obj)
 		item.obj.onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
 		refItem=item.obj;
 		//this.scene.add(item.obj)
@@ -184,7 +184,9 @@ this.defaultChildBoxItems = function (parentScope, model , trace) {
 		else if(this.texture!=undefined) {
 			mesh_mat = mProx.getMaterial({"texture":this.texture,"color":this.color});
 		}
-		
+		else if(this.name.indexOf('Obstacle')){
+			mesh_mat = new THREE.MeshLambertMaterial({color : this.color, transparent: false, opacity: 1});
+		}
 		else  {	
 			mesh_mat = new THREE.MeshLambertMaterial({color : this.color, transparent: true, opacity: 0.9});
 		}

@@ -3,11 +3,11 @@ function RPDManager() {
 
 this.setRPDBox = function() {
 				
-				var	RPDBoxConUI = "RPD: <br><textarea id=\"rpd\" value=\"\"></textarea>"
+				/*var	RPDBoxConUI = "RPD: <br><textarea id=\"rpd\" value=\"\"></textarea>"
 				RPDBoxConUI += "<br><button type=\"button\" class=\"btn btn-primary\" id=\"reload\" href=\"#\" >Update Room</button>"
 				controlsUI.innerHTML+=RPDBoxConUI
-
-				var aa =this
+*/
+				/*var aa =this
 				var a = function(){
 					console.log()
 					aa.setRPD()
@@ -20,9 +20,9 @@ this.setRPDBox = function() {
 				}
 				
 				var reload = document.getElementById('reload')
-				reload.onclick=a
-
-				
+				reload.onclick=a*/
+				RPD_Raw=rpd_array[0].rpd;
+				this.initRPD()
 }
 
 
@@ -74,9 +74,15 @@ this.initRPD = function() {
 				myRoomItems.scene = scene;
 				myRoomItems.init();
 				
-				
-				render()
+					
+				render();
+				controls.object.position.set(
+-0.11607159221143132,
+2.0924870639128503,
+6.038192222751323);
 
+			//	camera.lookAt(scene.position);
+			$('[data-toggle="tooltip"]').tooltip();   
 				
 		},
 		
