@@ -95,12 +95,12 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				
 				debugUI = document.createElement( 'div' );
 				debugUI.style="position: absolute; top: 10px; left:20px; width: 100%; text-align: right; "
-				document.body.appendChild( debugUI );
+				container.appendChild( debugUI );
 				
 				/** control UI **/
 				controlsUI = document.createElement( 'div' );
 				controlsUI.style="position: absolute; top: 10px;  width: 100%; text-align: left; "
-				document.body.appendChild( controlsUI );
+				container.appendChild( controlsUI );
 				var CamConUI="" 
 	
 				// init persp cam
@@ -114,7 +114,11 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-11\">";
 					CamConUI+="Select Room : <select id=\"rpdChanger\" class=\"selectpicker\" onchange=\"changeRpd()\">";
 					for(var i=0;i<rpd_array.length;i++){
+						if(selectedRpd===rpd_array[i].id){
+							CamConUI+='<option value=\"'+rpd_array[i].id+'\" selected>'+rpd_array[i].label+'</option>';
+						}else{
 						CamConUI+='<option value=\"'+rpd_array[i].id+'\">'+rpd_array[i].label+'</option>';
+					}
 					}
 					CamConUI += "</select><br>";
 					
@@ -260,6 +264,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				}
 			function changeRpd(){
 				var rpd=$('#rpdChanger').val();
+				selectedRpd=rpd;
 				for(var m=0;m<rpd_array.length;m++){
 					if(rpd_array[m].id===rpd){
 						RPD_Raw=rpd_array[m].rpd;
@@ -267,7 +272,12 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					}
 				}
 				var element = document.getElementById("context");
-				if(element!=undefined) 	element.parentNode.removeChild(element);
+				if(element!=undefined) {	
+					var parent =element.parentNode;
+					while (parent.firstChild) {
+					    parent.removeChild(parent.firstChild);
+					}
+				}
 				if(RPD_Raw.length>1) {
 				init();
 				RPDMgmt.initRPD();

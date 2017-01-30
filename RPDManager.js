@@ -83,6 +83,20 @@ this.initRPD = function() {
 
 			//	camera.lookAt(scene.position);
 			$('[data-toggle="tooltip"]').tooltip();   
+			 $("#myModal").wizard({
+            	exit:'Exit',
+            	back:'Back',
+            	next:'Next',
+            	finish:'Finish',
+                onfinish:function(){
+                  	var color=$('.texture-group input:radio:checked').val();
+                  	var shape=$('.btn-group input:radio:checked').val()
+                    drawShape("I",color);
+                }
+            });
+			 $('.selectpicker').selectpicker({
+			 	
+			 });
 			/*$('#colorPalette').click(function(){
 				$('#colorPanel').css({
 						'position': 'absolute',

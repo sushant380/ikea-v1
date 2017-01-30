@@ -550,6 +550,7 @@ function cabItems(type,id, obj, whdObj,lstSlot,parentObj) {
 					}
 				
 			}
+
 			break;
 		case "Drawer":
 			var dA =new cabItems("DrawerFront",id, obj, whdObj,lstSlot,this)		
@@ -903,7 +904,13 @@ function mappAttributes(itemArr) {
 					cabBase.Pos=itemArr[i].Pos // move the Pos And Ori info
 					cabBase.Ori=itemArr[i].Ori // move the Pos And Ori info
 					cabBase.name = itemArr[i][item]
-					
+					if(cabBase.Ori.y!=0){
+				if(cabBase.Pos.x>0)
+				cabBase.Pos.x=cabBase.Pos.x-0.29;
+				else{
+					cabBase.Pos.x=cabBase.Pos.x+0.29;
+				}
+			}
 					//cabBase.texture= "roughness_map.jpg"
 					
 					// correct the heights of all doors and drawer fronts
@@ -976,7 +983,10 @@ function mappAttributes(itemArr) {
 					whd.d = convertRPDCoordsToUnit(itemArr[i]["Depth"]) || 0.4
 					console.warn("UNKNOWN ITEM: " + whd.w +" "+ whd.h +" "+ whd.d +" ")
 			**/		var whd = getDefaultWHD(itemArr[i]) // estimate whd
-					var cabBase = new cabItems(itemArr[i]["Item"],0, itemArr[i], whd)
+					var cabBase = new cabItems(itemArr[i]["Item"],0, itemArr[i], whd);
+					cabBase.w=whd.w;
+					cabBase.h=whd.h;
+					cabBase.d=whd.d;
 					cabBase["color"] = 0xFFFFFF
 					cabBase["type"] = itemArr[i]["Type"]
 					cabBase["Ori"] = itemArr[i]["Ori"]
@@ -999,7 +1009,7 @@ function getCabinetDefaults(itemName) {
 	//console.log(g_CABINETS_DEFAULTS_METRIC[cabType])
 	for(var cabType in g_CABINETS_DEFAULTS_METRIC) {
 		//console.log("getCabinetDefaults " + itemName + " " + cabType)
-		if(itemName.indexOf(cabType)>-1) return g_CABINETS_DEFAULTS_METRIC[cabType]
+		if(itemName.indexOf(cabType)>-1) return  jQuery.extend(true, {}, g_CABINETS_DEFAULTS_METRIC[cabType]);
 	}
 	
 }
@@ -1094,25 +1104,25 @@ function getDefaultWHD(obj, parentWHD) {
 
 function itemsOffsetPos(a,dir) {
 						/** we need to adjust the POS since VP do not use center pos **/
-						var crPo = a.Pos
-						var maxOfWnD			// VP counts the center based on the max
+						var crPo = a.Pos;
+						var maxOfWnD		;	// VP counts the center based on the max
 						
-						var oAW = a.w
-						var oAD = a.d
+						var oAW = a.w;
+						var oAD = a.d;
 						
-						var sub = new THREE.Vector3()
-						var t
+						var sub = new THREE.Vector3();
+						var t;
 						
 						if(a.w<a.d) a.d=a.w
-						else a.w=a.d
+						else a.w=a.dl;
 						
-						var t
-if(dir.x==0)				t = new THREE.Vector3(oAW/2, a.h/2, oAD/2)		//?? does this work for all cases?
-else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
+						var t;
+if(dir.x==0)				t = new THREE.Vector3(oAW/2, a.h/2, oAD/2);		//?? does this work for all cases?
+else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)	;	//??
 						
 						//var t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)
 						
-						sub.addVectors(crPo, t)
+						sub.addVectors(crPo, t);
 						
 						
 						
@@ -1137,6 +1147,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 							t = new THREE.Vector3(0,0, a.d)
 							sub.subVectors(sub, t)
 						}
+						
 						return sub
 }
 
