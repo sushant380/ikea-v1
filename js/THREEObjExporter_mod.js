@@ -192,6 +192,42 @@ THREE.OBJExporter.prototype = {
 	for (var key in newMaterialObj) { // materials) {
         
 		var mat = materials[key];
+		if(mat instanceof THREE.MultiMaterial){
+			for(var x=0;x<mat.materials.length;x++){
+			if (mat.materials[x].name !== '')
+			mtlOutput += 'newmtl ' + mat.materials[x].name + '\n';
+		else
+			mtlOutput += 'newmtl material' + mat.materials[x].id + '\n';
+          
+		mtlOutput += 'Ns 10.0000\n';
+		mtlOutput += 'Ni 1.5000\n';
+		mtlOutput += 'd 1.0000\n';
+		mtlOutput += 'Tr 0.0000\n';
+		mtlOutput += 'Tf 1.0000 1.0000 1.0000\n';
+		mtlOutput += 'illum 2\n';
+		mtlOutput += 'Ka ' + mat.materials[x].color.r + ' ' + mat.materials[x].color.g + ' ' + mat.materials[x].color.b + ' ' + '\n';
+		mtlOutput += 'Kd ' + mat.materials[x].color.r + ' ' + mat.materials[x].color.g + ' ' + mat.materials[x].color.b + ' ' + '\n';
+		mtlOutput += 'Ks 0.0000 0.0000 0.0000\n';
+		mtlOutput += 'Ke 0.0000 0.0000 0.0000\n';
+          
+		if (mat.materials[x].map && mat.materials[x].map instanceof THREE.Texture) {
+          
+			console.log(mat.materials[x].map)
+// mod 
+			var pathS = mat.materials[x].map.image.currentSrc.split("/")
+			console.log(pathS)
+			console.log(pathS[pathS.length-1])
+			var file = mat.materials[x].name// mat.map.image.currentSrc//pathS[pathS.length-1]
+			//var file = mat.map.image.currentSrc.slice( mat.map.image.currentSrc.slice.lastIndexOf("/"), mat.map.image.currentSrc.length - 1 );
+//            
+			mtlOutput += 'map_Ka ' + file + '\n';
+			mtlOutput += 'map_Kd ' + file + '\n';
+			
+			this.imagesToInclude.push(file) // store which images we should also add...
+            
+		}
+	}
+		}else{
           
 		if (mat.name !== '')
 			mtlOutput += 'newmtl ' + mat.name + '\n';
@@ -225,6 +261,7 @@ THREE.OBJExporter.prototype = {
 			this.imagesToInclude.push(file) // store which images we should also add...
             
 		}
+	}
           
 	}
 

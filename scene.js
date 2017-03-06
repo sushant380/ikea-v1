@@ -120,6 +120,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 						CamConUI+='<option value=\"'+rpd_array[i].id+'\">'+rpd_array[i].label+'</option>';
 					}
 					}
+					exporterHelpers = new ExporterHelper() // set
 					CamConUI += "</select><br>";
 					
 					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
@@ -138,15 +139,16 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
 					CamConUI+= "<button id=\"colorPalette\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Paint\" ><img style=\"width:32px;height:32px;\" src=\"img/paint.png\"></img></button>";
+					CamConUI+= "<button id=\"vreffect\" onclick=\"setStereoEffect();return false;\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/vr.png\"></img></button>";
+					CamConUI+= "<button id=\"vreffect\" onclick=\"exporterHelpers.exportToObj();\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/export-icon.png\"></img></button>";
 					/*CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					*/
-					//exporterHelpers = new ExporterHelper() // set
-					//CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
+					
+				//	CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
 				//	CamConUI += "<button type=\"button\" class=\"btn btn-primary\"  onclick=\"startRuler();\"> Ruler</button>"
-					
-					
+							
 					 CamConUI+="</div></div>";
 
 		

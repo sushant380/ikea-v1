@@ -517,6 +517,7 @@ this.removeWorkTop=function(cube,item){
 			childShape=new ThreeBSP(anothercube);
 			var subtractTop=cabworkTop.subtract(childShape);
 			var result = subtractTop.toMesh( cabworkTop.material);
+			result.geometry.computeFaceNormals();
 			result.geometry.computeVertexNormals();
 			cube.geometry=result.geometry;
 			//scene.add(result);
@@ -602,6 +603,7 @@ var baseTop=new THREE.Object3D();
 	var image=new THREE.MeshLambertMaterial({ map: texture });
 	texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
 	texture.repeat.set(2,2);
+	var modifer = new THREE.SimplifyModifier();
 	myRoomItems.itemMeshes.forEach(function(itm,index){
 		if(itm.name.indexOf('Base')>-1){
 			itm.children.forEach(function(chld){
@@ -637,6 +639,8 @@ var baseTop=new THREE.Object3D();
 						var cubeMesh=new ThreeBSP(cube);
 						var result=base.union(cubeMesh);
 						baseMesh=result.toMesh(base.material);
+						baseMesh.geometry.computeFaceNormals();
+						baseMesh.geometry.computeVertexNormals();
 						//cube.updateMatrix();
 						//baseMesh.geometry.merge(cube.geometry,cube.matrix);
 					}
@@ -657,9 +661,11 @@ var baseTop=new THREE.Object3D();
 			cube.position.copy(obts.position);
 			cube.position.y=baseMesh.position.y;
 			cube.position.z=baseMesh.position.z-obts.geometry.boundingBox.getSize().z-0.034;
-
+			var newCube=new ThreeBSP(cube);
+			var obstacle=new ThreeBSP(obts);
+			var rs=newCube.subtract(obstacle);
 			var base=new ThreeBSP(baseMesh);
-			var cubeMesh=new ThreeBSP(cube);
+			var cubeMesh=new ThreeBSP(rs.toMesh(base.material));
 			var result=base.union(cubeMesh);
 			baseMesh=result.toMesh(base.material);
 		}
@@ -670,15 +676,47 @@ var baseTop=new THREE.Object3D();
 		this.removeWorkTop(baseMesh,myRoomItems.itemMeshes[k]);
 	}
 	baseMesh.geometry.mergeVertices();
+	
+	
+	/*var edges=new THREE.EdgesGeometry(worktopMesh.geometry);
+	var edesLine=new THREE.LineSegments(edges,new THREE.MeshBasicMaterial({color:'#ff00000'}));
+	scene.add(edesLine);*/
 	if(!this.platform){
 		this.platform=baseMesh;
-
 		scene.add(this.platform);
 		this.intersectObjects.push(this.platform);
 	}else{
-		this.platform.geometry=cube.geometry;
+		this.platform.geometry=baseMesh.geometry;
 	}
-	
+	var itemsPositions=[];
+	for(var p=0;p<myRoomItems.itemMeshes.length;p++){
+		var roomItem=myRoomItems.itemMeshes[p];
+		if(itemsPositions.length>0){
+			var itemIndex=-1;
+			for(var h=0;h<itemsPositions.length;h++){
+				var itmr=itemsPositions[h];
+				if(roomItem.position.x<=itmr.position.x){
+					itemIndex=h;
+					break;
+				}else if(roomItem.position.x===itmr.position.x){
+					if(roomItem.position.z>itmr.position.z){
+						itemIndex=h;
+						break;
+					}
+				}
+			}
+			if(itemIndex===-1){
+				itemsPositions.push(roomItem);
+			}else{
+				itemsPositions.splice(itemIndex,0,roomItem);
+			}
+		}else{
+			itemsPositions.push(roomItem);
+		}
+	}
+	itemsPositions.forEach(function(it){
+		console.log(it.uuid);
+	});
 	/*var eastWall=this.allWallMeshes[0];
 	
 	var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;
