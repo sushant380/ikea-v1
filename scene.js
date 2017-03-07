@@ -500,6 +500,8 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				renderer.domElement.addEventListener( 'mousemove', render, false );
 				renderer.domElement.addEventListener( 'mousedown', render, false );
 				renderer.domElement.addEventListener( 'mouseup', render, false );
+				renderer.domElement.addEventListener( 'mouseup', onDocumentMouseWheel, false );
+				renderer.domElement.addEventListener( 'mouseup', render, false );
 				
 			}
 			function addKeyboardEvents(){
@@ -714,8 +716,9 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				projector = new THREE.Projector();
 				if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
-				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt				
-				sceenZoomToObj(g_lookAtObj)	
+				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt			
+				controls.target.set(0,1.08,-3.6749995000000002);	
+				//sceenZoomToObj(g_lookAtObj)	
 				addHandleWallVisabilityEventsListeners()
 				addAllMouseEventsListeners()
 				addAllToucheEventsListeners()

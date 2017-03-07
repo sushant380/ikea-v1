@@ -287,17 +287,36 @@ render();
                     }
                 }
             }
+         function onDocumentMouseWheel( e ) {
+
+      var d = ((typeof e.wheelDelta != "undefined")?(-e.wheelDelta):e.detail);
+     d = 100 * ((d>0)?1:-1);    
+     var cPos = camera.position;
+     if (isNaN(cPos.x) || isNaN(cPos.y) || isNaN(cPos.y)) return;
+
+        // Your zomm limitation
+        // For X axe you can add anothers limits for Y / Z axes
+        if (cPos.x > -2 || cPos.x < 10 ){
+           return ;
+        }
+
+   mb = d>0 ? 1.1 : 0.9;
+   cPos.x = cPos.x * mb;
+   cPos.y = cPos.y * mb;
+   cPos.z = cPos.z * mb;
+
+}
 function onDocumentMouseMove( event ) {
 		event.preventDefault();
-		if(event.button===2){
-			return;
-		}
-		if(useRuler){
+		// if(event.button===2){
+		// 	return;
+		// }
+		/*if(useRuler){
 			controls.noRotate = true;
 			doDraw(event);
 			return;
-		}
-		if(SELECTEDPLATFORM){
+		}*/
+		/*if(SELECTEDPLATFORM){
             // myRoom.planeView.position.copy(SELECTEDPLATFORM.position);
             // myRoom.planeView.lookAt(camera.position);
             var intersects=raycaster.intersectObject(myRoom.intersectObjects);
@@ -318,16 +337,8 @@ function onDocumentMouseMove( event ) {
             return;
             //'return' because we don't want the 'picking objects' part 
             //if we were yet dragging something
-        }
-		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-		var touches = false
-		if(event.touches != undefined && event.touches[ 0 ].pageX!=undefined &&  event.touches[ 0 ].pageY!=undefined ){
-			mouse.x=(event.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
-			mouse.y= -( event.touches[ 0 ].pageY / window.innerHeight ) * 2 + 1;
-			touches=true
-		}		
-		raycaster.setFromCamera( mouse, camera );
+        }*/
+		
 		if ( SELECTED ) {
 			SELECTED.matrixAutoUpdate=true // IMPORTANT!! allow movement				
 			if ( raycaster.ray.intersectPlane( plane, intersection ) ) {
@@ -361,7 +372,7 @@ function onDocumentMouseMove( event ) {
 			return;
 		}
 		 
-        if(myRoom.platform){
+        /*if(myRoom.platform){
 		var platforms=[];
 		var metObject=false,metVertex=false;
 	
@@ -398,7 +409,16 @@ function onDocumentMouseMove( event ) {
 			        }
 			        return;
 		}
-	}
+	}*/
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		var touches = false
+		if(event.touches != undefined && event.touches[ 0 ].pageX!=undefined &&  event.touches[ 0 ].pageY!=undefined ){
+			mouse.x=(event.touches[ 0 ].pageX / window.innerWidth ) * 2 - 1;
+			mouse.y= -( event.touches[ 0 ].pageY / window.innerHeight ) * 2 + 1;
+			touches=true
+		}		
+		raycaster.setFromCamera( mouse, camera );
 		var intersects = raycaster.intersectObjects(interactiveObjects );
 			if ( intersects.length > 0 ) {
 				if ( INTERSECTED != intersects[ 0 ].object ) {
@@ -431,21 +451,21 @@ function onDocumentMouseMove( event ) {
 			        }
 			    }   
 				
-				if(event.button===2){
-					return;
-				}
-				if(useRuler){
+				// if(event.button===2){
+				// 	return;
+				// }
+				/*if(useRuler){
 					controls.noRotate = true;
 					startDraw(event);
 					return;
-				}
-
+				}*/
+/*
 				if(INTERSECTEDPLATFORM){
 					SELECTEDPLATFORM=INTERSECTEDPLATFORM;
-				}
+				}*/
 				//** test 
 				
-				raycaster.setFromCamera( mouse, camera );
+				
 				
 				var touches = false
 				if(event.touches != undefined && event.touches[ 0 ].pageX!=undefined &&  event.touches[ 0 ].pageY!=undefined ){
@@ -454,7 +474,7 @@ function onDocumentMouseMove( event ) {
 					touches = true
 				}
 
-				
+				raycaster.setFromCamera( mouse, camera );
 				var intersects = raycaster.intersectObjects( interactiveObjects );
 
 //				console.log(intersects)			
@@ -498,7 +518,7 @@ function onDocumentMouseMove( event ) {
 			}
 			function onDocumentMouseUp( event ) {
 				mouseDown=false;
-				if(useRuler){
+				/*if(useRuler){
 					stopDraw(event);
 					controls.noRotate = false;
 					useRuler=false;
@@ -507,9 +527,9 @@ function onDocumentMouseMove( event ) {
 				event.preventDefault();
 				if(event.button===2){
 					return;
-				}
-				SELECTEDPLATFORM=undefined;
-				controls.enabled = true;
+				}*/
+				/*SELECTEDPLATFORM=undefined;
+				controls.enabled = true;*/
 
 				var touches = false;
 				if(event.touches != undefined ){

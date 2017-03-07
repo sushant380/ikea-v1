@@ -67,7 +67,8 @@ function RoomItem(item,parent,itemsHolder){
 				/*scope.obj.add(cubeMesh[0]);
 				scope.obj.add(cubeMesh[1]);*/
 				scope.itemsHolder.itemMeshes.push(scope.obj);
-				scope.obj.onAfterRender = function(){scope.itemsHolder.matrixAutoUpdate=false
+				scope.obj.onAfterRender = function(){scope.itemsHolder.matrixAutoUpdate=false;
+					
 				}; 
 			}
 			interactiveObjects.push(scope.obj);	
