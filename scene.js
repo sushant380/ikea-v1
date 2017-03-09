@@ -168,8 +168,9 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
 					CamConUI += "<button type=\"button\" data-toggle=\"tooltip\" data-placement=\"left\" class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
+
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
-				
+					CamConUI+= "<button id=\"vreffect\" onclick=\"setStereoEffect();return false;\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/vr.png\"></img></button>";
 					
 					 CamConUI+="</div></div>";
 					//CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a><br>"
@@ -424,11 +425,13 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 			function setStereoEffect() {
 					if(effect == undefined) {
 						effect = new THREE.StereoEffect(renderer);
+						camera.position.set(0, personStandingHeight-0.2, 0);
 						//fullscreen()
 						onWindowResize()
 					}
 					else {
-						effect= undefined
+						effect= undefined;
+						camera.position.set(0, 2, 6);
 						onWindowResize()
 					}
 			}			
@@ -717,7 +720,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
 				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt			
-				controls.target.set(0,1.08,-3.6749995000000002);	
+				controls.target.set(0,1.08,-1.6749995000000002);	
 				//sceenZoomToObj(g_lookAtObj)	
 				addHandleWallVisabilityEventsListeners()
 				addAllMouseEventsListeners()
