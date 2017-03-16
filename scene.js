@@ -429,11 +429,13 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 						camera.position.set(0, personStandingHeight-0.2, 0);
 						//fullscreen()
 						onWindowResize()
+						render();
 					}
 					else {
 						effect= undefined;
 						camera.position.set(0, 2, 6);
-						onWindowResize()
+						onWindowResize();
+						render();
 					}
 			}			
 			
