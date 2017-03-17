@@ -425,9 +425,25 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 			/** cardboard **/
 			function setStereoEffect() {
 					if(effect == undefined) {
+						controls = new THREE.VRControls( camera );
+						controls.standing = true;
 						effect = new THREE.StereoEffect(renderer);
 						camera.position.set(0, personStandingHeight-0.2, 0);
 						//fullscreen()
+						/*if ( navigator.getVRDisplays ) {
+
+							navigator.getVRDisplays()
+								.then( function ( displays ) {
+									effect.setVRDisplay( displays[ 0 ] );
+									controls.setVRDisplay( displays[ 0 ] );
+								} )
+								.catch( function () {
+									// no displays
+								} );
+
+							document.body.appendChild( WEBVR.getButton( effect ) );
+
+						}*/
 						onWindowResize()
 						render();
 					}
@@ -646,6 +662,12 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				controls.update();
 				effect.render( scene, camera );
 			}
+
+			function renderStereo(){
+				controls.update();
+				effect.render( scene, camera );	
+				requestAnimationFrame( renderStereo );
+			}
 			
 			/** Normal Controls **/
 			function animate_OC() { //Orbit Control
@@ -696,7 +718,9 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				else if(controls instanceof THREE.DeviceOrientationControls) {
 					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - DC rendering"+ debugUI.innerHTML 
 					render_DC()
-				}	
+				}	else{
+					renderStereo();
+				}
 			}
 			
 			

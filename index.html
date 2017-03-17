@@ -122,9 +122,15 @@
 
 		</div>  -->
 		<script>
+
 		var RPDMgmt=undefined;
 		/** start exporter test **/
 (function() {		
+		if ( WEBVR.isAvailable() === false ) {
+
+				document.body.appendChild( WEBVR.getMessage() );
+
+			}
 
 		init(); // start scene
 		

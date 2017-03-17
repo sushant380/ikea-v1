@@ -306,38 +306,8 @@ render();
    cPos.z = cPos.z * mb;
 
 }
-function onDocumentMouseMove( event ) {
+	function onDocumentMouseMove( event ) {
 		event.preventDefault();
-		// if(event.button===2){
-		// 	return;
-		// }
-		/*if(useRuler){
-			controls.noRotate = true;
-			doDraw(event);
-			return;
-		}*/
-		/*if(SELECTEDPLATFORM){
-            // myRoom.planeView.position.copy(SELECTEDPLATFORM.position);
-            // myRoom.planeView.lookAt(camera.position);
-            var intersects=raycaster.intersectObject(myRoom.intersectObjects);
-           
-                var increaseRatio=intersects[0].point.sub(myRoom.platform.position).length() / SELECTEDPLATFORM.position.sub(myRoom.platform.position).length();
-                myRoom.platform.scale.set(
-                    myRoom.platform.scale.x*increaseRatio,
-                    myRoom.platform.scale.y*increaseRatio,
-                    myRoom.platform.scale.z*increaseRatio
-                );
-                //also update other vertexHelpers'position
-                for(var i=0;i<myRoom.vertexHelpers.length;i++){
-                    var vector=new THREE.Vector3().copy(myRoom.vertexHelpers[i].position.sub(myRoom.platform.position));
-                    vector.multiplyScalar(increaseRatio);
-                    myRoom.vertexHelpers[i].position.copy(vector);
-                }
-            
-            return;
-            //'return' because we don't want the 'picking objects' part 
-            //if we were yet dragging something
-        }*/
 		
 		if ( SELECTED ) {
 			SELECTED.matrixAutoUpdate=true // IMPORTANT!! allow movement				
@@ -372,45 +342,8 @@ function onDocumentMouseMove( event ) {
 			return;
 		}
 		 
-        /*if(myRoom.platform){
-		var platforms=[];
-		var metObject=false,metVertex=false;
-	
-		var platformintersects = raycaster.intersectObjects( myRoom.intersectObjects);
-		if(platformintersects.length>0){
-			for(var i=0;i<platformintersects.length;i++){
-			            var result=platformintersects[i].object;
-			            if(result==myRoom.platform){metObject=true;}
-			            if(result.geometry instanceof THREE.SphereGeometry && !metVertex){
-			            	metVertex=result;
-			            }
-			        }
-			         if(metVertex){
-			            if(INTERSECTEDPLATFORM!=metVertex)INTERSECTEDPLATFORM=metVertex;
-			            document.body.style.cursor='move';
-			        }else{
-			           
-			            document.body.style.cursor='auto';
-			        }
-			         if((metVertex||metObject)&&!mouseDown){
-			         	if(myRoom.platform){
-				            myRoom.platform.material.opacity=.5;
-				            for(var i=0;i<myRoom.vertexHelpers.length;i++){
-				                myRoom.vertexHelpers[i].visible=true;
-				            }
-			        	}
-			        }else{
-			        	if(myRoom.platform){
-				            myRoom.platform.material.opacity=1;
-				            for(var i=0;i<myRoom.vertexHelpers.length;i++){
-				                myRoom.vertexHelpers[i].visible=false;
-				            }
-			       		}
-			        }
-			        return;
-		}
-	}*/
-	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+      
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 		var touches = false
 		if(event.touches != undefined && event.touches[ 0 ].pageX!=undefined &&  event.touches[ 0 ].pageY!=undefined ){
@@ -431,8 +364,8 @@ function onDocumentMouseMove( event ) {
 						
 						// ignore if touche
 					//	if(!touches) INTERSECTED.material.color.setHex( 0xffcc00 );	
-				}
 				container.style.cursor = 'pointer';
+				
 				} else {
 					if ( INTERSECTED && INTERSECTED.currentHex!=undefined) {
 							INTERSECTED.material.color.setHex( INTERSECTED.currentHex );
@@ -441,8 +374,10 @@ function onDocumentMouseMove( event ) {
 					INTERSECTED = null;
 					container.style.cursor = 'auto';
 				}
+
 			}
-			function onDocumentMouseDown( event ) {
+	}
+	function onDocumentMouseDown( event ) {
 				mouseDown=true;
 				event.preventDefault();
 				if(!$(event.target).closest('#colorPanel').length) {
@@ -514,8 +449,11 @@ function onDocumentMouseMove( event ) {
 						}
 					container.style.cursor = 'move';
 					render();
+				}else{
+					SELECTED=undefined;
 				}
 			}
+
 			function onDocumentMouseUp( event ) {
 				mouseDown=false;
 				/*if(useRuler){
