@@ -76,7 +76,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				
 				
 				//renderer
-				renderer = renderer = Detector.webgl? new THREE.WebGLRenderer({antialias:true}): alert("No WebGL support")//new THREE.CanvasRenderer(); //new THREE.WebGLRenderer({antialias:true});
+				renderer = Detector.webgl? new THREE.WebGLRenderer({antialias:true}): alert("No WebGL support")//new THREE.CanvasRenderer(); //new THREE.WebGLRenderer({antialias:true});
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -445,7 +445,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 
 						}*/
 						onWindowResize()
-						render();
+						renderStereo();
 					}
 					else {
 						effect= undefined;
@@ -666,6 +666,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 			function renderStereo(){
 				controls.update();
 				effect.render( scene, camera );	
+
 				requestAnimationFrame( renderStereo );
 			}
 			
