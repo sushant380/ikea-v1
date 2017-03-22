@@ -666,7 +666,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 			function renderStereo(){
 				controls.update();
 				effect.render( scene, camera );	
-
+				console.log('render stereo');
 				requestAnimationFrame( renderStereo );
 			}
 			
