@@ -427,7 +427,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					if(effect == undefined) {
 						controls = new THREE.VRControls( camera );
 						controls.standing = true;
-						effect = new THREE.StereoEffect(renderer);
+						effect = new THREE.VREffect(renderer);
 						camera.position.set(0, personStandingHeight-0.2, 0);
 						//fullscreen()
 						/*if ( navigator.getVRDisplays ) {
