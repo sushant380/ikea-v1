@@ -147,11 +147,30 @@ this.roomWallShapesInner = function() {
 		var extrudeSettingsWalls = {amount: parseFloat(this.ceilingHeight), bevelEnabled: false};	
 		//
 	    var geometryWall = new THREE.ExtrudeGeometry( squareShape, extrudeSettingsWalls );
+	    var map=new THREE.TextureLoader().load( "img/floor/walle_COLOR.png" ),
+		displacementMap=new THREE.TextureLoader().load( "img/floor/walle_DISP.png" ),
+		normalMap=new THREE.TextureLoader().load( "img/floor/walle_NRM.png" ),
+		aoMap=new THREE.TextureLoader().load( "img/floor/walle_OCC.png" ),
+		specularMap=new THREE.TextureLoader().load( "img/floor/walle_SPEC.png" );
+
+		map.wrapS=map.wrapT=THREE.RepeatWrapping;
+		displacementMap.wrapS=displacementMap.wrapT=THREE.RepeatWrapping;
+		normalMap.wrapS=normalMap.wrapT=THREE.RepeatWrapping;
+		aoMap.wrapS=aoMap.wrapT=THREE.RepeatWrapping;
+		specularMap.wrapS=specularMap.wrapT=THREE.RepeatWrapping;
+	var wallTexture=new THREE.MeshPhongMaterial({
+		map:map,
+		displacementMap:displacementMap,
+		normalMap:normalMap,
+		aoMap:aoMap,
+		specularMap:specularMap,
+		displacementScale:0.01
+	});
 	    var wallMaterial=new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
 	    var wallgeo =new THREE.Geometry();
 		wallgeo.vertices=geometryWall.vertices;
 		wallgeo.faces=geometryWall.faces;
-		var wallInner = new THREE.Mesh( wallgeo,wallMaterial);		
+		var wallInner = new THREE.Mesh( wallgeo,wallTexture);		
 		//wallInner.receiveShadow = true;
 		wallInner.castShadow = true;	
 		wallInner.userData = {"wallBaseShape": wallsArr[i]}
@@ -226,8 +245,8 @@ this.correctMaxtrixAfterChanges = function(obj) {
 this.setFloor = function() {
 	var geometry = new THREE.ShapeGeometry( this.roomShape );
 	this.floorShape = new THREE.Mesh( geometry );
-	this.floorShape.receiveShadow = true;
-	this.floorShape.castShadow = true;
+	//this.floorShape.receiveShadow = true;
+	//this.floorShape.castShadow = true;
 //	this.floorShape.rotation.x = -Math.PI /2
 	this.correctMaxtrixAfterChanges(this.floorShape)
 	
@@ -236,8 +255,27 @@ this.setFloor = function() {
 	this.floorShape.name ="floor"
 
 	// create texture and material
-	var t = "50080570utan_s.jpg"
-	this.setTexture(this.floorShape, t)
+	var map=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_COLOR.png" ),
+		displacementMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_DISP.png" ),
+		normalMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_NRM.png" ),
+		aoMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_OCC.png" ),
+		specularMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_SPEC.png" );
+
+		map.wrapS=map.wrapT=THREE.RepeatWrapping;
+		displacementMap.wrapS=displacementMap.wrapT=THREE.RepeatWrapping;
+		normalMap.wrapS=normalMap.wrapT=THREE.RepeatWrapping;
+		aoMap.wrapS=aoMap.wrapT=THREE.RepeatWrapping;
+		specularMap.wrapS=specularMap.wrapT=THREE.RepeatWrapping;
+	var floorTexture=new THREE.MeshPhongMaterial({
+		map:map,
+		displacementMap:displacementMap,
+		normalMap:normalMap,
+		aoMap:aoMap,
+		specularMap:specularMap,
+		displacementScale:0.01
+	});
+	this.floorShape.material=floorTexture;
+
 	
 },
 

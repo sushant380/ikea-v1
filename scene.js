@@ -666,7 +666,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 			function renderStereo(){
 				controls.update();
 				effect.render( scene, camera );	
-				console.log('render stereo');
+				
 				requestAnimationFrame( renderStereo );
 			}
 			
@@ -744,16 +744,20 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				if(controller2!=undefined) scene.remove(controller2)
 							
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 );	
-				
+				projector = new THREE.Projector();
 				if(controls!=undefined) controls.dispose()
-				controls = new THREE.VRControls(camera);
-				  controls.standing = true;
-controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt			
-				//controls.target.set(0,1.08,-1.6749995000000002);	
-								  // Apply VR stereo rendering to renderer.
-				  effect = new THREE.VREffect(renderer);
-				  effect.setSize(window.innerWidth, window.innerHeight);
-				renderStereo();
+				controls =new THREE.OrbitControls(camera, renderer.domElement);
+				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt			
+				controls.target.set(0,1.08,-1.6749995000000002);	
+				//sceenZoomToObj(g_lookAtObj)	
+				addHandleWallVisabilityEventsListeners()
+				addAllMouseEventsListeners()
+				addAllToucheEventsListeners()
+//				console.log(controls)
+//				console.log(renderer.domElement)
+				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() 
+				//VIVECTL() // test ctrl
+				render();
 			}
 			
 			function fullscreen() {
