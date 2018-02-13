@@ -43,7 +43,25 @@
  		background-position: center center;
 	}
 		</style>
+		<script type="application/x-glsl" id="sky-vertex">
+		varying vec2 vUV;
 
+		void main() {
+		  vUV = uv;
+		  vec4 pos = vec4(position, 1.0);
+		  gl_Position = projectionMatrix * modelViewMatrix * pos;
+		}
+		</script>
+
+		<script type="application/x-glsl" id="sky-fragment">
+		uniform sampler2D texture;
+		varying vec2 vUV;
+
+		void main() {
+		  vec4 sample = texture2D(texture, vUV);
+		  gl_FragColor = vec4(sample.xyz, sample.w);
+		}
+		</script>
 	</head>
 	<body>
 		<script type="x-shader/x-vertex" id="vertexShader">
@@ -90,6 +108,7 @@
 		<!-- THREE related JS -->
 		<script src="js/three.js"></script>
 		<script src="js/csg/ThreeCSG.js"></script>
+		<script src="js/PointerLockControls.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
 		<script src="itemInteraction.js"></script>
 		<script src="js/Detector.js"></script> <!-- webgl detector -->
@@ -154,28 +173,17 @@
 
 		</div>  -->
 		<script>
+var RPDMgmt=undefined;
+ $(document).on("ready", function(){
+	init(); // start scene
 
-		var RPDMgmt=undefined;
+	RPDMgmt = new RPDManager()
+
+	RPDMgmt.setRPDBox()
+});
+
 		/** start exporter test **/
-(function() {
-		if ( WEBVR.isAvailable() === false ) {
 
-			//	document.body.appendChild( WEBVR.getMessage() );
-
-			}
-
-		init(); // start scene
-
-		RPDMgmt = new RPDManager()
-
-		RPDMgmt.setRPDBox()
-
-
-		//set default RPD
-
-
-
-})();
 		</script>
 	<div id="colorPanel" style="display:hidden;"></div>
 	<div class="context-menu-one box menu-1"></div>
@@ -184,127 +192,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Customize WorkTop</h4>
+                    <h4 class="modal-title" id="myModalLabel">Items</h4>
                 </div>
-                <div class="modal-body wizard-content">
-
-                    <div class="wizard-step">
-
-                       <div class="container-fluid">
-                       	 <fieldset>
-                       	 <legend>Acrylic</legend>
-						  <div class="row texture-group">
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						          <input type="radio" name="textures" checked value="1">
-						          <span class="thumbnail">
-						            <img src="img/1.jpg" class="img-responsive"/>
-
-						          </span>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="2">
-						        <span class="thumbnail">
-						          <img src="img/2.jpg" class="img-responsive"/>
-
-						        </span>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="3">
-						        <div class="thumbnail">
-						          <img src="img/3.jpg" class="img-responsive"/>
-
-						        </div>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="4">
-						        <div class="thumbnail">
-						          <img src="img/4.jpg" class="img-responsive"/>
-
-						        </div>
-						      </label>
-						    </div>
-
-						  </div>
-						  </fieldset>
-						   <fieldset>
-                       			<legend>Ceramic</legend>
-						  		<div class="row texture-group">
-						  			<div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						          <input type="radio" name="textures" checked value="8">
-						          <span class="thumbnail">
-						            <img src="img/8.jpg" class="img-responsive"/>
-
-						          </span>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="9">
-						        <span class="thumbnail">
-						          <img src="img/9.jpg" class="img-responsive"/>
-
-						        </span>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="10">
-						        <div class="thumbnail">
-						          <img src="img/10.jpg" class="img-responsive"/>
-
-						        </div>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="11">
-						        <div class="thumbnail">
-						          <img src="img/11.jpg" class="img-responsive"/>
-
-						        </div>
-						      </label>
-						    </div>
-						  		</div>
-						  	</fieldset>
-						  	 <fieldset>
-                       			<legend>Wooden</legend>
-						  		<div class="row texture-group">
-						  			<div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						          <input type="radio" name="textures" checked value="12">
-						          <span class="thumbnail">
-						            <img src="img/12.jpg" class="img-responsive"/>
-
-						          </span>
-						      </label>
-						    </div>
-						    <div class="col-xs-2">
-						      <label class="text-center radio-thumbnail">
-						        <input type="radio" name="textures" value="13">
-						        <span class="thumbnail">
-						          <img src="img/13.jpg" class="img-responsive"/>
-
-						        </span>
-						      </label>
-						    </div>
-
-						  		</div>
-						  	</fieldset>
-						</div>
-
-                    </div>
-                     <div class="wizard-step">
-                     	 Finish<br>
-                     </div>
-                </div>
+                <div class="modal-body" id="model-body">
+								</div>
                 <div class="modal-footer wizard-buttons">
                     <!-- The wizard button will be inserted here. -->
                 </div>

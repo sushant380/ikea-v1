@@ -162,7 +162,7 @@ this.roomWallShapesInner = function() {
 		wallgeo.faces=geometryWall.faces;
 		var wallInner = new THREE.Mesh( geometryWall,mat);
 		//wallInner.receiveShadow = true;
-		wallInner.castShadow = true;
+		wallInner.receiveShadow  = true;
 		wallInner.userData = {"wallBaseShape": wallsArr[i]}
 		wallInner.name = "Wall"+i
 
@@ -235,7 +235,7 @@ this.correctMaxtrixAfterChanges = function(obj) {
 this.setFloor = function() {
 	var geometry = new THREE.ShapeGeometry( this.roomShape );
 	this.floorShape = new THREE.Mesh( geometry );
-	//this.floorShape.receiveShadow = true;
+	this.floorShape.receiveShadow = true;
 	//this.floorShape.castShadow = true;
 //	this.floorShape.rotation.x = -Math.PI /2
 	this.correctMaxtrixAfterChanges(this.floorShape)
@@ -850,9 +850,10 @@ this.initRoom = function() {
 	}
 
 	// correct light and camera on the sceen
-	g_lookAtObj = this.floorShape
-	sceenZoomToObj(g_lookAtObj)
-	setLightTarget(g_lookAtObj)
+	g_lookAtObj = this.floorShape;
+  camera.position.set(0.02,1.08,4);
+	//sceenZoomToObj(g_lookAtObj)
+	//setLightTarget(g_lookAtObj)
 
 }
 

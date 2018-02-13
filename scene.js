@@ -18,7 +18,9 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 			var controller1, controller2; //vive
 
 			var skyBoxDefault = new SkyBox()
-			skyBoxDefault.drawShaderSkybox()
+			skyBoxDefault.drawShaderSkybox();
+			var bulbLight;
+			var hemiLight;
 
 			var ViveControlInteractions // test of interacting with vive
 
@@ -71,9 +73,9 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 //				var helper = new THREE.CameraHelper( dirLight2.shadow.camera );
 //				scene.add( helper );			*/
 var tol = 1;
-					 var height = 500; // TODO: share with Blueprint.Wall
+					 var height = 5000; // TODO: share with Blueprint.Wall
 
-var light = new THREE.HemisphereLight(0xffffff, 0x888888, 1.1);
+/*var light = new THREE.HemisphereLight(0xffffff, 0x888888, 1.1);
                 light.position.set(0, height, 0);
 
                 //scene.add(light);
@@ -83,7 +85,7 @@ var light = new THREE.HemisphereLight(0xffffff, 0x888888, 1.1);
 
 
 				var spotLight = new THREE.SpotLight( 0xffffff );
-				spotLight.position.set( 850, 1000, 100);
+				spotLight.position.set( 1850, 2000, 100);
 
 				spotLight.castShadow = true;
 
@@ -113,7 +115,28 @@ var light = new THREE.HemisphereLight(0xffffff, 0x888888, 1.1);
                 //dirLight.shadowCameraVisible = true;
 				scene.add(dirLight);
                 scene.add(dirLight.target);
-				scene.add( new THREE.AmbientLight( 0x888888 ) );
+				scene.add( new THREE.AmbientLight( 0x888888 ) );*/
+
+				var bulbGeometry = new THREE.SphereGeometry( 0.02, 16, 8 );
+				bulbLight = new THREE.PointLight( 0xfbf2be, 0.8, 100, 2 );
+
+				var bulbMat = new THREE.MeshStandardMaterial( {
+					emissive: 0xffffee,
+					emissiveIntensity: 1,
+					color: 0x000000
+				});
+				bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
+				bulbLight.position.set( 0, 5, 0 );
+				bulbLight.castShadow = true;
+				//bulbLight.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 ) );
+				bulbLight.shadowDarkness = 0.2;
+				bulbLight.shadow.bias = 0.0001;
+				scene.add( bulbLight );
+
+				hemiLight = new THREE.HemisphereLight( 0xddeeff, 0x0f0e0d, 0.51 );
+				scene.add( hemiLight );
+
+				addSkyDome();
 
 				var ua = detect.parse(navigator.userAgent);
 				//console.log(ua)
@@ -123,8 +146,11 @@ var light = new THREE.HemisphereLight(0xffffff, 0x888888, 1.1);
 				renderer = Detector.webgl? new THREE.WebGLRenderer({antialias:true}): alert("No WebGL support")//new THREE.CanvasRenderer(); //new THREE.WebGLRenderer({antialias:true});
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
+				//	renderer.toneMappingExposure = Math.pow( 0.56, 5.0 );
+					renderer.shadowMap.enabled = true;
+					renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-renderer.setClearColor(0x6698FF, 1.0);
+// renderer.setClearColor(0x6698FF, 1.0);
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -361,6 +387,23 @@ renderer.setClearColor(0x6698FF, 1.0);
 				}
 			}
 			function customizeWorkTop(){
+
+			}
+
+			function addSkyDome(){
+				var materialArray = [];
+					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posx.jpg' ) }));
+					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negx.jpg' ) }));
+					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posy.jpg' ) }));
+					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negy.jpg' ) }));
+					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posz.jpg' ) }));
+					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negz.jpg' ) }));
+					 for (var i = 0; i < 6; i++)
+							materialArray[i].side = THREE.BackSide;
+					 var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+					 var skyboxGeom = new THREE.CubeGeometry( 50, 50, 50, 1, 1, 1 );
+					 var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+					 scene.add( skybox );
 
 			}
 			function drawShape(shape,color){
@@ -646,7 +689,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				//console.log(camera)
 			}
 			function setLightTarget(obj) {
-					dirLight.target=obj
+					// dirLight.target=obj
 			}
 
 			function setHelpers() {
@@ -753,7 +796,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 
 			function render() {
-				dirLight.position.set( camera.position.x, camera.position.y, camera.position.z ); // make dir light follow camera
+				//dirLight.position.set( camera.position.x, camera.position.y, camera.position.z ); // make dir light follow camera
 
 				if(controls instanceof THREE.OrbitControls) {
 					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - OC rendering" + debugUI.innerHTML
@@ -789,7 +832,8 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 );
 				projector = new THREE.Projector();
-				if(controls!=undefined) controls.dispose()
+				if(controls!=undefined) controls.dispose();
+
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
 				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt
 				controls.target.set(0,1.08,-1.6749995000000002);
