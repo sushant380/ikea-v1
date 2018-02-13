@@ -8,7 +8,7 @@ this.shapeAxis = {x:"x",y:"y"}, // describes which axis to use to understand flo
 this.wallThickness = 0.2, // setting default
 this.ceilingHeight, //to do
 this.roomPoints,
-this.openingsArr = [], 
+this.openingsArr = [],
 this.isMetric,
 this.roomShape,
 this.floorShape,
@@ -24,25 +24,25 @@ this.textureOnLoaded = function(texture) {
 
 	// call rerender once the texture is loaded
 	renderer.domElement.dispatchEvent(new Event('rerender'));
-				
+
 	return texture
 },
 this.setTexture = function(shape, t, c) {
-	
-/**	var texture = this.textureLoader.load(t, this.textureOnLoaded ) 	
-	var mat = new THREE.MeshLambertMaterial( { // new THREE.MeshBasicMaterial({ 
+
+/**	var texture = this.textureLoader.load(t, this.textureOnLoaded )
+	var mat = new THREE.MeshLambertMaterial( { // new THREE.MeshBasicMaterial({
                      color: 0xffffff,
 					 map:texture,
 					 side:THREE.DoubleSide
 					 //wireframe:true,
-					
-                 }); 
+
+                 });
 	//shape.material = mat;
 	**/
-	shape.material = mProx.getMaterial({"texture":t,"color":c});	
-	
+	shape.material = mProx.getMaterial({"texture":t,"color":c});
+
 },
-				 
+
 this.getRoomPoints = function() {
 	var v2a = new Array()
 	for(var i=0; i<this.roomPoints.length;i++) {
@@ -59,21 +59,21 @@ this.setRoomShape = function() {
 	squareShape.autoClose=true
 	var roomPoints = this.getRoomPoints();
 	for(var i = 0; i<roomPoints.length;i++) {
-	
+
 		if(i==0) squareShape.moveTo( roomPoints[i].x,roomPoints[i].y );
-		else squareShape.lineTo( roomPoints[i].x, roomPoints[i].y );				
-		
+		else squareShape.lineTo( roomPoints[i].x, roomPoints[i].y );
+
 		}
 		//console.log("squareShape")
 		//console.log(squareShape)
 	this.roomShape = squareShape
 },
 this.createCommonWallShape = function(p1,p2) {
-	
+
 		var wallPs = new Array()
 		var p3,p4
 		var wallThickness = this.wallThickness
-		
+
 		// create wall thickness
 		var a = this.commonHelper.angle(p1.x, p1.y, p2.x, p2.y)
 		p3 = this.commonHelper.findNewPoint(p1.x, p1.y, a + (90 * (Math.PI/180) ),  wallThickness)
@@ -82,55 +82,61 @@ this.createCommonWallShape = function(p1,p2) {
 		wallPs.push(p1)
 		wallPs.push(p2)
 		wallPs.push(p4) //p4
-		wallPs.push(p3) //p3			
+		wallPs.push(p3) //p3
 		return wallPs
-		
+
 }
 this.roomWallShapesInner = function() {
-	
+
 	var roomPoints = this.getRoomPoints();
 
 	var wallsArr = new Array()
-	var p1,p2
-
+	var p1,p2;
+  var mat = new THREE.MeshPhongMaterial({
+   color: 0xcccccc,
+   emissive: new THREE.Color(0x0c0c0c),
+   shininess: 0,
+   side: THREE.DoubleSide
+  });
 	for(var i = 0; i<roomPoints.length;i++) {
 		p1 = roomPoints[i]
-		if(i<roomPoints.length-1) p2 = roomPoints[i+1] 
+		if(i<roomPoints.length-1) p2 = roomPoints[i+1]
 		else p2 = roomPoints[0]
-		
+
 		wallsArr.push(this.createCommonWallShape(p1,p2))
-		
+
 		}
-		
+
+
 	// change outer wall lines so that they join nicer
 	for(var i = 0; i<wallsArr.length;i++) {
 
 		var NL
 		if(i<wallsArr.length-1) NL = i+1
 		else NL = 0
-		
-		var intPoint = this.commonHelper.checkLineIntersection(wallsArr[i][3]["x"], wallsArr[i][3]["y"], wallsArr[i][2]["x"], wallsArr[i][2]["y"], wallsArr[NL][2]["x"], wallsArr[NL][2]["y"], wallsArr[NL][3]["x"], wallsArr[NL][3]["y"]) 
+
+		var intPoint = this.commonHelper.checkLineIntersection(wallsArr[i][3]["x"], wallsArr[i][3]["y"], wallsArr[i][2]["x"], wallsArr[i][2]["y"], wallsArr[NL][2]["x"], wallsArr[NL][2]["y"], wallsArr[NL][3]["x"], wallsArr[NL][3]["y"])
 
 		if(intPoint.x != null) {
 			////console.log("adjusted corner")
 			wallsArr[i][2]["x"] = wallsArr[NL][3]["x"] = intPoint["x"]
 			wallsArr[i][2]["y"] = wallsArr[NL][3]["y"] = intPoint["y"]
 		}
-		
+
 		if(i==0) { //handle joint if also the last one.
 			NL = wallsArr.length-1
-			var intPoint = this.commonHelper.checkLineIntersection(wallsArr[i][2]["x"], wallsArr[i][2]["y"], wallsArr[i][3]["x"], wallsArr[i][3]["y"], wallsArr[NL][2]["x"], wallsArr[NL][2]["y"], wallsArr[NL][3]["x"], wallsArr[NL][3]["y"]) 
+			var intPoint = this.commonHelper.checkLineIntersection(wallsArr[i][2]["x"], wallsArr[i][2]["y"], wallsArr[i][3]["x"], wallsArr[i][3]["y"], wallsArr[NL][2]["x"], wallsArr[NL][2]["y"], wallsArr[NL][3]["x"], wallsArr[NL][3]["y"])
 			////console.log("check last")
 			////console.log(intPoint)
 			wallsArr[i][3]["x"] = wallsArr[NL][3]["x"] = intPoint["x"]
 			wallsArr[i][3]["y"] = wallsArr[NL][3]["y"] = intPoint["y"]
 		}
-		
-		var squareShape = new THREE.Shape();		
-		
+
+		var squareShape = new THREE.Shape();
+
 
 		for(var j = 0; j<wallsArr[i].length;j++) {
-			
+
 			if(j==0) {
 				squareShape.moveTo( wallsArr[i][j]["x"],wallsArr[i][j]["y"] );
 				//store the start point
@@ -139,57 +145,41 @@ this.roomWallShapesInner = function() {
 				//store the second point
 				squareShape.lineTo( wallsArr[i][j]["x"], wallsArr[i][j]["y"] );
 			}
-			else squareShape.lineTo( wallsArr[i][j]["x"], wallsArr[i][j]["y"] );	
-		
+			else squareShape.lineTo( wallsArr[i][j]["x"], wallsArr[i][j]["y"] );
+
 		}
-		
+
 		//
-		var extrudeSettingsWalls = {amount: parseFloat(this.ceilingHeight), bevelEnabled: false};	
+		var extrudeSettingsWalls = {amount: parseFloat(this.ceilingHeight), bevelEnabled: false };
 		//
 	    var geometryWall = new THREE.ExtrudeGeometry( squareShape, extrudeSettingsWalls );
-	    var map=new THREE.TextureLoader().load( "img/floor/walle_COLOR.png" ),
-		displacementMap=new THREE.TextureLoader().load( "img/floor/walle_DISP.png" ),
-		normalMap=new THREE.TextureLoader().load( "img/floor/walle_NRM.png" ),
-		aoMap=new THREE.TextureLoader().load( "img/floor/walle_OCC.png" ),
-		specularMap=new THREE.TextureLoader().load( "img/floor/walle_SPEC.png" );
 
-		map.wrapS=map.wrapT=THREE.RepeatWrapping;
-		displacementMap.wrapS=displacementMap.wrapT=THREE.RepeatWrapping;
-		normalMap.wrapS=normalMap.wrapT=THREE.RepeatWrapping;
-		aoMap.wrapS=aoMap.wrapT=THREE.RepeatWrapping;
-		specularMap.wrapS=specularMap.wrapT=THREE.RepeatWrapping;
-	var wallTexture=new THREE.MeshPhongMaterial({
-		map:map,
-		displacementMap:displacementMap,
-		normalMap:normalMap,
-		aoMap:aoMap,
-		specularMap:specularMap,
-		displacementScale:0.01
-	});
-	    var wallMaterial=new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
+
+
+
 	    var wallgeo =new THREE.Geometry();
 		wallgeo.vertices=geometryWall.vertices;
 		wallgeo.faces=geometryWall.faces;
-		var wallInner = new THREE.Mesh( wallgeo,wallTexture);		
+		var wallInner = new THREE.Mesh( geometryWall,mat);
 		//wallInner.receiveShadow = true;
-		wallInner.castShadow = true;	
+		wallInner.castShadow = true;
 		wallInner.userData = {"wallBaseShape": wallsArr[i]}
 		wallInner.name = "Wall"+i
 
 		//var t = "materials/texture/White.jpg"
 		var t = "White.jpg"
 		//this.setTexture(wallInner, t)
-		this.addWireFrameLines(wallInner,wallInner)
-		
+		//this.addWireFrameLines(wallInner,wallInner)
+
 		//wallInner.rotation.set(-Math.PI/2,0,0)
 
 		this.correctMaxtrixAfterChanges(wallInner)
-		//this.recalcSphereBB(wallInner) //remove?			
+		//this.recalcSphereBB(wallInner) //remove?
 		//console.log(wallInner)
-	
+
 		this.allWallMeshes.push(wallInner)
-		
-	
+
+
 		var matrix = new THREE.Matrix4();
 		wallInner.updateMatrix()
 /**		matrix.extractRotation(wallInner.matrix);
@@ -205,16 +195,16 @@ this.roomWallShapesInner = function() {
 	geometry.vertices.push(new THREE.Vector3( 0, 0, 0 ),dir)
 	var line = new THREE.Line( geometry ,mat);
 	//console.log(line)
-	wallInner.add( line );	 
+	wallInner.add( line );
 	**/
 	//
-	
-		
+
+
 //	console.log(wallInnersss)
 		//
-		
-		
-	}	
+
+
+	}
 },
 
 this.addWireFrameLines = function(obj, attachToObj) {
@@ -225,22 +215,22 @@ this.addWireFrameLines = function(obj, attachToObj) {
 }
 
 this.correctMaxtrixAfterChanges = function(obj) {
-/**	obj.updateMatrix(); 
+/**	obj.updateMatrix();
 	obj.geometry.applyMatrix( obj.matrix );
 	obj.matrix.identity();
-	
+
 //	obj.position.set( 0, 0, 0 );
 //	obj.rotation.set( 0, 0, 0 );
 //	obj.scale.set( 1, 1, 1 );
 	obj.geometry.computeBoundingBox()
-	obj.geometry.computeBoundingSphere(); 
+	obj.geometry.computeBoundingSphere();
 	//obj.geometry.mergeVertices();
-	obj.geometry.computeFaceNormals();	
+	obj.geometry.computeFaceNormals();
 	obj.geometry.computeVertexNormals(); **/
-		obj.geometry.computeFaceNormals();	
+		obj.geometry.computeFaceNormals();
 	obj.geometry.computeVertexNormals()
 	obj.geometry.computeBoundingBox()
-		obj.geometry.computeBoundingSphere(); 
+		obj.geometry.computeBoundingSphere();
 }
 this.setFloor = function() {
 	var geometry = new THREE.ShapeGeometry( this.roomShape );
@@ -249,13 +239,13 @@ this.setFloor = function() {
 	//this.floorShape.castShadow = true;
 //	this.floorShape.rotation.x = -Math.PI /2
 	this.correctMaxtrixAfterChanges(this.floorShape)
-	
+
 //	this.floorShape.rotation.set(-Math.PI /2, 0,0)
-	
+
 	this.floorShape.name ="floor"
 
 	// create texture and material
-	var map=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_COLOR.png" ),
+	var map=new THREE.TextureLoader().load( "img/wood.jpg" ),
 		displacementMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_DISP.png" ),
 		normalMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_NRM.png" ),
 		aoMap=new THREE.TextureLoader().load( "img/floor/Bathroom-Floor-Tile-Texture-1024x1024_OCC.png" ),
@@ -267,16 +257,12 @@ this.setFloor = function() {
 		aoMap.wrapS=aoMap.wrapT=THREE.RepeatWrapping;
 		specularMap.wrapS=specularMap.wrapT=THREE.RepeatWrapping;
 	var floorTexture=new THREE.MeshPhongMaterial({
-		map:map,
-		displacementMap:displacementMap,
-		normalMap:normalMap,
-		aoMap:aoMap,
-		specularMap:specularMap,
-		displacementScale:0.01
+		map:map
 	});
+
 	this.floorShape.material=floorTexture;
 
-	
+
 },
 
 this.setAllOpenings = function() {
@@ -284,12 +270,12 @@ this.setAllOpenings = function() {
 		this.setOpening2(this.openingsArr[i])
 	}
 },
-	
+
 this.checkIntersection = function(f, t, objArr) {
-					var raycaster = new THREE.Raycaster(t, f);					
-					var collisionResults = raycaster.intersectObjects(objArr);	
+					var raycaster = new THREE.Raycaster(t, f);
+					var collisionResults = raycaster.intersectObjects(objArr);
 					return collisionResults
-},	
+},
 
 this.setOpening2 = function(openingObj) {
 //		console.log("into setOpening2")
@@ -297,14 +283,14 @@ this.setOpening2 = function(openingObj) {
 		var pnt =  new THREE.Vector2(openingObj.Pos.x, openingObj.Pos.z)
 
 //		console.log(openingObj.Pos.x + " " +openingObj.Pos.y+ " " + openingObj.Pos.z)
-		
+
 		var gBB =  new THREE.SphereGeometry( this.wallThickness/2, 4, 4 );
 		var materialbSB = new THREE.MeshBasicMaterial( {color: 0x000000} );
 		var gBB_M = new THREE.Mesh( gBB,materialbSB );
 		gBB_M.position.set(openingObj.Pos.x,openingObj.Pos.z, openingObj.Pos.y)
 
 		//scene.add(gBB_M)
-		
+
 		this.recalcSphereBB(gBB_M)
 		var fBB =  new THREE.Box3().setFromObject(gBB_M)
 		//	scene.add(gBB_M) // show test pooint
@@ -312,12 +298,12 @@ this.setOpening2 = function(openingObj) {
 		var firstObj
 		for(var j = 0; j<this.allWallMeshes.length;j++) {
 			var sBB =  new THREE.Box3().setFromObject(this.allWallMeshes[j])
-			
+
 			if(fBB.intersectsBox(sBB)) {
 //			console.log("intersection check")
 			firstObj = this.allWallMeshes[j]
-			break	
-				
+			break
+
 			}
 		}
 //		console.log("firstObj")
@@ -327,23 +313,23 @@ this.setOpening2 = function(openingObj) {
 		var l1 = firstObjUD[0]
 		var l2 = firstObjUD[1]
 		//console.log(firstObjUD)
-		
+
 		var la = this.commonHelper.angle(l1.x, l1.y ,l2.x, l2.y)
 		//console.log(la)
-		
+
 		var pLeft = this.commonHelper.findNewPoint(pnt.x, pnt.y, la,  (openingObj.PosLeft))
 		var pRight = this.commonHelper.findNewPoint(pnt.x, pnt.y, la,  (openingObj.PosRight))
-		
-	
+
+
 		var openingPoints = this.createCommonWallShape(pLeft,pRight)
-			
-		var openingShape = new THREE.Shape();		
-		
+
+		var openingShape = new THREE.Shape();
+
 		for(var j = 0; j<openingPoints.length;j++) {
-			//console.log(openingPoints[j]["x"] + " "+openingPoints[j]["y"])	
+			//console.log(openingPoints[j]["x"] + " "+openingPoints[j]["y"])
 			if(j==0) openingShape.moveTo( openingPoints[j]["x"],openingPoints[j]["y"] );
-			else openingShape.lineTo( openingPoints[j]["x"], openingPoints[j]["y"] );	
-			
+			else openingShape.lineTo( openingPoints[j]["x"], openingPoints[j]["y"] );
+
 		}
 			//console.log(openingShape)
 			var d
@@ -352,48 +338,48 @@ this.setOpening2 = function(openingObj) {
 				d= openingObj.PosTop
 				openingObj.PosBottom = 0
 			}
-		
+
 			//console.log(d)
-	
+
 			var extrudeSettingsOpening = { amount: d, bevelEnabled: false };
 
-			//				 
+			//
 			var geometryOpening = new THREE.ExtrudeGeometry( openingShape, extrudeSettingsOpening );
 
 			var wallgeo=new THREE.Geometry();
 			wallgeo.vertices=geometryOpening.vertices;
 			wallgeo.faces=geometryOpening.faces;
 			var openingMesh = new THREE.Mesh( wallgeo);
-			
+
 			openingMesh.name = "Opening"
 			var c =  openingObj.PosBottom// this.ceilingHeight//- openingObj.PosTop - (d/2)
-			openingMesh.position.z= c	
+			openingMesh.position.z= c
 			var openingMesh2 = new THREE.Mesh( geometryOpening)
 			openingMesh.position.z= c
-			
+
 			//this.correctMaxtrixAfterChanges(openingMesh)
 			var removePart = new ThreeBSP( openingMesh);
 			var remainPart = new ThreeBSP( firstObj);
-					
-			var subtract_bsp = remainPart.subtract(removePart);	
+
+			var subtract_bsp = remainPart.subtract(removePart);
 			var result =  subtract_bsp.toMesh()
-						
+
 
 
 			//result.material =  firstObj.material
-			//result.name = firstObj.name	 
+			//result.name = firstObj.name
 			//result.userData = firstObj.userData
-						
+
 			// create opening mesh with transparent and WF
 			var material2 = new THREE.MeshLambertMaterial({color: 0x9999FF, transparent: true, opacity: 0.1});
 			openingMesh.material = material2
 			this.addWireFrameLines(openingMesh,openingMesh)
 			firstObj.geometry = result.geometry
-	
+
 			//openingMesh.receiveShadow = true;
 			//openingMesh.castShadow = true;
-			firstObj.add(openingMesh)	
-//scene.add(openingMesh)	
+			firstObj.add(openingMesh)
+//scene.add(openingMesh)
 		}
 },
 
@@ -409,13 +395,13 @@ this.setAllWallsToScene = function() {
 	for(var i = 0; i<this.allWallMeshes.length;i++) {
 
 
-		//this.correctMaxtrixAfterChanges(this.allWallMeshes[i])							
+		//this.correctMaxtrixAfterChanges(this.allWallMeshes[i])
 		//this.allWallMeshes[i].rotation.set(-Math.PI /2,0,0)
 
 		scene.add(this.allWallMeshes[i])
 		this.recalcSphereBB(this.allWallMeshes[i]) // to make sure the raytrace works
-		
-		} 
+
+		}
 },
 this.drawUshapePlatform=function(color){
 	var eastWall=this.allWallMeshes[0];
@@ -461,7 +447,7 @@ this.drawUshapePlatform=function(color){
 	}
 	//interactiveObjects.push(this.platform);
 	this.createVertexHelper();
-	 
+
 };
 this.drawLshapePlatform=function(color){
 	 var eastWall=this.allWallMeshes[0];
@@ -490,7 +476,7 @@ this.drawLshapePlatform=function(color){
 	 var unionTop=center.union(left);
 	 var result = unionTop.toMesh( cube1.material);
 	 result.geometry.computeVertexNormals();
-	
+
 	if(!this.platform){
 		this.platform=result;
 		scene.add(this.platform,this.plane());
@@ -498,7 +484,7 @@ this.drawLshapePlatform=function(color){
 	}else{
 		this.platform.geometry=result.geometry;
 	}
-	
+
 ///interactiveObjects.push(this.platform);
 this.createVertexHelper();
 
@@ -530,7 +516,7 @@ this.createVertexHelper=function(){
 }
 this.removeWorkTop=function(cube,item){
 	if(item.name==='CabWorktop' || (item.parent && item.parent.name==='CabWorktop')){
-		
+
 		if(item.name==='CabWorktop' ){
 			if(item.material.materials){
 				for(var w=0;w<item.material.materials.length;w++){
@@ -541,7 +527,7 @@ this.removeWorkTop=function(cube,item){
 			item.material.transparent=true;
 			item.material.opacity=0;
 		}
-		var cabworkTop=new ThreeBSP(cube);	
+		var cabworkTop=new ThreeBSP(cube);
 		var childShape=undefined;
 		if(item.name==='CabSink' || item.name==='CabHob'){
 			var box=new THREE.Box3().setFromObject(item);
@@ -551,7 +537,7 @@ this.removeWorkTop=function(cube,item){
 			vector.setFromMatrixPosition( item.matrixWorld );
 			anothercube.position.copy(vector);
 			console.log(vector);
-			
+
 			childShape=new ThreeBSP(anothercube);
 			var subtractTop=cabworkTop.subtract(childShape);
 			var result = subtractTop.toMesh( cabworkTop.material);
@@ -559,7 +545,7 @@ this.removeWorkTop=function(cube,item){
 			result.geometry.computeVertexNormals();
 			cube.geometry=result.geometry;
 			//scene.add(result);
-						
+
 		}
 
 		/*else{
@@ -569,8 +555,8 @@ this.removeWorkTop=function(cube,item){
 				childShape=new ThreeBSP(item);
 			}
 		}*/
-		
-		
+
+
 		if(item.children && item.children.length>0){
 			for(var h=0;h<item.children.length;h++){
 				this.removeWorkTop(cube,item.children[h]);
@@ -625,7 +611,7 @@ this.drawPlatform=function(){
 	bbox.update();
 	bbox.position.set(0,0,0);
 	scene.add( bbox );
-	
+
 }
 this.drawIshapePlatform=function(color){
 	if(this.platform){
@@ -650,16 +636,16 @@ var baseTop=new THREE.Object3D();
 					worktop.children=[];
 					itm.geometry.computeBoundingBox();
 					worktop.geometry.computeBoundingBox();
-					
+
 					var iShape=new THREE.BoxGeometry(itm.geometry.boundingBox.getSize().x+0.06,worktop.geometry.boundingBox.getSize().y,0.675000011920929);
-					
+
 					var cube = new THREE.Mesh( iShape, image );
 					itm.updateMatrixWorld();
 					var actualPosition=new THREE.Vector3();
 					actualPosition.setFromMatrixPosition(worktop.matrixWorld);
 					cube.position.copy(actualPosition);
 					if(itm.name==='IKEA.Host.Basecabinet_corner_127'){
-						
+
 						if(itm.rotation.y>0){
 							cube.position.z=cube.position.z-0.33;
 						}
@@ -714,8 +700,8 @@ var baseTop=new THREE.Object3D();
 		this.removeWorkTop(baseMesh,myRoomItems.itemMeshes[k]);
 	}
 	baseMesh.geometry.mergeVertices();
-	
-	
+
+
 	/*var edges=new THREE.EdgesGeometry(worktopMesh.geometry);
 	var edesLine=new THREE.LineSegments(edges,new THREE.MeshBasicMaterial({color:'#ff00000'}));
 	scene.add(edesLine);*/
@@ -756,7 +742,7 @@ var baseTop=new THREE.Object3D();
 		console.log(it.uuid);
 	});
 	/*var eastWall=this.allWallMeshes[0];
-	
+
 	var wallWidth=new THREE.Box3().setFromObject(eastWall).getSize().x;
 	var shapeWidth=wallWidth-0.1;
 	var iShape=new THREE.BoxGeometry(shapeWidth,0.6,0.03);
@@ -771,7 +757,7 @@ var baseTop=new THREE.Object3D();
 	for(var k=0;k<myRoomItems.itemMeshes.length;k++){
 		this.removeWorkTop(cube,myRoomItems.itemMeshes[k]);
 	}
-	
+
 	if(!this.platform){
 		this.platform=cube;
 
@@ -783,8 +769,8 @@ var baseTop=new THREE.Object3D();
 	//this.drawPlatform();
 	//interactiveObjects.push(this.platform);
  //	this.createVertexHelper();
-    
-	
+
+
 }
 function calcPolygonArea(object) {
    var _len = object.geometry.faces.length,
@@ -812,16 +798,16 @@ this.hideWalls = function() {
 					// first make all the walls visible again
 					for(var i = 0; i<this.allWallMeshes.length;i++) {
 						this.allWallMeshes[i].visible = true
-					}				
+					}
 
 					var originPoint = new THREE.Vector3(camera.position.x, camera.position.y,camera.position.z);
 					var directionPoint = new THREE.Vector3( 0, 0, 0 );
-			
-					var collisionResults = this.checkIntersection(originPoint, directionPoint, this.allWallMeshes)					
+
+					var collisionResults = this.checkIntersection(originPoint, directionPoint, this.allWallMeshes)
 					for(var i = 0; i<collisionResults.length;i++) {
 						collisionResults[i].object.visible = false
 					}
-					
+
 },
 this.initRoom = function() {
 	// construct floor and add to scene
@@ -829,41 +815,46 @@ this.initRoom = function() {
 	this.setFloor()
 	//this.floorShape.updateMatrix();
 	scene.add(this.floorShape);
-	
+
 	this.floorShape.onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
 
-	interactiveRoomObjs.push(this.floorShape)
+	interactiveRoomObjs.push(this.floorShape);
 
-	this.roomWallShapesInner()
+	this.roomWallShapesInner();
 
 	this.setAllOpenings();
 
 	this.setAllWallsToScene();
+  // var mat = new THREE.MeshPhongMaterial({
+  //  color: 0xcccccc,
+  //  emissive: new THREE.Color(0x0c0c0c),
+  //  shininess: 0,
+  //  side: THREE.DoubleSide
+  // });
+  // var wallGeometry=new THREE.BoxGeometry( 6, 0.2, 2.5  );
+  // var wallMesh=new THREE.Mesh(wallGeometry,mat);
+  // wallMesh.rotation.x=-1.5707963267948966;
+  // scene.add(wallMesh);
 
-	////console.log(this.allWallMeshes)
-	
+  //console.log(this.allWallMeshes)
+
 	// since we drawed the room in wrong axis, now correct them
 	this.floorShape.rotation.set(-Math.PI /2, 0,0)
 	for(var i=0;i<this.allWallMeshes.length;i++) {
 		this.allWallMeshes[i].rotation.set(-Math.PI /2, 0,0)
 		this.allWallMeshes[i].onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
-		
+
 		//Wall interaction...
 		//interactiveObjects.push(this.allWallMeshes[i])
-		
+
 	}
-	
+
 	// correct light and camera on the sceen
 	g_lookAtObj = this.floorShape
 	sceenZoomToObj(g_lookAtObj)
-	setLightTarget(g_lookAtObj)	
-	
-}
-
+	setLightTarget(g_lookAtObj)
 
 }
 
 
-
-
-
+}

@@ -10,7 +10,7 @@
 				background-color: #FFFFFF;
 				overflow: hidden;
 			}
-			
+
 			div.floating {
 				color : #ffffff;
 				background : #000000;
@@ -43,9 +43,41 @@
  		background-position: center center;
 	}
 		</style>
-	
+
 	</head>
 	<body>
+		<script type="x-shader/x-vertex" id="vertexShader">
+
+			varying vec3 vWorldPosition;
+
+			void main() {
+
+				vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+				vWorldPosition = worldPosition.xyz;
+
+				gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+			}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentShader">
+
+			uniform vec3 topColor;
+			uniform vec3 bottomColor;
+			uniform float offset;
+			uniform float exponent;
+
+			varying vec3 vWorldPosition;
+
+			void main() {
+
+				float h = normalize( vWorldPosition + offset ).y;
+				gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max( h , 0.0), exponent ), 0.0 ) ), 1.0 );
+
+			}
+
+		</script>
 	<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
  <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
@@ -53,79 +85,79 @@
      <script src="js/bootstrap.min.js"></script>
      <script src="js/bootstrap-select.js"></script>
 <link rel="stylesheet" type="text/css" href="js/eazyWizard.css">
-			<script src="js/eazyWizard.js"></script>	
+			<script src="js/eazyWizard.js"></script>
 	<link rel="stylesheet" type="text/css" href="js/contextMenu.css">
 		<!-- THREE related JS -->
-		<script src="js/three.js"></script>		
-		<script src="js/csg/ThreeCSG.js"></script> 
+		<script src="js/three.js"></script>
+		<script src="js/csg/ThreeCSG.js"></script>
 		<script src="js/controls/OrbitControls.js"></script>
 		<script src="itemInteraction.js"></script>
 		<script src="js/Detector.js"></script> <!-- webgl detector -->
-		
+
 		<!-- cardboard -->
-		<script src="js/effects/StereoEffect.js"></script> 
+		<script src="js/effects/StereoEffect.js"></script>
 		<script src="js/controls/DeviceOrientationControls.js"></script>
 		<!-- cardboard -->
-		
+
 		<!-- Vive -->
 		<script src="js/controls/VRControls_mod.js"></script>
 		<script src="js/effects/VREffect.js"></script>
 		<script src="js/vr/ViveController.js"></script>
-		<script src="js/vr/WebVR.js"></script>		
-		<script src="js/loaders/OBJLoader.js"></script> 
-		<script src="js/loaders/MTLLoader.js"></script> 
-		<script src="js/vr/vivecontrollerInteraction.js"></script> 
+		<script src="js/vr/WebVR.js"></script>
+		<script src="js/loaders/OBJLoader.js"></script>
+		<script src="js/loaders/MTLLoader.js"></script>
+		<script src="js/vr/vivecontrollerInteraction.js"></script>
 		<!-- Vive -->
 
-		<!-- Custom OBJ export --><!-- modified -->		
-		<script src="js/ObjExporter.js"></script> 
+		<!-- Custom OBJ export --><!-- modified -->
+		<script src="js/ObjExporter.js"></script>
 		<script src="js/jszip/jszip.min.js"></script>
-		
+
 		<!-- other open source -->
 		<script src="js/graham_scan.min.js"></script> <!-- only needed for RPD data -->
 		<script src="js/detect.min.js"></script>
 		<script src="js/GeometryUtils.js"></script>
 		<script src="js/jquery.steps.js"></script>
-		
+
 		<!-- custom parts -->
 		<script src="rpd.js"></script> <!-- test RPD var -->
-		<script src="commonHelpers.js"></script> 
-		
+		<script src="commonHelpers.js"></script>
+
 		<script src="defaultWHDs.js"></script>
-		<script src="parseRPD.js"></script> 
-		
+		<script src="parseRPD.js"></script>
+
 		<script src="materialProxy.js"></script>
-		<script src="roomObj.js"></script> 
-		<script src="itemObj.js"></script> 
-		<script src="RoomItem.js"></script> 
+		<script src="roomObj.js"></script>
+		<script src="itemObj.js"></script>
+		<script src="RoomItem.js"></script>
 
-		
-		<script src="exporterHelper.js"></script> 
-		<script src="RPDManager.js"></script> 
+
+		<script src="exporterHelper.js"></script>
+		<script src="RPDManager.js"></script>
 		<!-- skyBox -->
-		<script src="skyBox.js"></script> 
+		<script src="skyBox.js"></script>
 
-		<script src="scene.js"></script> 
-		<script src="js/Tween.js"></script> 
-		<script src="js/contextMenu.js"></script> 
+		<script src="scene.js"></script>
+		<script src="js/Tween.js"></script>
+		<script src="js/contextMenu.js"></script>
 		<link rel="stylesheet" type="text/css" href="js/bootstrap-colorpicker.min.css">
-		<script src="js/bootstrap-colorpicker.min.js"></script> 
-		<script src="js/SimplifyModifier.js"></script> 
-		
-		
+		<script src="js/bootstrap-colorpicker.min.js"></script>
+		<script src="js/SimplifyModifier.js"></script>
+
+
 <!--		<div style="position: absolute; top: 10px; width: 10%; text-align: left; ">
 			RPD: <br><textarea id="rpd" value=""></textarea><br>
 			<a href="#" onclick="setRPD();"> Update Room</a>
 
 			<!--<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>
-				<br>	 	 
+				<br>
 
 		</div>  -->
 		<script>
 
 		var RPDMgmt=undefined;
 		/** start exporter test **/
-(function() {		
+(function() {
 		if ( WEBVR.isAvailable() === false ) {
 
 			//	document.body.appendChild( WEBVR.getMessage() );
@@ -133,17 +165,17 @@
 			}
 
 		init(); // start scene
-		
+
 		RPDMgmt = new RPDManager()
 
 		RPDMgmt.setRPDBox()
-		
+
 
 		//set default RPD
 
 
-		
-})();		
+
+})();
 		</script>
 	<div id="colorPanel" style="display:hidden;"></div>
 	<div class="context-menu-one box menu-1"></div>
@@ -155,9 +187,9 @@
                     <h4 class="modal-title" id="myModalLabel">Customize WorkTop</h4>
                 </div>
                 <div class="modal-body wizard-content">
-                    
+
                     <div class="wizard-step">
-                     
+
                        <div class="container-fluid">
                        	 <fieldset>
                        	 <legend>Acrylic</legend>
@@ -167,7 +199,7 @@
 						          <input type="radio" name="textures" checked value="1">
 						          <span class="thumbnail">
 						            <img src="img/1.jpg" class="img-responsive"/>
-						            
+
 						          </span>
 						      </label>
 						    </div>
@@ -176,7 +208,7 @@
 						        <input type="radio" name="textures" value="2">
 						        <span class="thumbnail">
 						          <img src="img/2.jpg" class="img-responsive"/>
-						          
+
 						        </span>
 						      </label>
 						    </div>
@@ -185,7 +217,7 @@
 						        <input type="radio" name="textures" value="3">
 						        <div class="thumbnail">
 						          <img src="img/3.jpg" class="img-responsive"/>
-						          
+
 						        </div>
 						      </label>
 						    </div>
@@ -194,11 +226,11 @@
 						        <input type="radio" name="textures" value="4">
 						        <div class="thumbnail">
 						          <img src="img/4.jpg" class="img-responsive"/>
-						          
+
 						        </div>
 						      </label>
 						    </div>
-						    
+
 						  </div>
 						  </fieldset>
 						   <fieldset>
@@ -209,7 +241,7 @@
 						          <input type="radio" name="textures" checked value="8">
 						          <span class="thumbnail">
 						            <img src="img/8.jpg" class="img-responsive"/>
-						            
+
 						          </span>
 						      </label>
 						    </div>
@@ -218,7 +250,7 @@
 						        <input type="radio" name="textures" value="9">
 						        <span class="thumbnail">
 						          <img src="img/9.jpg" class="img-responsive"/>
-						          
+
 						        </span>
 						      </label>
 						    </div>
@@ -227,7 +259,7 @@
 						        <input type="radio" name="textures" value="10">
 						        <div class="thumbnail">
 						          <img src="img/10.jpg" class="img-responsive"/>
-						          
+
 						        </div>
 						      </label>
 						    </div>
@@ -236,7 +268,7 @@
 						        <input type="radio" name="textures" value="11">
 						        <div class="thumbnail">
 						          <img src="img/11.jpg" class="img-responsive"/>
-						          
+
 						        </div>
 						      </label>
 						    </div>
@@ -250,7 +282,7 @@
 						          <input type="radio" name="textures" checked value="12">
 						          <span class="thumbnail">
 						            <img src="img/12.jpg" class="img-responsive"/>
-						            
+
 						          </span>
 						      </label>
 						    </div>
@@ -259,11 +291,11 @@
 						        <input type="radio" name="textures" value="13">
 						        <span class="thumbnail">
 						          <img src="img/13.jpg" class="img-responsive"/>
-						          
+
 						        </span>
 						      </label>
 						    </div>
-						   
+
 						  		</div>
 						  	</fieldset>
 						</div>
@@ -281,37 +313,37 @@
     </div>
 
     <script>
-        $(document).on("ready", function(){
-           $("#myModal").wizard({
-            	exit:'Exit',
-            	back:'Back',
-            	next:'Next',
-            	finish:'Finish',
-                onfinish:function(){
-                  	var color=$('.texture-group input:radio:checked').val();
-                  	var shape=$('.btn-group input:radio:checked').val()
-                    drawShape("I",color);
-                }
-            });
-             $('#colorPanel').colorpicker({
-	            color: '#ffaa00',
-	            container: true,
-	            inline: true,
-
-	        }).on('changeColor',function(a,b,c){
-	        	var color=a.color;
-	        	
-	        	for(var n=0;n<myRoom.allWallMeshes.length;n++){
-	        		myRoom.allWallMeshes[n].material.color.set(color.toHex());
-	        	}
-	        	for(var q=0;q<scene.children.length;q++){
-	        		if(scene.children[q].name.indexOf('Obstacle')>-1){
-	        			scene.children[q].material.color.set(color.toHex());
-	        		}
-	        	}
-	        	render();
-	        });
-        });
+        // $(document).on("ready", function(){
+        //    $("#myModal").wizard({
+        //     	exit:'Exit',
+        //     	back:'Back',
+        //     	next:'Next',
+        //     	finish:'Finish',
+        //         onfinish:function(){
+        //           	var color=$('.texture-group input:radio:checked').val();
+        //           	var shape=$('.btn-group input:radio:checked').val()
+        //             drawShape("I",color);
+        //         }
+        //     });
+        //   //    $('#colorPanel').colorpicker({
+		      //   //     color: '#ffaa00',
+	      //   //     container: true,
+	      //   //     inline: true,
+        //   //
+	      //   // }).on('changeColor',function(a,b,c){
+	      //   	// var color=a.color;
+        //     //
+	      //   	// for(var n=0;n<myRoom.allWallMeshes.length;n++){
+	      //   	// 	myRoom.allWallMeshes[n].material.color.set(color.toHex());
+	      //   	// }
+	      //   	// for(var q=0;q<scene.children.length;q++){
+	      //   	// 	if(scene.children[q].name.indexOf('Obstacle')>-1){
+	      //   	// 		scene.children[q].material.color.set(color.toHex());
+	      //   	// 	}
+	      //   	// }
+	      //   	render();
+	      //   });
+        // });
     </script>
 	</body>
 </html>

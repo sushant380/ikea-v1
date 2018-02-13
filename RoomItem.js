@@ -24,14 +24,14 @@ function RoomItem(item,parent,itemsHolder){
 	}
 	this.add=function(itm){
 		if(this.obj.type=='Group'){
-			this.obj.children[0].add(itm);	
+			this.obj.children[0].add(itm);
 		}else{
 			this.obj.add(itm);
 		}
-		
+
 	};
 	function init(current){
-		
+
 		current.getItemObject(function(scope){
 			scope.obj.position.set(scope.Pos.x, scope.Pos.y, scope.Pos.z);
 			scope.obj.rotation.set(scope.Ori.x, scope.Ori.y, scope.Ori.z);
@@ -47,7 +47,7 @@ function RoomItem(item,parent,itemsHolder){
 			if(scope.lockXTranslation!=undefined) scope.obj.userData.lockXTranslation = scope.lockXTranslation;
 			if(scope.lockYTranslation!=undefined) scope.obj.userData.lockYTranslation = scope.lockYTranslation;
 			if(scope.lockZTranslation!=undefined) scope.obj.userData.lockZTranslation = scope.lockZTranslation;
-			
+
 			if(scope.isHost){
 				//scope.obj.userData.collidableWalls=scope.itemsHolder.collidableWalls;
 				//scope.obj.userData.collidableWalls.push(scope.itemsHolder.collidableFloor);
@@ -68,14 +68,14 @@ function RoomItem(item,parent,itemsHolder){
 				scope.obj.add(cubeMesh[1]);*/
 				scope.itemsHolder.itemMeshes.push(scope.obj);
 				scope.obj.onAfterRender = function(){scope.itemsHolder.matrixAutoUpdate=false;
-					
-				}; 
+
+				};
 			}
-			interactiveObjects.push(scope.obj);	
-			
+		//	interactiveObjects.push(scope.obj);
+
 			/*if(scope.itemType==='Plinth'){
 
-				
+
 				var cube=new THREE.CubeGeometry(box.getSize().x,box.getSize().x,box.getSize().x);
 				var box=new THREE.Box3().setFromObject(scope.obj);
 				var leftSide=scope.obj.clone();
@@ -103,22 +103,22 @@ function RoomItem(item,parent,itemsHolder){
 			}*/
 			if(scope.isHost){
 				scope.obj.isHost=true;
-				
+
 			}
 			if(scope.parent){
-				console.log(scope.itemType);
+				//console.log(scope.itemType);
 				scope.parent.add(scope.obj);
 				scope.parent.updateParent();
 			}else if(scope.parent===undefined){
 				scope.itemsHolder.scene.add(scope.obj);
 			}
-			
-			
+
+
 		});
 	};
 	this.updateParent=function(){
 		this.childLoadCount++;
-		console.log(this.itemType);
+		//console.log(this.itemType);
 		if(this.childLoadCount===this.rawChildItems.length){
 			if(this.itemType && this.itemType.indexOf('CabWorktop')>-1){
 				var cwtgeometry = new THREE.Geometry().fromBufferGeometry( this.obj.geometry );
@@ -126,7 +126,7 @@ function RoomItem(item,parent,itemsHolder){
 					if(this.childItems[d].itemType==='CabSink' || this.childItems[d].itemType==='CabHob'){
 						var box=new THREE.Box3().setFromObject(this.childItems[d].obj);
 						cube = new THREE.Mesh( new THREE.CubeGeometry( box.getSize().x-0.01, box.getSize().y, box.getSize().z-0.01 ), new THREE.MeshNormalMaterial() );
-						var cabworkTop=new ThreeBSP(cwtgeometry);	
+						var cabworkTop=new ThreeBSP(cwtgeometry);
 						var childShape=new ThreeBSP(cube);
 						var subtractTop=cabworkTop.subtract(childShape);
 						var result = subtractTop.toMesh( cabworkTop.material);
@@ -146,7 +146,7 @@ function RoomItem(item,parent,itemsHolder){
 					}
 				}
 				this.obj.geometry=cwtgeometry;
-				
+
 			}
 		}
 	};
@@ -158,30 +158,30 @@ function RoomItem(item,parent,itemsHolder){
 			//if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
 			var materialLoader=new THREE.MTLLoader();
 			materialLoader.setPath('models/obj/');
-			console.log(scope.shape);
+		//	console.log(scope.shape);
 			materialLoader.load(scope.shape+'.mtl',function(material){
 					var loader = new THREE.OBJLoader();
 					loader.setPath( 'models/obj/' );
 					loader.setMaterials(material);
-					
+
 					loader.load( scope.shape+'.obj', function ( object ) {
 					object.castShadow = true
 					object.recieveShadow = true
-					
+
 					// wireframe
 					if(scope.showWireframe ) {
-						
+
 						/*var geo = new THREE.EdgesGeometry( object.children[0].geometry ); // or WireframeGeometry
 						var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
 						var wireframe = new THREE.LineSegments( geo, mat );
-						var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ee00, wireframe: true, transparent: true } ); 
+						var wireframeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ee00, wireframe: true, transparent: true } );
 						object.add(wireframeMaterial);*/
 					}
 					scope.obj = object.children[0];
-					
+
 					callback(scope);
 				},function(){},function(){
-					console.log('failed= ',scope);
+					//console.log('failed= ',scope);
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
 					var mesh_mat=undefined;
 					if(scope.name.indexOf("Obstacle")>-1){
@@ -203,14 +203,14 @@ function RoomItem(item,parent,itemsHolder){
 					callback(scope);
 				});
 			},function(){},function(){
-				console.log('failed= ',scope);
+				//console.log('failed= ',scope);
 				var loader = new THREE.OBJLoader();
 					loader.setPath( 'models/obj/' );
-					
+
 					loader.load( scope.shape+'.obj', function ( object ) {
 					object.castShadow = true
 					object.recieveShadow = true
-					
+
 					// wireframe
 					if(scope.showWireframe ) {
 						var geo = new THREE.EdgesGeometry( object.children[0].geometry ); // or WireframeGeometry
@@ -221,7 +221,7 @@ function RoomItem(item,parent,itemsHolder){
 					scope.obj = object.children[0];
 					callback(scope);
 				},function(){},function(){
-					console.log('failed= ',scope);
+					//console.log('failed= ',scope);
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
 					var mesh_mat=undefined;
 					if(scope.name.indexOf("Obstacle")>-1){
@@ -229,7 +229,7 @@ function RoomItem(item,parent,itemsHolder){
 					}else{
 						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
 					}
-					
+
 					var mesh=new THREE.Mesh(object, mesh_mat);
 					mesh.castShadow = true
 					mesh.recieveShadow = true
@@ -261,32 +261,32 @@ function RoomItem(item,parent,itemsHolder){
 			this.obj = mesh;
 			callback(this);
 		}*/
-		
+
 	};
 	 this.itemsOffsetPos=function(a,dir) {
 						/** we need to adjust the POS since VP do not use center pos **/
 						var crPo = a.Pos
 						var maxOfWnD			// VP counts the center based on the max
-						
+
 						var oAW = a.w
 						var oAD = a.d
-						
+
 						var sub = new THREE.Vector3()
 						var t
-						
+
 						if(a.w<a.d) a.d=a.w
 						else a.w=a.d
-						
+
 						var t
 if(dir.x==0)				t = new THREE.Vector3(oAW/2, a.h/2, oAD/2)		//?? does this work for all cases?
 else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
-						
+
 						//var t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)
-						
+
 						sub.addVectors(crPo, t)
-						
-						
-						
+
+
+
 						if(dir.z<0 && dir.x<0) {
 							//console.log("offset Z: " + a.name + " " + a.d)
 							t = new THREE.Vector3(a.w,0, a.d)
@@ -303,7 +303,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 							t = new THREE.Vector3(a.w, 0, a.d)
 							sub.subVectors(sub, t)
 						}
-						
+
 						else if(dir.z>0 && dir.x>0 ) {
 							t = new THREE.Vector3(0,0, a.d)
 							sub.subVectors(sub, t)
@@ -347,7 +347,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 							z:door.Pos.z
 						};
 					}
-					
+
 				}
 				var updateCount=0;
 				var doorTween = new TWEEN.Tween(doorData_1).to(doorData_2, 1000).onUpdate(function(){
@@ -358,7 +358,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 					var newRotation = new THREE.Euler( 0, (-doorData_1.angle) * 0.017453292519943295, 0);
 	                door.obj.rotation.copy( newRotation );
 	                var v=new THREE.Vector3(doorData_1.x,0,doorData_1.z);
-	                door.obj.position.copy(v);	
+	                door.obj.position.copy(v);
 	                door.obj.updateMatrixWorld( true );
 	                updateBox(scope.obj);
 
@@ -396,12 +396,12 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 					if(door.opening==='Left'){
                 		door.obj.rotation.copy( newRotation );
                 		var v=new THREE.Vector3(leftDoorAngel.x,0,leftDoorAngel.z);
-                		door.obj.position.copy(v);	
+                		door.obj.position.copy(v);
                 		door.obj.updateMatrixWorld( true );
 
                 	}
             	});
-                
+
                 updateBox(scope.obj);
 
 			}).onComplete(function(){
@@ -424,11 +424,11 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 					if(door.opening==='Right'){
                 		door.obj.rotation.copy( newRotation );
                 		var v=new THREE.Vector3(rightDoorAngel.x,0,rightDoorAngel.z);
-                		door.obj.position.copy(v);	
+                		door.obj.position.copy(v);
                	 		door.obj.updateMatrixWorld( true );
                 	}
             	});
-                
+
                 updateBox(scope.obj);
 
 			}).onComplete(function(){
@@ -477,12 +477,12 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 				var newRotation = new THREE.Euler( 0, (-leftDoorAngel1.angle) * 0.017453292519943295, 0);
                 doorItems[0].obj.rotation.copy( newRotation );
                 var v=new THREE.Vector3(leftDoorAngel1.x,0,leftDoorAngel1.z);
-                doorItems[0].obj.position.copy(v);	
+                doorItems[0].obj.position.copy(v);
                 doorItems[0].obj.updateMatrixWorld( true );
                 updateBox(scope.obj);
 
 			}).onComplete(function(){
-				console.log('completed');
+			//	console.log('completed');
 			}).easing(TWEEN.Easing.Quadratic.In).start();
 			animate_OC();
 		}
@@ -503,7 +503,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 			}else{
 				drawers.forEach(function(d,index){
 					initialPosition['position'+index]=d.obj.position.z;
-					allposition['position'+index]=0;	
+					allposition['position'+index]=0;
 				});
 			}
 			var drawerTween = new TWEEN.Tween(initialPosition).to(
@@ -518,7 +518,7 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 						zpos=initialPosition['position'+index];
 					}
 					var v=new THREE.Vector3(d.obj.position.x,d.obj.position.y,zpos);
-                	d.obj.position.copy(v);	
+                	d.obj.position.copy(v);
                 	d.obj.updateMatrixWorld( true );
             	});
             	updateBox(scope.obj);
@@ -546,23 +546,23 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 				shelfItems.push(child);
 			}
 		});
-		if(doorItems.length>0)	{	
+		if(doorItems.length>0)	{
 			this.doorsAnimation(doorItems,'close');
 		}
-		
-		//all drawers 
+
+		//all drawers
 		if(drawerItems.length>0){
 			this.drawersAnimation(drawerItems,'close');
 		}
 	};
 	this.playAnimation=function(){
-		
+
 		var doorItems=[];
 		var drawerItems=[];
 		var shelfItems=[];
 		this.childItems.forEach(function(child){
 			if(child.itemType.indexOf('DoorFront')>-1 || child.itemType.indexOf('Front800Up')>-1){
-		
+
 				if(child.shape!=='IKEA.ART.00300918'){
 					doorItems.push(child);
 				}
@@ -573,11 +573,11 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 			}
 		});
 		//all doors first
-		if(doorItems.length>0)	{	
+		if(doorItems.length>0)	{
 			this.doorsAnimation(doorItems,'open');
 		}
-		
-		//all drawers 
+
+		//all drawers
 		if(drawerItems.length>0){
 			this.drawersAnimation(drawerItems,'open');
 		}
@@ -587,25 +587,25 @@ else						t = new THREE.Vector3(a.w/2, a.h/2, a.d/2)		//??
 
 		var obj = this
 		if(obj.geometry.boundingBox == undefined) obj.geometry.computeBoundingBox()
-		var fBB =  new THREE.Box3().setFromObject(obj) 
-	
+		var fBB =  new THREE.Box3().setFromObject(obj)
+
 		var firstObj
 		for(var j = 0; j<obj.userData[collArr].length;j++) {
-			
+
 			if(obj==obj.userData[collArr][j]) continue
-			
+
 			if(obj.userData[collArr][j].geometry.boundingBox == undefined) obj.userData[collArr][j].geometry.computeBoundingBox()
 			var sBB =  new THREE.Box3().setFromObject(obj.userData[collArr][j])
-			
+
 			if(fBB.intersectsBox(sBB)) {
 				this.matrixAutoUpdate=false
 
 				return true
-				
+
 			}
 		}
-		this.matrixAutoUpdate=false	
-		
+		this.matrixAutoUpdate=false
+
 	return false
 };
 	init(this);

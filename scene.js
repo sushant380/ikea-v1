@@ -1,10 +1,10 @@
 "use strict";
-var camera, scene, renderer, dirLight, g_lookAtObj, lastCameraPos = new THREE.Vector3( 0, 0, 0 ), myRoom, controls, effect, g_DeviceType, 
+var camera, scene, renderer, dirLight, g_lookAtObj, lastCameraPos = new THREE.Vector3( 0, 0, 0 ), myRoom, controls, effect, g_DeviceType,
 clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShapemesh, platform,useRuler,projector;
 
 			var interactiveObjects = [];
 			var interactiveRoomObjs = []
-			
+
 			var plane = new THREE.Plane();
 			var raycaster
 			var mouse = new THREE.Vector2(),
@@ -12,16 +12,16 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 			intersection = new THREE.Vector3(),
 			INTERSECTED, SELECTED,
 			container;
-			
-			clock = new THREE.Clock();	
-			
+
+			clock = new THREE.Clock();
+
 			var controller1, controller2; //vive
-			
+
 			var skyBoxDefault = new SkyBox()
 			skyBoxDefault.drawShaderSkybox()
-			
+
 			var ViveControlInteractions // test of interacting with vive
-			
+
 			var g_transparentObjs = true // revert since it don't dynamic change... should loop over material and change this instead
 
 		function init() {
@@ -32,7 +32,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				g_lookAtObj = undefined
 				controls = undefined
 				dirLight = undefined
-				
+
 				raycaster = new THREE.Raycaster();
 				interactiveObjects = []
 				plane = new THREE.Plane();
@@ -44,67 +44,111 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				container = undefined
 				effect
 				/** **/
-				
+
 				personStandingHeight = 1.6 // default standing height
-				
+
 				scene = new THREE.Scene();
 				// LIGHTS
-				var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+				/*var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
 				hemiLight.position.set( 0, 0, 500 );
-				scene.add( hemiLight ); 
+				scene.add( hemiLight );
 				//
-				
+
 				var light = new THREE.AmbientLight( 0x404040 ); // soft white light
 				scene.add( light );
 
 
 				dirLight = new THREE.DirectionalLight( 0x404040, 0.7 );
-				dirLight.castShadow = true; 
+				dirLight.castShadow = true;
 				scene.add( dirLight );
 //				var helper = new THREE.CameraHelper( dirLight.shadow.camera );
 //				scene.add( helper );
 
 				var dirLight2 = new THREE.DirectionalLight( 0xffffff, 0.3 );
-				dirLight2.castShadow = true; 
+				dirLight2.castShadow = true;
 				dirLight2.position.set(0,4,0)
-				scene.add( dirLight2 );				
+				scene.add( dirLight2 );
 //				var helper = new THREE.CameraHelper( dirLight2.shadow.camera );
-//				scene.add( helper );			
+//				scene.add( helper );			*/
+var tol = 1;
+					 var height = 500; // TODO: share with Blueprint.Wall
+
+var light = new THREE.HemisphereLight(0xffffff, 0x888888, 1.1);
+                light.position.set(0, height, 0);
+
+                //scene.add(light);
+				// white spotlight shining from the side, casting a shadow
+
+
+
+
+				var spotLight = new THREE.SpotLight( 0xffffff );
+				spotLight.position.set( 850, 1000, 100);
+
+				spotLight.castShadow = true;
+
+				//spotLight.shadow.mapSize.width = 1024;
+				spotLight.shadowMapWidth = 1024;
+				spotLight.shadowMapHeight = 1024;
+				//spotLight.shadow.mapSize.height = 1024;
+				spotLight.angle = 0.8;
+				spotLight.shadowCameraFar  = 8000 ;//shadow.camera.near = 500;
+				//spotLight.shadow.camera.far = 4000;
+				spotLight.visible = true;
+				//spotLight.shadowCameraVisible = true;
+				spotLight.fov =  20;//shadow.camera.fov = 30;
+				scene.add( spotLight );
+				//scene.add( new THREE.CameraHelper( spotLight.shadow.camera ) );
+
+                dirLight = new THREE.DirectionalLight(0xffffff, 0);
+                dirLight.color.setHSL(1, 1, 0.1);
+                dirLight.castShadow = true;
+                dirLight.shadowMapWidth = 1024;
+                dirLight.shadowMapHeight = 1024;
+                dirLight.shadowCameraFar = height + tol;
+				dirLight.angle = 180;
+                dirLight.shadowBias = 0.0001;
+                dirLight.shadowDarkness = 0.5;
+                dirLight.visible = true;
+                //dirLight.shadowCameraVisible = true;
+				scene.add(dirLight);
+                scene.add(dirLight.target);
+				scene.add( new THREE.AmbientLight( 0x888888 ) );
 
 				var ua = detect.parse(navigator.userAgent);
 				//console.log(ua)
-				
-				
+
+
 				//renderer
 				renderer = Detector.webgl? new THREE.WebGLRenderer({antialias:true}): alert("No WebGL support")//new THREE.CanvasRenderer(); //new THREE.WebGLRenderer({antialias:true});
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
-	
-			
+renderer.setClearColor(0x6698FF, 1.0);
+
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
-				
+
 				container.appendChild( renderer.domElement );
 				renderer.domElement.id = "context"
-				renderer.setClearColor( 0xffffff ); // scene background
-				
+			//	renderer.setClearColor( 0xffffff ); // scene background
+
 				renderer.shadowMap.enabled = true;
-				renderer.shadowMap.type = THREE.PCFSoftShadowMap;				
+				renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 //setHelpers();
-				
+
 				debugUI = document.createElement( 'div' );
 				debugUI.style="position: absolute; top: 10px; left:20px; width: 100%; text-align: right; "
 				container.appendChild( debugUI );
-				
+
 				/** control UI **/
 				controlsUI = document.createElement( 'div' );
 				controlsUI.style="position: absolute; top: 10px;  width: 100%; text-align: left; "
 				container.appendChild( controlsUI );
-				var CamConUI="" 
-	
+				var CamConUI=""
+
 				// init persp cam
-				
+
 
 				// device dependent settings
 				if(ua.device.type=="Desktop") {
@@ -122,43 +166,43 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					}
 					exporterHelpers = new ExporterHelper() // set
 					CamConUI += "</select><br>";
-					
+
 					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
 					CamConUI += "<button type=\"button\"  class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img data-toggle=\"tooltip\" data-placement=\"left\" style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
 					CamConUI += "<a href=\"#\" onclick=\"setOrthographic();return false;\"> Orthographic</a> | "
-					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"	
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
 					//CamConUI += "<button type=\"button\" class=\"btn btn-primary\" onclick=\"setPerspective();;return false;\" checked=true>Orbit Control<br></button>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=false;setDeviceOrientationControl();;return false;\">Animate<br>"
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
-					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
-					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
-					CamConUI+= "<button id=\"colorPalette\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Paint\" ><img style=\"width:32px;height:32px;\" src=\"img/paint.png\"></img></button>";
-					CamConUI+= "<button id=\"vreffect\" onclick=\"setStereoEffect();return false;\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/vr.png\"></img></button>";
-					CamConUI+= "<button id=\"vreffect\" onclick=\"exporterHelpers.exportToObj();\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/export-icon.png\"></img></button>";
+					// CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
+					// CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
+					// CamConUI+= "<button id=\"colorPalette\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Paint\" ><img style=\"width:32px;height:32px;\" src=\"img/paint.png\"></img></button>";
+					// CamConUI+= "<button id=\"vreffect\" onclick=\"setStereoEffect();return false;\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/vr.png\"></img></button>";
+					// CamConUI+= "<button id=\"vreffect\" onclick=\"exporterHelpers.exportToObj();\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/export-icon.png\"></img></button>";
 					/*CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=0.5;setDeviceOrientationControl();;return false;\">Toddler<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();;return false;\">Kid<br>"
 					CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();;return false;\">Lady<br>"
 					*/
-					
+
 				//	CamConUI += "<br><button type=\"button\" class=\"btn btn-primary\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a>"
 				//	CamConUI += "<button type=\"button\" class=\"btn btn-primary\"  onclick=\"startRuler();\"> Ruler</button>"
-							
+
 					 CamConUI+="</div></div>";
 
-		
-					/**<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>**/ //TODO			
-					
-			
+
+					/**<a href="#" onclick="exportToJSON();"> Export Scene to JSON</a>**/ //TODO
+
+
 				}
 				else if(ua.device.type=="Tablet") {
 					g_DeviceType = ua.device.type
-					
+
 					CamConUI += "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-md-11\">";
 					CamConUI+="Select Room : <select id=\"rpdChanger\" class=\"selectpicker\" onchange=\"changeRpd()\">";
 					for(var i=0;i<rpd_array.length;i++){
@@ -171,7 +215,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
 					CamConUI+= "<button id=\"vreffect\" onclick=\"setStereoEffect();return false;\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/vr.png\"></img></button>";
-					
+
 					 CamConUI+="</div></div>";
 					//CamConUI += "<br><a href=\"#\"  onclick=\"exporterHelpers.exportToObj();\"> Export Scene to OBJ</a><br>"
 					/*CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a>"
@@ -182,13 +226,13 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.3;setDeviceOrientationControl();\">Kid<br>"
 					CamConUI += "<br><input type=\"radio\" name=\"controlModeAndEffect\" onclick=\"personStandingHeight=1.6;setDeviceOrientationControl();\">Lady<br>"
 
-						*/			
+						*/
 					//CamConUI += "<br><a href=\"#\" onclick=\"fullscreen();return false;\">Fullscreen</a><br>"
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
 					CamConUI += "<a href=\"#\" onclick=\"setOrthographic();return false;\"> Orthographic</a> | "
-					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"	
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
@@ -197,9 +241,9 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
 					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
 					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
-					
+
 					setPerspective() // default
-				
+
 				}
 				else if(ua.device.type=="Mobile") {
 					g_DeviceType = ua.device.type
@@ -212,7 +256,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
 					CamConUI += "<button type=\"button\"  class=\"btn pull-right\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img data-toggle=\"tooltip\" data-placement=\"left\" style=\"width:32px;height:32px;\" src=\"img/customize.png\"></img></button>";
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Open\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/open.png\"></img></button>";
-					
+
 					CamConUI+= "<button type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Close\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/close.png\"></img></button>";
 					CamConUI+= "<button id=\"colorPalette\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"Paint\" ><img style=\"width:32px;height:32px;\" src=\"img/paint.png\"></img></button>";
 					CamConUI+= "<button id=\"vreffect\" onclick=\"setStereoEffect();return false;\" type=\"button\" style=\"margin-top:5px;\" class=\"btn pull-right\" data-toggle=\"tooltip\" data-placement=\"left\" title=\"VR\" ><img style=\"width:32px;height:32px;\" src=\"img/vr.png\"></img></button>";
@@ -230,7 +274,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
 					CamConUI += "<a href=\"#\" onclick=\"setOrthographic();return false;\"> Orthographic</a> | "
-					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"	
+					CamConUI += "<br><a href=\"#\" onclick=\"setVive();return false;\">Vive</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(0.5);return false;\">Vive 0.5m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(1);return false;\">Vive 1m</a>"
 					CamConUI += "<br><a href=\"#\" onclick=\"setVive(2);return false;\">Vive 2m</a>"*/
@@ -239,32 +283,32 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					//CamConUI += "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setPerspective();;return false;\">Stop<br>"
 					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setOpen();return false;\">Open<br>";
 					//CamConUI+= "<br><a href=\"#\" onclick=\"personStandingHeight=1.8;stopAnimation=true;setClose();return false;\">Close<br>";
-					
+
 					//setDeviceOrientationControl()
 					setPerspective() // default
 
 				}
-				
+
 				/** deviceorientation **/
-				
+
 				//add condition
 				//window.addEventListener('deviceorientation', setOrientationControls, true);
-				
-				// event for window resize 
+
+				// event for window resize
 				window.addEventListener( 'resize', onWindowResize, false );
-															
+
 				// event which will be called after async loads to trigger rerendering
 				renderer.domElement.addEventListener( 'rerender', render, false );
-				
+
 				// Show Controls
-		
+
 				// RPD box
 				controlsUI.innerHTML=CamConUI;
-				 
+
 				}
 				function showPanel(e){
 
-					
+
 				}
 			function changeRpd(){
 				var rpd=$('#rpdChanger').val();
@@ -276,7 +320,7 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 					}
 				}
 				var element = document.getElementById("context");
-				if(element!=undefined) {	
+				if(element!=undefined) {
 					var parent =element.parentNode;
 					while (parent.firstChild) {
 					    parent.removeChild(parent.firstChild);
@@ -338,10 +382,10 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 300 );
 				camera.position.set(0, userHeight-0.2, 0); // set person in center
 				camera.updateProjectionMatrix()
-				
+
 				controls = new THREE.VRControls( camera );
 				controls.standing = true;
-				
+
 				//controls.overrideVrDisplayStageParameters()
 				controls.userHeight  = userHeight //|| 1.6
 
@@ -371,14 +415,14 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 
 				} );
 				// test Right Left
-				
+
 				var radius   = 0.05,
 				segments = 32,
 				materialR = new THREE.LineBasicMaterial( { color: 0xffcc00 } ),
 				materialL = new THREE.LineBasicMaterial( { color: 0x0033cc } ),
 				geometry = new THREE.CircleGeometry( radius, segments );
-				var circleR = new THREE.Mesh(geometry, materialR ) 
-				var circleL = new THREE.Mesh(geometry, materialL ) 
+				var circleR = new THREE.Mesh(geometry, materialR )
+				var circleL = new THREE.Mesh(geometry, materialL )
 				circleR.position.set(0.1,0.05,-0.1)
 				circleL.position.set(-0.1,0.05,-0.1)
 
@@ -386,42 +430,42 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 				controller2.add(circleL)
 
 				effect = new THREE.VREffect( renderer );
-				
+
 				// Vive control teleport & interactions
 				controller1.userData.Interactions = new VIVECONTROLLER_Interaction()
 				controller1.userData.Interactions.teleportationObjects = interactiveRoomObjs
 
 				controller1.addEventListener( 'thumbpaddown', controller1.userData.Interactions.onTriggerDown );
-				controller1.addEventListener( 'thumbpadup', controller1.userData.Interactions.onTriggerUp );	
+				controller1.addEventListener( 'thumbpadup', controller1.userData.Interactions.onTriggerUp );
 				//
 
 				if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() // add a skybox
 
-				
+
 				if ( WEBVR.isAvailable() === true ) {
 
 					document.body.appendChild( WEBVR.getButton( effect ) );
-					
+
 					window.addEventListener( 'vrdisplaypresentchange', tiggerVRPresenting, false );
 					//renderer.domElement.addEventListener( 'mouseup', triggerControlStubUpAndMove, false)
-		
+
 				}
 
-				//	
+				//
 			}
 			function tiggerVRPresenting(event) {
 				//console.log(event)
 				/**
 				TODO, stop animation somehow...
 				**/
-				
+
 				var VRDisplayPresenting = event.display.isPresenting
 				if(VRDisplayPresenting) animate_vive()
-//				else if(!VRDisplayPresenting) 
+//				else if(!VRDisplayPresenting)
 				//console.log(effect)
 			}
-	
-	
+
+
 			/** cardboard **/
 			function setStereoEffect() {
 					if(effect == undefined) {
@@ -453,16 +497,16 @@ clock,exporterHelpers,personStandingHeight, controlsUI, debugUI,roundedRectShape
 						onWindowResize();
 						render();
 					}
-			}			
-			
+			}
+
 			function setDeviceOrientationControl() {
-				
+
 if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 					g_transparentObjs=false // don't have transparent objects
 
 					//console.log("INTO setDeviceOrientationControl" )
-									
+
 					camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.01, 300 );
 					camera.useQuaternion = true;
 					//camera.position.set(0, personStandingHeight-0.2, 0);
@@ -471,7 +515,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 					if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
-				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt				
+				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt
 				controls.target.set(2.699999625,1.08,-0.6749995000000002);
 
 
@@ -481,28 +525,28 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				addKeyboardEvents();
 //				console.log(controls)
 //				console.log(renderer.domElement)
-				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() 
+				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox()
 				//VIVECTL() // test ctrl
-			
-					
-					/*if(controls!=undefined) controls.dispose()					
-					
+
+
+					/*if(controls!=undefined) controls.dispose()
+
 					controls = new THREE.DeviceOrientationControls(camera)//, true);
 					//controls.enableZoom  = false;
-					//controls.enablePan = false;	
+					//controls.enablePan = false;
 					controls.connect();
 					controls.update();
 */
 
-				window.removeEventListener('deviceorientation', setDeviceOrientationControl, true);	
-				
-				if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() // add a skybox				
+				window.removeEventListener('deviceorientation', setDeviceOrientationControl, true);
+
+				if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() // add a skybox
 				animate_OC();
 				roomAnimation();
-				
+
 			}
-				
-			
+
+
 			function addHandleWallVisabilityEventsListeners() {
 				//add event for Wall visibility
 				controls.addEventListener( 'change', handleWallVisability, false )
@@ -511,77 +555,77 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				//add event for Wall visibility
 				controls.removeEventListener( 'change', handleWallVisability, false )
 			}
-			
+
 			function addAllMouseEventsListeners() {
 				// interact
 				renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
 				renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
-				
+
 				// only render on input fo performance...
 				renderer.domElement.addEventListener( 'mousemove', render, false );
 				renderer.domElement.addEventListener( 'mousedown', render, false );
 				renderer.domElement.addEventListener( 'mouseup', render, false );
 				renderer.domElement.addEventListener( 'mouseup', onDocumentMouseWheel, false );
 				renderer.domElement.addEventListener( 'mouseup', render, false );
-				
+
 			}
 			function addKeyboardEvents(){
 				//document.addEventListener("keydown", checkRotation, false);
-				//document.addEventListener("keyup",   checkRotation,   false);	
-				
+				//document.addEventListener("keyup",   checkRotation,   false);
+
 
 			}
-			
+
 			function removeAllMouseEventsListeners() {
 				// interact
 				renderer.domElement.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 				renderer.domElement.removeEventListener( 'mousedown', onDocumentMouseDown, false );
 				renderer.domElement.removeEventListener( 'mouseup', onDocumentMouseUp	, false );
-				
+
 				// only render on input fo performance...
 				renderer.domElement.removeEventListener( 'mousemove', render, false );
 				renderer.domElement.removeEventListener( 'mousedown', render, false );
 				renderer.domElement.removeEventListener( 'mouseup', render, false );
-				
+
 			}
-			
+
 			function addAllToucheEventsListeners() {
 				// interact
 				renderer.domElement.addEventListener( 'touchmove', onDocumentMouseMove, false );
 				renderer.domElement.addEventListener( 'touchstart', onDocumentMouseDown, false );
 				renderer.domElement.addEventListener( 'touchend', onDocumentMouseUp, false );
-				
+
 				// only render on input fo performance...
 				renderer.domElement.addEventListener( 'touchmove', render, false );
 				renderer.domElement.addEventListener( 'touchstart', render, false );
 				renderer.domElement.addEventListener( 'touchend', render, false );
-				
+
 			}
-			
+
 			function removeAllToucheEventsListeners() {
 				// interact
 				renderer.domElement.removeEventListener( 'touchmove', onDocumentMouseMove, false );
 				renderer.domElement.removeEventListener( 'touchstart', onDocumentMouseDown, false );
 				renderer.domElement.removeEventListener( 'touchend', onDocumentMouseUp, false );
-				
+
 				// only render on input fo performance...
 				renderer.domElement.removeEventListener( 'touchmove', render, false );
 				renderer.domElement.removeEventListener( 'touchstart', render, false );
 				renderer.domElement.removeEventListener( 'touchend', render, false );
-				
+
 			}
-			
+
 			function handleWallVisability() {
 					if(myRoom != undefined) myRoom.hideWalls()
 			}
-			
-				
+
+
 			function sceenZoomToObj(obj) {
 				if(obj==undefined) return
 				/** test zoom correct **/
 				var bbox = new THREE.Box3().setFromObject(obj);
-				
+
 				var COG =  bbox.getCenter();
 
 				var sphereSize = bbox.getSize().length() * 0.5;
@@ -595,31 +639,31 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 				}
 				else {
-					distToCenter = sphereSize/Math.sin( Math.PI / 180.0 * camera.fov * 1); 
+					distToCenter = sphereSize/Math.sin( Math.PI / 180.0 * camera.fov * 1);
 					camera.position.set(distToCenter,distToCenter,distToCenter)
 				}
 
 				//console.log(camera)
 			}
 			function setLightTarget(obj) {
-					dirLight.target=obj 
+					dirLight.target=obj
 			}
-			
+
 			function setHelpers() {
 				/** helpers **/
-				
+
 				var axis = new THREE.AxisHelper();
 				axis.scale.set(10,10,10);
 				scene.add(axis);
-				
+
 				var gridplaneSize = 10;
 				var gridstep = 20;
 				var gridcolor = 0xCCCCCC;
 				var gridHelper_xy = new THREE.GridHelper(gridplaneSize, gridstep, gridcolor );
 				scene.add(gridHelper_xy);
-				
+
 			}
-			
+
 			function onWindowResize() {
 				if(g_DeviceType=="Desktop") {
 					camera.aspect = window.innerWidth / window.innerHeight;
@@ -636,40 +680,40 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 
 					renderer.setSize(width, height);
 					if(effect!=undefined) effect.setSize(width, height);
-				}    
+				}
 			}
 			/** Vive controls **/
-			
+
 			function animate_vive() {
 				//TODO, kolla om animation stängs av när man stänger av VR mode
-							
+
 				effect.requestAnimationFrame( animate_vive );
 				if(effect.isPresenting) {
 					//console.log(effect)
 					render_vive();
 					//console.log(effect.isPresenting)
-				}	
+				}
 			}
-			
+
 			function render_vive() {
 				controller1.update();
 				controller2.update();
-				
+
 				controller1.userData.Interactions.cleanIntersectedEmissive();
 				controller1.userData.Interactions.intersectObjects( controller1 );
 
-				
+
 				controls.update();
 				effect.render( scene, camera );
 			}
 
 			function renderStereo(){
 				controls.update();
-				effect.render( scene, camera );	
-				
+				effect.render( scene, camera );
+
 				requestAnimationFrame( renderStereo );
 			}
-			
+
 			/** Normal Controls **/
 			function animate_OC() { //Orbit Control
 
@@ -677,7 +721,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				TWEEN.update();
 				requestAnimationFrame( animate_OC );
 				renderer.render( scene, camera );
-				
+
 			}
 			function render_OC() { //Orbit Control
 				if(effect!=undefined) effect.render(scene, camera);
@@ -686,14 +730,14 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
  			    camera.updateProjectionMatrix();
 
 			}
-					
+
 			function animate_DC() {
 			  if(controls instanceof THREE.DeviceOrientationControls) window.requestAnimationFrame(animate_DC);
 			  update_DC();
 			  render_DC();
 			}
 
-	
+
 			function update_DC() {
 			  //onWindowResize();
 			  camera.updateProjectionMatrix();
@@ -706,60 +750,60 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				if(effect!=undefined) effect.render(scene, camera);
 				else renderer.render( scene, camera );
 			}
-	
+
 
 			function render() {
 				dirLight.position.set( camera.position.x, camera.position.y, camera.position.z ); // make dir light follow camera
-				
+
 				if(controls instanceof THREE.OrbitControls) {
-					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - OC rendering" + debugUI.innerHTML 
+					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - OC rendering" + debugUI.innerHTML
 					render_OC()
 				}
-				
+
 				else if(controls instanceof THREE.DeviceOrientationControls) {
-					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - DC rendering"+ debugUI.innerHTML 
+					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - DC rendering"+ debugUI.innerHTML
 					render_DC()
 				}	else{
 					renderStereo();
 				}
 			}
-			
-			
+
+
 			function setOrthographic() {
 				camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0.01, 300 );//new THREE.CombinedCamera( window.innerWidth / 2, window.innerHeight / 2, 70, 1, 1000, - 500, 1000 ); //
 
 				if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
 				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt
-				sceenZoomToObj(g_lookAtObj)				
+				sceenZoomToObj(g_lookAtObj)
 
 				render();
 			}
 			function setPerspective() {
 
 				if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
-				
-				
+
+
 				if(controller1!=undefined) scene.remove(controller1)
 				if(controller2!=undefined) scene.remove(controller2)
-							
-				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 );	
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 );
 				projector = new THREE.Projector();
 				if(controls!=undefined) controls.dispose()
 				controls =new THREE.OrbitControls(camera, renderer.domElement);
-				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt			
-				controls.target.set(0,1.08,-1.6749995000000002);	
-				//sceenZoomToObj(g_lookAtObj)	
+				controls.maxPolarAngle = Math.PI/2 // don't allow to see under roomt
+				controls.target.set(0,1.08,-1.6749995000000002);
+				//sceenZoomToObj(g_lookAtObj)
 				addHandleWallVisabilityEventsListeners()
 				addAllMouseEventsListeners()
 				addAllToucheEventsListeners()
 //				console.log(controls)
 //				console.log(renderer.domElement)
-				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox() 
+				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox()
 				//VIVECTL() // test ctrl
 				render();
 			}
-			
+
 			function fullscreen() {
 			  if (container.requestFullscreen) {
 				container.requestFullscreen();
@@ -770,19 +814,19 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 			  } else if (container.webkitRequestFullscreen) {
 				container.webkitRequestFullscreen();
 			  }
-			  
+
 	//		  render()
 			}
-			
 
-			
+
+
 // ViveControls debug
 /**
 function VIVECTL() {
 					// controllers
 
 				controller1 = new THREE.ViveController( 0 );
-				
+
 				//controller1.standingMatrix = controls1.getStandingMatrix();
 				controller1.position.set(0,1.6,0)
 				controller1.rotateX(-Math.PI/3)
@@ -804,25 +848,25 @@ function VIVECTL() {
 
 				} );
 				// test Right Left
-				
+
 				var radius   = 0.02,
 				segments = 32,
 				materialR = new THREE.LineBasicMaterial( { color: 0xffcc00 } ),
 				materialL = new THREE.LineBasicMaterial( { color: 0x0033cc } ),
 				geometry = new THREE.CircleGeometry( radius, segments );
-				var circleR = new THREE.Mesh(geometry, materialR ) 
-				var circleL = new THREE.Mesh(geometry, materialL ) 
+				var circleR = new THREE.Mesh(geometry, materialR )
+				var circleL = new THREE.Mesh(geometry, materialL )
 				circleR.position.set(0.1,0.05,-0.1)
 				circleL.position.set(0,0.02,0.02)
 				//circleR.updateMatrix()
 				controller1.add(circleR)
-		
-					
+
+
 				//
 
 
 				effect = new THREE.VREffect( renderer );
-				
+
 				// test Vive control teleport
 				controller1.userData.Interactions = new VIVECONTROLLER_Interaction()
 				controller1.userData.Interactions.teleportationObjects = interactiveRoomObjs
@@ -832,16 +876,16 @@ function VIVECTL() {
 
 				renderer.domElement.addEventListener( 'mousedown', triggerControlStubDown, false)
 				renderer.domElement.addEventListener( 'mouseup', triggerControlStubUp, false)
-				renderer.domElement.addEventListener( 'mousemove', controllerMoveStub, false)					
-				
+				renderer.domElement.addEventListener( 'mousemove', controllerMoveStub, false)
+
 				document.onkeydown = controllerMoveStub1;
-}	
+}
 **/
 
 function triggerControlStubUpAndMove() {
 
 	var cP = camera.position
-	
+
 	//controller1.userData.Interactions.teleportPoint = new THREE.Vector3(cP.x+1.5, cP.y, cP.z+1.5)
 	//controller1.dispatchEvent( { type: 'triggerup'} );
 
@@ -860,12 +904,12 @@ function controllerMoveStub(e) {
 	controller1.updateMatrix()
 	controller1.userData.Interactions.cleanIntersectedEmissive();
 	controller1.userData.Interactions.intersectObjects( controller1 );
-	
+
 }
 function controllerMoveStub1(event) {
-	
+
 	if(event.keyCode == 38) controller1.rotateX(10 * (Math.PI/180))
-	if(event.keyCode == 40) controller1.rotateX(-10 * (Math.PI/180))	
+	if(event.keyCode == 40) controller1.rotateX(-10 * (Math.PI/180))
 	if(event.keyCode == 39) controller1.rotateY(-10 * (Math.PI/180))
 	if(event.keyCode == 37) controller1.rotateY(10 * (Math.PI/180))
 	controller1.updateMatrix()
@@ -873,5 +917,3 @@ function controllerMoveStub1(event) {
 	controller1.userData.Interactions.intersectObjects( controller1 );
 	render()
 }
-		
-			
