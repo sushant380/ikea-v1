@@ -232,6 +232,21 @@ this.correctMaxtrixAfterChanges = function(obj) {
 	obj.geometry.computeBoundingBox()
 		obj.geometry.computeBoundingSphere();
 }
+this.setCeilling=function(){
+  var geometry = new THREE.ShapeGeometry( this.roomShape );
+	 this.ceillingShape = new THREE.Mesh( geometry );
+	this.ceillingShape.receiveShadow = true;
+this.ceillingShape.position.y=this.ceilingHeight;
+  this.correctMaxtrixAfterChanges(this.ceillingShape);
+  var mat = new THREE.MeshPhongMaterial({
+   color: 0xFFFFFF,
+   emissive: new THREE.Color(0xd4d4d4),
+   shininess: 0,
+   side: THREE.BackSide
+  });
+  this.ceillingShape.material=mat;
+  //
+}
 this.setFloor = function() {
 	var geometry = new THREE.ShapeGeometry( this.roomShape );
 	this.floorShape = new THREE.Mesh( geometry );
@@ -813,8 +828,10 @@ this.initRoom = function() {
 	// construct floor and add to scene
 	this.setRoomShape()
 	this.setFloor()
+  this.setCeilling();
 	//this.floorShape.updateMatrix();
 	scene.add(this.floorShape);
+  scene.add(this.ceillingShape);
 
 	this.floorShape.onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action
 
@@ -840,6 +857,7 @@ this.initRoom = function() {
 
 	// since we drawed the room in wrong axis, now correct them
 	this.floorShape.rotation.set(-Math.PI /2, 0,0)
+  this.ceillingShape.rotation.set(-Math.PI /2, 0,0)
 	for(var i=0;i<this.allWallMeshes.length;i++) {
 		this.allWallMeshes[i].rotation.set(-Math.PI /2, 0,0)
 		this.allWallMeshes[i].onAfterRender = function(){this.matrixAutoUpdate=false} // solid object and don't recalc unless user action

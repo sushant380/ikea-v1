@@ -122,6 +122,7 @@ function RoomItem(item,parent,itemsHolder){
 		this.childLoadCount++;
 		//console.log(this.itemType);
 		if(this.childLoadCount===this.rawChildItems.length){
+
 			if(this.itemType && this.itemType.indexOf('CabWorktop')>-1){
 				var cwtgeometry = new THREE.Geometry().fromBufferGeometry( this.obj.geometry );
 				for(var d=0;d<this.childItems.length;d++){
@@ -148,6 +149,7 @@ function RoomItem(item,parent,itemsHolder){
 					}
 				}
 				this.obj.geometry=cwtgeometry;
+				this.obj.material=new THREE.MeshLambertMaterial({color : 0xa3a3a3});
 
 			}
 		}

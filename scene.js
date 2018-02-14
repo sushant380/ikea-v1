@@ -117,8 +117,8 @@ var tol = 1;
                 scene.add(dirLight.target);
 				scene.add( new THREE.AmbientLight( 0x888888 ) );*/
 
-				var bulbGeometry = new THREE.SphereGeometry( 0.02, 16, 8 );
-				bulbLight = new THREE.PointLight( 0xfbf2be, 0.8, 100, 2 );
+				var bulbGeometry = new THREE.BoxGeometry( 0.5, 0.1, 0.5 );
+				bulbLight = new THREE.PointLight( 0xfbf2be, 0.7, 100, 2 );
 
 				var bulbMat = new THREE.MeshStandardMaterial( {
 					emissive: 0xffffee,
@@ -126,7 +126,7 @@ var tol = 1;
 					color: 0x000000
 				});
 				bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
-				bulbLight.position.set( 0, 5, 0 );
+				bulbLight.position.set( 0, 2.45, 0 );
 				bulbLight.castShadow = true;
 				//bulbLight.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 ) );
 				bulbLight.shadowDarkness = 0.2;
