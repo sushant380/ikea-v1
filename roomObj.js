@@ -93,8 +93,8 @@ this.roomWallShapesInner = function() {
 	var wallsArr = new Array()
 	var p1,p2;
   var mat = new THREE.MeshPhongMaterial({
-   color: 0xcccccc,
-   emissive: new THREE.Color(0x0c0c0c),
+   color: 0xFFFFFF,
+   emissive: new THREE.Color(0x656464),
    shininess: 0,
    side: THREE.DoubleSide
   });

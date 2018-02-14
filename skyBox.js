@@ -31,7 +31,7 @@ this.drawShaderSkybox = function() {
 // prepare ShaderMaterial without textures
 var vertexShader = skyVertex, fragmentShader = skyFragment;
 var uniforms = {
-topColor: {type: "c", value: new THREE.Color(0x99ccff)}, bottomColor: {type: "c", value: new THREE.Color(0xffffff)}, //0055ff
+topColor: {type: "c", value: new THREE.Color(0xffffff)}, bottomColor: {type: "c", value: new THREE.Color(0x99ccff)}, //0055ff
 offset: {type: "f", value: 0}, exponent: {type: "f", value: 2}
 }
 var skyMaterial = new THREE.ShaderMaterial({vertexShader: vertexShader, fragmentShader: fragmentShader, uniforms: uniforms, side: THREE.BackSide, fog: false});

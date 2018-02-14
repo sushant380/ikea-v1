@@ -150,7 +150,7 @@ var tol = 1;
 					renderer.shadowMap.enabled = true;
 					renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-// renderer.setClearColor(0x6698FF, 1.0);
+				renderer.setClearColor(0x6698FF, 1.0);
 
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
@@ -391,19 +391,19 @@ var tol = 1;
 			}
 
 			function addSkyDome(){
-				var materialArray = [];
-					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posx.jpg' ) }));
-					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negx.jpg' ) }));
-					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posy.jpg' ) }));
-					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negy.jpg' ) }));
-					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posz.jpg' ) }));
-					 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negz.jpg' ) }));
-					 for (var i = 0; i < 6; i++)
-							materialArray[i].side = THREE.BackSide;
-					 var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
-					 var skyboxGeom = new THREE.CubeGeometry( 50, 50, 50, 1, 1, 1 );
-					 var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
-					 scene.add( skybox );
+				// var materialArray = [];
+				// 	 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posx.jpg' ) }));
+				// 	 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negx.jpg' ) }));
+				// 	 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posy.jpg' ) }));
+				// 	 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negy.jpg' ) }));
+				// 	 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/posz.jpg' ) }));
+				// 	 materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/negz.jpg' ) }));
+				// 	 for (var i = 0; i < 6; i++)
+				// 			materialArray[i].side = THREE.BackSide;
+				// 	 var skyboxMaterial = new THREE.MeshFaceMaterial( materialArray );
+				// 	 var skyboxGeom = new THREE.CubeGeometry( 50, 50, 50, 1, 1, 1 );
+				// 	 var skybox = new THREE.Mesh( skyboxGeom, skyboxMaterial );
+				// 	 scene.add( skybox );
 
 			}
 			function drawShape(shape,color){
@@ -568,7 +568,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				addKeyboardEvents();
 //				console.log(controls)
 //				console.log(renderer.domElement)
-				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox()
+				if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox()
 				//VIVECTL() // test ctrl
 
 
@@ -843,7 +843,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 				addAllToucheEventsListeners()
 //				console.log(controls)
 //				console.log(renderer.domElement)
-				//if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox()
+				if(skyBoxDefault.isEnabled==false) skyBoxDefault.addSkyBox()
 				//VIVECTL() // test ctrl
 				render();
 			}
