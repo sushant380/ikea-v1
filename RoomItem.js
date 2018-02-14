@@ -186,7 +186,13 @@ function RoomItem(item,parent,itemsHolder){
 					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
 					var mesh_mat=undefined;
 					if(scope.name.indexOf("Obstacle")>-1){
-						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
+						mesh_mat = new THREE.MeshPhongMaterial({
+					   color: 0xFFFFFF,
+					   emissive: new THREE.Color(0x5e5e5e),
+					   shininess: 0,
+					   side: THREE.DoubleSide
+					  });
+					//	mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
 					}else{
 						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
 					}

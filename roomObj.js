@@ -94,7 +94,7 @@ this.roomWallShapesInner = function() {
 	var p1,p2;
   var mat = new THREE.MeshPhongMaterial({
    color: 0xFFFFFF,
-   emissive: new THREE.Color(0x656464),
+   emissive: new THREE.Color(0x5e5e5e),
    shininess: 0,
    side: THREE.DoubleSide
   });
