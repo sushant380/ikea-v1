@@ -125,7 +125,7 @@ var tol = 1;
 					emissiveIntensity: 1,
 					color: 0x000000
 				});
-				bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
+				// bulbLight.add( new THREE.Mesh( bulbGeometry, bulbMat ) );
 				bulbLight.position.set( 0, 2.45, 0 );
 				bulbLight.castShadow = true;
 				//bulbLight.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.01, 300 ) );
@@ -342,6 +342,7 @@ var tol = 1;
 				for(var m=0;m<rpd_array.length;m++){
 					if(rpd_array[m].id===rpd){
 						RPD_Raw=rpd_array[m].rpd;
+						RPD_JSON=x2js.xml_str2json(rpd_array[m].items)
 						break;
 					}
 				}
@@ -532,7 +533,7 @@ var tol = 1;
 
 						}*/
 						onWindowResize()
-						renderStereo();
+						//renderStereo();
 					}
 					else {
 						effect= undefined;
@@ -807,7 +808,7 @@ if(skyBoxDefault.isEnabled) skyBoxDefault.removeSkyBox() // remove skybox?
 					//debugUI.innerHTML = "<br>"+new Date().getTime() + " - DC rendering"+ debugUI.innerHTML
 					render_DC()
 				}	else{
-					renderStereo();
+					//renderStereo();
 				}
 			}
 
