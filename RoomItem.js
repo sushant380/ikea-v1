@@ -17,6 +17,7 @@ function RoomItem(item,parent,itemsHolder){
 	this.isHost=item.isHost ||false;
 	this.parent=parent;
 	this.itemsHolder=itemsHolder;
+	this.type=item.type;
 	this.childLoadCount=0;
 	this.opening=item.opening||"Left";
 	if(parent ===undefined){
@@ -149,7 +150,7 @@ function RoomItem(item,parent,itemsHolder){
 					}
 				}
 				this.obj.geometry=cwtgeometry;
-				this.obj.material=new THREE.MeshLambertMaterial({color : 0xa3a3a3});
+				// this.obj.material=new THREE.MeshLambertMaterial({color : 0xa3a3a3});
 
 			}
 		}
@@ -160,14 +161,20 @@ function RoomItem(item,parent,itemsHolder){
 		/*if( this.itemType == "Frame" || this.itemType == "CapSink" || this.itemType == "SinkTap"){*/
 			var scope=this;
 			//if(scope.shape=='IKEA.ART.90304629' || scope.shape=='IKEA.ART.40205599' || scope.shape=='IKEA.ART.00205431' || scope.shape=='IKEA.ART.00315175' || scope.shape=='IKEA.ART.30176470' || scope.shape=='IKEA.ART.50215475' || scope.shape=='IKEA.ART.60204645' || scope.shape=='IKEA.ART.60205664' || scope.shape=='IKEA.ART.90038541_LeftJustified' || scope.shape=='IKEA.ART.90038541_RightJustified' || scope.shape=='IKEA.ART.90304629' ) {
-		// 	var materialLoader=new THREE.MTLLoader();
-		// 	materialLoader.setPath('models/obj/');
-		// //	console.log(scope.shape);
-		// 	materialLoader.load(scope.shape+'.mtl',function(material){
+			var materialLoader=new THREE.MTLLoader();
+			materialLoader.setPath('models/obj/');
+
+
+		//	console.log(scope.shape);
+			materialLoader.load(scope.shape+'.mtl',function(material){
 					var loader = new THREE.OBJLoader();
 					loader.setPath( 'models/obj/' );
-					// loader.setMaterials(material);
+					if(scope.itemType.indexOf('DoorFront')>-1){
+						if(scope.parent.type && scope.parent.type.indexOf('ForAppliance')>-1){
+							loader.setMaterials(material);
+						}
 
+					}
 					loader.load( scope.shape+'.obj', function ( object ) {
 
 
@@ -194,7 +201,7 @@ function RoomItem(item,parent,itemsHolder){
 					   shininess: 0,
 					   side: THREE.DoubleSide
 					  });
-					//	mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
+						//mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
 					}else{
 						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
 					}
@@ -211,48 +218,53 @@ function RoomItem(item,parent,itemsHolder){
 					scope.obj = mesh;
 					callback(scope);
 				});
-			// },function(){},function(){
-			// 	//console.log('failed= ',scope);
-			// 	var loader = new THREE.OBJLoader();
-			// 		loader.setPath( 'models/obj/' );
-      //
-			// 		loader.load( scope.shape+'.obj', function ( object ) {
-			// 		object.castShadow = true
-			// 		object.recieveShadow = true
-      //
-			// 		// wireframe
-			// 		if(scope.showWireframe ) {
-			// 			var geo = new THREE.EdgesGeometry( object.children[0].geometry ); // or WireframeGeometry
-			// 			var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
-			// 			var wireframe = new THREE.LineSegments( geo, mat );
-			// 			//object.add(wireframe)
-			// 		}
-			// 		scope.obj = object.children[0];
-			// 		callback(scope);
-			// 	},function(){},function(){
-			// 		//console.log('failed= ',scope);
-			// 		var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
-			// 		var mesh_mat=undefined;
-			// 		if(scope.name.indexOf("Obstacle")>-1){
-			// 			mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: false, opacity: 1});
-			// 		}else{
-			// 			mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
-			// 		}
-      //
-			// 		var mesh=new THREE.Mesh(object, mesh_mat);
-			// 		mesh.castShadow = true
-			// 		mesh.recieveShadow = true
-			// 		// wireframe
-			// 		if(scope.showWireframe ) {
-			// 			var geo = new THREE.EdgesGeometry( mesh.geometry ); // or WireframeGeometry
-			// 			var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
-			// 			var wireframe = new THREE.LineSegments( geo, mat );
-			// 			//mesh.add(wireframe)
-			// 		}
-			// 		scope.obj = mesh;
-			// 		callback(scope);
-			// 	});
-			// });
+			},function(){},function(){
+				//console.log('failed= ',scope);
+				var loader = new THREE.OBJLoader();
+					loader.setPath( 'models/obj/' );
+
+					loader.load( scope.shape+'.obj', function ( object ) {
+					object.castShadow = true
+					object.recieveShadow = true
+
+					// wireframe
+					if(scope.showWireframe ) {
+						var geo = new THREE.EdgesGeometry( object.children[0].geometry ); // or WireframeGeometry
+						var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
+						var wireframe = new THREE.LineSegments( geo, mat );
+						//object.add(wireframe)
+					}
+					scope.obj = object.children[0];
+					callback(scope);
+				},function(){},function(){
+					//console.log('failed= ',scope);
+					var object=new THREE.BoxGeometry(scope.w, scope.h, scope.d);
+					var mesh_mat=undefined;
+					if(scope.name.indexOf("Obstacle")>-1){
+						mesh_mat = new THREE.MeshPhongMaterial({
+					   color: 0xFFFFFF,
+					   emissive: new THREE.Color(0x5e5e5e),
+					   shininess: 0,
+					   side: THREE.DoubleSide
+					  });
+					}else{
+						mesh_mat = new THREE.MeshLambertMaterial({color : scope.color, transparent: true, opacity: 0.9});
+					}
+
+					var mesh=new THREE.Mesh(object, mesh_mat);
+					mesh.castShadow = true
+					mesh.recieveShadow = true
+					// wireframe
+					if(scope.showWireframe ) {
+						var geo = new THREE.EdgesGeometry( mesh.geometry ); // or WireframeGeometry
+						var mat = new THREE.LineBasicMaterial( { color: 0xFF0000, linewidth: 2 } );
+						var wireframe = new THREE.LineSegments( geo, mat );
+						//mesh.add(wireframe)
+					}
+					scope.obj = mesh;
+					callback(scope);
+				});
+			});
 		/*}else{
 			console.log('shape not found '+scope.shape+' '+scope.name);
 			var object=new THREE.BoxGeometry(this.w, this.h, this.d);
