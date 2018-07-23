@@ -22,7 +22,7 @@ this.setRPDBox = function() {
 				var reload = document.getElementById('reload')
 				reload.onclick=a*/
 				RPD_Raw=rpd_array[0].rpd;
-				RPD_JSON=x2js.xml_str2json(rpd_array[0].items);
+				RPD_JSON=rpd_array[0].items;
 				this.initRPD();
 }
 
@@ -75,28 +75,28 @@ this.initRPD = function() {
 				myRoomItems.scene = scene;
 				myRoomItems.init();
 
-				var shoppingcart='<div style="overflow: auto">	<table id="cart" class="table table-hover table-condensed">    				<thead>						<tr>							<th style="width:50%">Product</th>							<th style="width:10%">Price</th>							<th style="width:8%">Quantity</th>							<th style="width:22%" class="text-center">Subtotal</th>							<th style="width:10%"></th>						</tr>					</thead>					<tbody>';
-				for(var i=0;i<RPD_JSON.xml.ItemList.Item.length;i++){
-					var itmJson=RPD_JSON.xml.ItemList.Item[i];
-					var itemHtml='<tr><td data-th="Product"><div class="row"><div class="col-sm-2 hidden-xs"><img src="'+itmJson.SmallImageUrl+'" alt="..." class="img-responsive"/></div><div class="col-sm-10"><h4 class="nomargin">'+itmJson.DisplayName+'('+itmJson.Description+' / '+itmJson._RetailerProductCode+')</h4><p>'+itmJson.Category+'</p></div></div></td><td data-th="Price">'+itmJson.UnitPrice+'</td><td data-th="Quantity">'+itmJson.Quantity+'</td><td data-th="Subtotal" class="text-center">'+itmJson.Price+'</td></tr>';
-					shoppingcart=shoppingcart+itemHtml;
-				}
-				shoppingcart=shoppingcart+'</tbody>	<tfoot>	<tr><td/><td/><td><strong>Total</strong></td><td class="text-center"><strong>'+RPD_JSON.xml.ItemList.TotalPrice+'</strong></td></tr>	</tfoot></table></div>';
-				var html=$(shoppingcart);
-				$('#model-body').append(html);
-				$('.collapse').on('show.bs.collapse', function () {
-					var groupId = $(this).find('.grandparentIcon');
-				  if (groupId) {
-				    $(groupId).html('v');
-				  }
-				});
-
-				$('.collapse').on('hide.bs.collapse', function () {
-				  var groupId = $(this).find('.grandparentIcon');
-				  if (groupId) {
-				    $(groupId).html('>');
-				  }
-				});
+			// 	var shoppingcart='<div style="overflow: auto">	<table id="cart" class="table table-hover table-condensed">    				<thead>						<tr>							<th style="width:50%">Product</th>							<th style="width:10%">Price</th>							<th style="width:8%">Quantity</th>							<th style="width:22%" class="text-center">Subtotal</th>							<th style="width:10%"></th>						</tr>					</thead>					<tbody>';
+			// 	for(var i=0;i<RPD_JSON.xml.ItemList.Item.length;i++){
+			// 		var itmJson=RPD_JSON.xml.ItemList.Item[i];
+			// 		var itemHtml='<tr><td data-th="Product"><div class="row"><div class="col-sm-2 hidden-xs"><img src="'+itmJson.SmallImageUrl+'" alt="..." class="img-responsive"/></div><div class="col-sm-10"><h4 class="nomargin">'+itmJson.DisplayName+'('+itmJson.Description+' / '+itmJson._RetailerProductCode+')</h4><p>'+itmJson.Category+'</p></div></div></td><td data-th="Price">'+itmJson.UnitPrice+'</td><td data-th="Quantity">'+itmJson.Quantity+'</td><td data-th="Subtotal" class="text-center">'+itmJson.Price+'</td></tr>';
+			// 		shoppingcart=shoppingcart+itemHtml;
+			// 	}
+			// 	shoppingcart=shoppingcart+'</tbody>	<tfoot>	<tr><td/><td/><td><strong>Total</strong></td><td class="text-center"><strong>'+RPD_JSON.xml.ItemList.TotalPrice+'</strong></td></tr>	</tfoot></table></div>';
+			// //	var html=$(shoppingcart);
+				$('.modal-content').html(RPD_JSON);
+				// $('.collapse').on('show.bs.collapse', function () {
+				// 	var groupId = $(this).find('.grandparentIcon');
+				//   if (groupId) {
+				//     $(groupId).html('v');
+				//   }
+				// });
+				//
+				// $('.collapse').on('hide.bs.collapse', function () {
+				//   var groupId = $(this).find('.grandparentIcon');
+				//   if (groupId) {
+				//     $(groupId).html('>');
+				//   }
+				// });
 
 
 				render();

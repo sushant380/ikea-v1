@@ -194,7 +194,7 @@ var tol = 1;
 					CamConUI += "</select><br>";
 
 					CamConUI += "</div><div class=\"col-md-1\"><button data-toggle=\"tooltip\" data-placement=\"left\" title=\"Full Screeen\" style=\"margin-top:5px;\" type=\"button\" class=\"btn pull-right\" onclick=\"fullscreen();return false;\"><img style=\"width:32px;height:32px;\" src=\"img/fullscreen.png\"></img></button>"
-					CamConUI += "<button type=\"button\"  class=\"btn pull-right menu_buttons\" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img data-toggle=\"tooltip\" data-placement=\"left\" style=\"width:32px;height:32px;\" src=\"img/article.png\"></img></button>";
+					CamConUI += "<button type=\"button\"  class=\"btn pull-right \" data-toggle=\"modal\" data-target=\"#myModal\" title=\"Customize Worktop\" style=\"margin-top:5px;\"> <img data-toggle=\"tooltip\" data-placement=\"left\" style=\"width:32px;height:32px;\" src=\"img/article.png\">Item List</img></button>";
 					// Orto cam
 					/*CamConUI += "<a href=\"#\" onclick=\"setPerspective();return false;\">Perspective</a> | "
 					//
@@ -342,7 +342,7 @@ var tol = 1;
 				for(var m=0;m<rpd_array.length;m++){
 					if(rpd_array[m].id===rpd){
 						RPD_Raw=rpd_array[m].rpd;
-						RPD_JSON=x2js.xml_str2json(rpd_array[m].items)
+						RPD_JSON=rpd_array[m].items
 						break;
 					}
 				}
